@@ -5,16 +5,18 @@ import { polygonAmoy } from "@account-kit/infra";
 const uiConfig: AlchemyAccountsUIConfig = {
   illustrationStyle: "outline",
   auth: {
-    sections: [[{ type: "email" }], [{ type: "passkey" }]],
+    sections: [
+      [{ type: "email" }],
+      [{ type: "passkey" }],
+      [{ type: "injected" }],
+    ],
     addPasskeyOnSignup: true,
   },
 };
 
 export const config = createConfig(
   {
-    // TODO: Update the API Key
-    // apiKey: "api-key",
-    rpcUrl: "https://polygon-amoy.g.alchemy.com/v2",
+    apiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
     chain: polygonAmoy,
   },
   uiConfig
