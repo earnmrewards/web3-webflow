@@ -11,11 +11,7 @@ export function LogoutButton() {
     const button = document.getElementById(BUTTON_ID);
     if (!button) return;
 
-    if (!user) {
-      button.style.display = "none";
-      return;
-    }
-
+    button.style.display = user ? "" : "none";
     button.onclick = () => {
       logout();
     };
