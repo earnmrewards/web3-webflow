@@ -6,6 +6,7 @@ import { AuthModalButton } from "./components/buttons/auth-modal-button.tsx";
 import { LogoutButton } from "./components/buttons/logout-button.tsx";
 import { UserAddress } from "./components/texts/user-address.tsx";
 import { SuccessfullyTransactionHash } from "./components/texts/successfully-transaction-hash.tsx";
+import { OpenSeaButton } from "./components/buttons/open-sea-button.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <LogoutButton />
       <UserAddress />
       <SuccessfullyTransactionHash />
+      <OpenSeaButton />
     </Providers>
   </React.StrictMode>
 );
