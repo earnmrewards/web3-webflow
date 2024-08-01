@@ -7,6 +7,7 @@ import { LogoutButton } from "./components/buttons/logout-button.tsx";
 import { UserAddress } from "./components/texts/user-address.tsx";
 import { SuccessfullyTransactionHash } from "./components/texts/successfully-transaction-hash.tsx";
 import { OpenSeaButton } from "./components/buttons/open-sea-button.tsx";
+import { MintForm } from "./components/forms/mint-form.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <UserAddress />
       <SuccessfullyTransactionHash />
       <OpenSeaButton />
+      <MintForm />
     </Providers>
   </React.StrictMode>
 );
