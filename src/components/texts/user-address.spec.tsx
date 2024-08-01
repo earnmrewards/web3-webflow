@@ -21,7 +21,7 @@ describe("UserAddress", () => {
     );
 
     const textField = document.getElementById(COMPONENT_ID);
-    expect(textField).toHaveTextContent("Not Connected");
+    expect(textField?.textContent).toBe("Not Connected");
   });
 
   it("should display shortened address when user is present", () => {
@@ -35,7 +35,7 @@ describe("UserAddress", () => {
     );
 
     const textField = document.getElementById(COMPONENT_ID);
-    expect(textField).toHaveTextContent("0x123...bcdef");
+    expect(textField?.textContent).toBe("0x123...bcdef");
   });
 
   it("should handle the absence of textField gracefully", () => {

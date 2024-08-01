@@ -5,6 +5,7 @@ import { render } from "@testing-library/react";
 
 vi.mock("@account-kit/react", () => ({
   useAuthModal: vi.fn(),
+  useUser: vi.fn(),
 }));
 
 const COMPONENT_ID = "web3-auth-modal-button";
