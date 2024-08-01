@@ -46,9 +46,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: plugin-build
+          path: ./static
+
+      - name: 🔍 List downloaded files
+        run: ls -la ./static
 
       - name: 🖥️ Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./static
