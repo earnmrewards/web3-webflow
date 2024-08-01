@@ -27,6 +27,8 @@ jobs:
         run: npm install
 
       - name: 🚀 Building application...
+        env:
+          VITE_ALCHEMY_API_KEY: ${{ secrets.VITE_ALCHEMY_API_KEY }}
         run: npm run build
 
       - name: 🖥️ Upload build artifacts
