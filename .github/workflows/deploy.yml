@@ -48,9 +48,6 @@ jobs:
           name: plugin-build
           path: ./static
 
-      - name: 🔍 List downloaded files
-        run: ls -la ./static
-
       - name: 🖥️ Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
