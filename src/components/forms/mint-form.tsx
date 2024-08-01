@@ -102,7 +102,7 @@ export function MintForm() {
     if (!user) return;
 
     const inputs = form.querySelectorAll("input");
-    if (inputs.length !== 3) return;
+    if (inputs.length < 3) return;
 
     form.addEventListener("submit", handleSubmit);
 
