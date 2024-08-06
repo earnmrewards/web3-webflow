@@ -1,12 +1,7 @@
-import {
-  useSendUserOperation,
-  useSmartAccountClient,
-  useUser,
-} from "@account-kit/react";
-import { useCallback, useEffect, useState } from "react";
-import { encodeFunctionData } from "viem";
-import { abi } from "../../config/abi";
-import { storeUserData } from "../../actions/store-user-data";
+import { useUser } from "@account-kit/react";
+import { useEffect, useState } from "react";
+import { useStore } from "../../hooks/use-store";
+import { useMint } from "../../hooks/use-mint";
 
 const FORM_COMPONENT_ID = "web3-mint-form";
 const ERROR_COMPONENT_ID = "web3-error-text";
@@ -20,20 +15,13 @@ enum Input {
 
 export function MintForm() {
   const user = useUser();
-  const { client } = useSmartAccountClient({
-    type: "LightAccount",
-  });
-  const { sendUserOperationAsync } = useSendUserOperation({
-    client,
-    onSuccess: ({ hash }) => onSuccessSubmit(hash),
-  });
+  const { getTransactionHash } = useStore();
 
   const [amount, setAmount] = useState(0);
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { mint, error, loading } = useMint({ amount, code, email });
 
   function handleInputChange(event: Event, input: Input) {
     const target = event.target as HTMLInputElement;
@@ -59,52 +47,17 @@ export function MintForm() {
     }
   }
 
-  const handleSubmit = useCallback(
-    async (event: Event) => {
-      event.preventDefault();
-      setLoading(true);
-
-      try {
-        setError("");
-
-        await sendUserOperationAsync({
-          uo: {
-            target: "0x012Ed2176f79862850629077774C4a27ec09484b",
-            data: encodeFunctionData({
-              abi,
-              functionName: "mintTo",
-              args: [user?.address as `0x${string}`],
-            }),
-          },
-        });
-        storeUserData(amount, code, email);
-      } catch (error) {
-        setError("SmartNode purchase failed");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [sendUserOperationAsync, user, amount, code, email]
-  );
-
-  function onSuccessSubmit(hash: string) {
-    const baseUrl = new URL(window.location.href);
-    baseUrl.searchParams.append("txHash", hash);
-
-    window.location.replace(baseUrl);
-  }
-
   useEffect(() => {
     const form = document.getElementById(FORM_COMPONENT_ID) as HTMLFormElement;
     if (!form) return;
 
-    form.style.display = user ? "flex" : "none";
+    form.style.display = user && !getTransactionHash() ? "flex" : "none";
     if (!user) return;
 
     const inputs = form.querySelectorAll("input");
     if (inputs.length < 3) return;
 
-    form.addEventListener("submit", handleSubmit);
+    form.addEventListener("submit", mint);
 
     inputs.forEach((input, index) => {
       input.addEventListener("input", (event) =>
@@ -113,14 +66,14 @@ export function MintForm() {
     });
 
     return () => {
-      form.removeEventListener("submit", handleSubmit);
+      form.removeEventListener("submit", mint);
       inputs.forEach((input, index) => {
         input.removeEventListener("input", (event) =>
           handleInputChange(event, index)
         );
       });
     };
-  }, [user, handleSubmit]);
+  }, [user, mint, getTransactionHash]);
 
   useEffect(() => {
     const textField = document.getElementById(ERROR_COMPONENT_ID);
