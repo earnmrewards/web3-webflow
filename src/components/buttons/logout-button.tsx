@@ -1,6 +1,6 @@
 import { useLogout, useUser } from "@account-kit/react";
 import { useEffect } from "react";
-import { useStore } from "../../hooks/use-store";
+import { useStore } from "../../contexts/use-store";
 
 const COMPONENT_ID = "web3-logout-button";
 

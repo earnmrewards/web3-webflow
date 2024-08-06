@@ -3,7 +3,6 @@ import {
   useSmartAccountClient,
 } from "@account-kit/react";
 import { z } from "zod";
-import { useStore } from "./use-store";
 import {
   encodeFunctionData,
   EstimateGasExecutionError,
@@ -15,6 +14,7 @@ import { abi } from "../config/abi";
 import { storeUserData } from "../actions/store-user-data";
 import { parseEther } from "ethers";
 import { useState } from "react";
+import { useStore } from "../contexts/use-store";
 
 const mintSchema = z.object({
   amount: z.number().positive().min(1).max(10),

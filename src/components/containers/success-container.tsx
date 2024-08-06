@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useStore } from "../../hooks/use-store";
+import { useStore } from "../../contexts/use-store";
 
 const COMPONENT_ID = "web3-success-container";
 
-export function SuccessModal() {
+export function SuccessContainer() {
   const { getTransactionHash } = useStore();
 
   useEffect(() => {

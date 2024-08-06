@@ -1,6 +1,6 @@
 import { useUser } from "@account-kit/react";
 import { useEffect, useState } from "react";
-import { useStore } from "../../hooks/use-store";
+import { useStore } from "../../contexts/use-store";
 import { useMint } from "../../hooks/use-mint";
 
 const FORM_COMPONENT_ID = "web3-mint-form";
