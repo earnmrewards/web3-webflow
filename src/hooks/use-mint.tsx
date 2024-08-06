@@ -68,8 +68,10 @@ export function useMint({ amount, code, email }: MintType) {
     const params = new URL(window.location.href).searchParams;
     const testSuccessModalOption = params.get("testSuccessModalOption");
     if (testSuccessModalOption) {
-      storeTransactionHash("0x123");
-      setLoading(false);
+      setTimeout(() => {
+        storeTransactionHash("0x123");
+        setLoading(false);
+      }, 3 * 1000);
       return;
     }
 
