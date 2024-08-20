@@ -29,23 +29,30 @@ export const abi = [
   },
   {
     type: "function",
+    name: "MAX_EARN_NODES_SUPPLY",
+    inputs: [],
+    outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "MAX_MINT",
     inputs: [],
-    outputs: [{ name: "", type: "uint32", internalType: "uint32" }],
+    outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "MAX_SUPPLY",
     inputs: [],
-    outputs: [{ name: "", type: "uint32", internalType: "uint32" }],
+    outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "TIER_IDS_LENGTH",
     inputs: [],
-    outputs: [{ name: "", type: "uint128", internalType: "uint128" }],
+    outputs: [{ name: "", type: "uint16", internalType: "uint16" }],
     stateMutability: "view",
   },
   {
@@ -89,7 +96,7 @@ export const abi = [
   {
     type: "function",
     name: "calculateMintFee",
-    inputs: [{ name: "amount", type: "uint32", internalType: "uint32" }],
+    inputs: [{ name: "amount", type: "uint8", internalType: "uint8" }],
     outputs: [{ name: "mintFee", type: "uint128", internalType: "uint128" }],
     stateMutability: "view",
   },
@@ -98,6 +105,13 @@ export const abi = [
     name: "contractURI",
     inputs: [],
     outputs: [{ name: "contractURI_", type: "string", internalType: "string" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "feesReceiverAddress",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
     stateMutability: "view",
   },
   {
@@ -126,9 +140,9 @@ export const abi = [
     name: "getSmartNode",
     inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
     outputs: [
-      { name: "tier", type: "uint128", internalType: "uint128" },
+      { name: "tier", type: "uint16", internalType: "uint16" },
       { name: "blockTs", type: "uint128", internalType: "uint128" },
-      { name: "hasEarnNode", type: "uint128", internalType: "uint128" },
+      { name: "hasEarnNode", type: "uint8", internalType: "uint8" },
     ],
     stateMutability: "view",
   },
@@ -173,8 +187,14 @@ export const abi = [
   {
     type: "function",
     name: "mint",
-    inputs: [{ name: "amount", type: "uint32", internalType: "uint32" }],
-    outputs: [],
+    inputs: [{ name: "amount", type: "uint8", internalType: "uint8" }],
+    outputs: [
+      {
+        name: "tokenIdsMinted",
+        type: "uint16[]",
+        internalType: "uint16[]",
+      },
+    ],
     stateMutability: "payable",
   },
   {
@@ -539,9 +559,9 @@ export const abi = [
       },
       {
         name: "tier",
-        type: "uint128",
+        type: "uint16",
         indexed: false,
-        internalType: "uint128",
+        internalType: "uint16",
       },
     ],
     anonymous: false,
@@ -656,6 +676,7 @@ export const abi = [
       },
     ],
   },
+  { type: "error", name: "ReentrancyGuardReentrantCall", inputs: [] },
   { type: "error", name: "ShouldNotMintToBurnAddress", inputs: [] },
   { type: "error", name: "Unauthorized", inputs: [] },
 ] as const;

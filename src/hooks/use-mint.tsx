@@ -1,6 +1,7 @@
 import {
   useSendUserOperation,
   useSmartAccountClient,
+  useUser,
 } from "@account-kit/react";
 import { z } from "zod";
 import {
@@ -12,9 +13,10 @@ import {
 import { CONTRACT_ADDRESS } from "../config/contract";
 import { abi } from "../config/abi";
 import { storeUserData } from "../actions/store-user-data";
-import { parseEther } from "ethers";
 import { useState } from "react";
 import { useStore } from "../contexts/use-store";
+import { parseEther } from "ethers";
+import { calculateMintFee } from "../actions/calculate-mint-fee";
 
 const mintSchema = z.object({
   amount: z.number().positive().min(1).max(10),
@@ -28,6 +30,7 @@ export function useMint({ amount, code, email }: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const user = useUser();
   const { storeTransactionHash } = useStore();
 
   const { client } = useSmartAccountClient({ type: "LightAccount" });
@@ -76,20 +79,35 @@ export function useMint({ amount, code, email }: MintType) {
     }
 
     try {
-      await sendUserOperationAsync({
+      if (!user) {
+        setError("Failed to retrieve the user data");
+        return;
+      }
+
+      const mintFee = await calculateMintFee(amount);
+      const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
+
+      const { hash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
             functionName: "mint",
-            args: [1],
+            args: [amount],
           }),
-          value: parseEther("0.14"),
+          value: parseEther(String(mintFeeWithPrecision)),
         },
       });
 
-      storeUserData(amount, code, email);
+      storeUserData({
+        email,
+        mintTxnHash: hash,
+        referralCode: code,
+        tokenIds: [],
+        wallet: user.address,
+      });
     } catch (error) {
+      console.log(error);
       if (isInsufficientFundsError(error)) {
         setError(
           "Oops! You do not have sufficient funds to complete your purchase."
