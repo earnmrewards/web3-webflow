@@ -9,6 +9,7 @@ import { SuccessfullyTransactionHash } from "./components/texts/successfully-tra
 import { OpenSeaButton } from "./components/buttons/open-sea-button.tsx";
 import { MintForm } from "./components/forms/mint-form.tsx";
 import { SuccessContainer } from "./components/containers/success-container.tsx";
+import { SmartNodesComponents } from "./components/smart-nodes/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <OpenSeaButton />
       <MintForm />
       <SuccessContainer />
+      <SmartNodesComponents />
     </Providers>
   </React.StrictMode>
 );
