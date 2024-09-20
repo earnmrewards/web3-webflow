@@ -8,7 +8,7 @@ const BACK_BUTTON_ID = "web3-smart-nodes-navigate-back";
 const QUANTITY_LABEL_ID = "web3-smart-nodes-final-amount";
 const SMART_NODES_LABEL_ID = "web3-smart-nodes-final-bonus";
 const EARN_PHONE_LABEL_ID = "web3-smart-nodes-final-phone";
-const REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
+// const REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
 
 export function OrderContainer() {
   const user = useUser();
