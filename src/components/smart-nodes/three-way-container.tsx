@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { isInsideContainer } from "../../utils/is-inside-container";
+import { useUser } from "@account-kit/react";
+import { BASE_VALUES } from "./config";
+import { useNavigate } from "../../contexts/use-navigate";
 
-const CONTAINER_COMPONENT_ID = "web3-smart-nodes-selection";
+const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
 const EARN_PHONE_VALUE_ID = "web3-smart-nodes-phone-amount";
-const BASE_VALUES = [1, 3, 6];
+const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
 export function ThreeWayContainer() {
   const [amount, setAmount] = useState(1);
+  const user = useUser();
+  const { navigate, searchParams } = useNavigate();
+
+  const queryAmount = Number(searchParams.get("amount"));
 
   function handleClickOption(index: number) {
     setAmount(BASE_VALUES[index]);
@@ -21,8 +29,21 @@ export function ThreeWayContainer() {
     setAmount(value);
   }
 
-  useEffect(() => {
-    const container = document.getElementById(CONTAINER_COMPONENT_ID);
+  const handleOrderClick = useCallback(() => {
+    const searchParams = new URLSearchParams({ amount: String(amount) });
+    navigate({ query: searchParams });
+  }, [amount, navigate]);
+
+  function changeContainerVisibility() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
+    if (!container) return;
+
+    container.style.display = queryAmount > 0 || !user ? "none" : "flex";
+  }
+  useEffect(changeContainerVisibility, [user, queryAmount]);
+
+  function addOptionsButtonEvent() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
     const buttons = document.getElementsByTagName("button");
@@ -41,10 +62,11 @@ export function ThreeWayContainer() {
         button.removeEventListener("click", () => handleClickOption(index));
       }
     };
-  }, []);
+  }
+  useEffect(addOptionsButtonEvent, []);
 
-  useEffect(() => {
-    const container = document.getElementById(CONTAINER_COMPONENT_ID);
+  function updateInputValueByAmount() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
     const inputs = container.getElementsByTagName("input");
@@ -52,10 +74,11 @@ export function ThreeWayContainer() {
     if (!input) return;
 
     input.value = String(amount);
-  }, [amount]);
+  }
+  useEffect(updateInputValueByAmount, [amount]);
 
-  useEffect(() => {
-    const container = document.getElementById(CONTAINER_COMPONENT_ID);
+  function addInputEvent() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
     const inputs = container.getElementsByTagName("input");
@@ -67,21 +90,46 @@ export function ThreeWayContainer() {
     return () => {
       input.removeEventListener("input", handleInputChange);
     };
-  }, []);
+  }
+  useEffect(addInputEvent, []);
 
-  useEffect(() => {
+  function handleBonusLabelVisibility() {
     const hasSmartNodes = amount >= BASE_VALUES[1];
     const smartNodesSpan = document.getElementById(SMART_NODES_VALUE_ID);
-    if (smartNodesSpan) {
+    if (
+      smartNodesSpan &&
+      isInsideContainer(SELECTION_CONTAINER_ID, SMART_NODES_VALUE_ID)
+    ) {
       smartNodesSpan.style.display = hasSmartNodes ? "block" : "none";
     }
 
     const hasEarnPhone = amount >= BASE_VALUES[2];
     const earnPhoneSpan = document.getElementById(EARN_PHONE_VALUE_ID);
-    if (earnPhoneSpan) {
+    if (
+      earnPhoneSpan &&
+      isInsideContainer(SELECTION_CONTAINER_ID, SMART_NODES_VALUE_ID)
+    ) {
       earnPhoneSpan.style.display = hasEarnPhone ? "block" : "none";
     }
-  }, [amount]);
+  }
+  useEffect(handleBonusLabelVisibility, [amount]);
+
+  function addReviewButtonEvent() {
+    const reviewButton = document.getElementById(REVIEW_BUTTON_ID);
+    if (
+      !reviewButton ||
+      !isInsideContainer(SELECTION_CONTAINER_ID, REVIEW_BUTTON_ID)
+    ) {
+      return;
+    }
+
+    reviewButton.addEventListener("click", handleOrderClick);
+
+    return () => {
+      reviewButton.removeEventListener("click", handleOrderClick);
+    };
+  }
+  useEffect(addReviewButtonEvent, [handleOrderClick]);
 
   return null;
 }

@@ -1,11 +1,11 @@
 import { fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ThreeWayContainer } from "./three-way-container";
+import { BASE_VALUES } from "./config";
 
 const CONTAINER_COMPONENT_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
 const EARN_PHONE_VALUE_ID = "web3-smart-nodes-phone-amount";
-const BASE_VALUES = [1, 3, 6];
 
 describe("ThreeWayContainer", () => {
   beforeEach(() => {
