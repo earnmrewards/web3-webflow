@@ -39,7 +39,7 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = queryAmount > 0 || !user ? "none" : "flex";
+    container.style.display = queryAmount > 0 || !user ? "none" : "block";
   }
   useEffect(changeContainerVisibility, [user, queryAmount]);
 
@@ -102,16 +102,16 @@ export function ThreeWayContainer() {
         text: "Free SmartNodes",
       },
       {
-        baseValueIndex: 1,
-        componentId: LOWER_VALUE_ID,
-        value: "25%",
-        text: "Lower FDV",
-      },
-      {
         baseValueIndex: 2,
         componentId: EARN_PHONE_VALUE_ID,
         value: "+1",
         text: "Free EarnPhone",
+      },
+      {
+        baseValueIndex: 1,
+        componentId: LOWER_VALUE_ID,
+        value: "25%",
+        text: "Lower FDV",
       },
     ];
 
