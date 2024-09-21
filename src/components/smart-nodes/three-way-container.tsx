@@ -7,6 +7,7 @@ import { useNavigate } from "../../contexts/use-navigate";
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
 const EARN_PHONE_VALUE_ID = "web3-smart-nodes-phone-amount";
+const LOWER_VALUE_ID = "web3-smart-nodes-lower-value";
 const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
 export function ThreeWayContainer() {
@@ -101,6 +102,14 @@ export function ThreeWayContainer() {
       isInsideContainer(SELECTION_CONTAINER_ID, SMART_NODES_VALUE_ID)
     ) {
       smartNodesSpan.style.display = hasSmartNodes ? "block" : "none";
+    }
+
+    const lowerSpan = document.getElementById(LOWER_VALUE_ID);
+    if (
+      lowerSpan &&
+      isInsideContainer(SELECTION_CONTAINER_ID, LOWER_VALUE_ID)
+    ) {
+      lowerSpan.style.display = hasSmartNodes ? "block" : "none";
     }
 
     const hasEarnPhone = amount >= BASE_VALUES[2];
