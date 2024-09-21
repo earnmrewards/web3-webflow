@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { isInsideContainer } from "../../utils/is-inside-container";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES } from "./config";
+import { BASE_VALUES, YELLOW_COLOR } from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
@@ -39,7 +39,7 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = queryAmount > 0 || !user ? "none" : "block";
+    container.style.display = queryAmount > 0 || !user ? "none" : "flex";
   }
   useEffect(changeContainerVisibility, [user, queryAmount]);
 
@@ -94,34 +94,49 @@ export function ThreeWayContainer() {
   }
   useEffect(addInputEvent, []);
 
-  function handleBonusLabelVisibility() {
-    const hasSmartNodes = amount >= BASE_VALUES[1];
-    const smartNodesSpan = document.getElementById(SMART_NODES_VALUE_ID);
-    if (
-      smartNodesSpan &&
-      isInsideContainer(SELECTION_CONTAINER_ID, SMART_NODES_VALUE_ID)
-    ) {
-      smartNodesSpan.style.display = hasSmartNodes ? "block" : "none";
-    }
+  function handleBonusesVisibility() {
+    const bonuses = [
+      {
+        baseValueIndex: 1,
+        componentId: SMART_NODES_VALUE_ID,
+        text: "Free SmartNodes",
+      },
+      {
+        baseValueIndex: 1,
+        componentId: LOWER_VALUE_ID,
+        value: "25%",
+        text: "Lower FDV",
+      },
+      {
+        baseValueIndex: 2,
+        componentId: EARN_PHONE_VALUE_ID,
+        value: "+1",
+        text: "Free EarnPhone",
+      },
+    ];
 
-    const lowerSpan = document.getElementById(LOWER_VALUE_ID);
-    if (
-      lowerSpan &&
-      isInsideContainer(SELECTION_CONTAINER_ID, LOWER_VALUE_ID)
-    ) {
-      lowerSpan.style.display = hasSmartNodes ? "block" : "none";
-    }
+    for (const { baseValueIndex, componentId, value, text } of bonuses) {
+      const canShow = amount >= BASE_VALUES[baseValueIndex];
+      const component = document.getElementById(componentId);
 
-    const hasEarnPhone = amount >= BASE_VALUES[2];
-    const earnPhoneSpan = document.getElementById(EARN_PHONE_VALUE_ID);
-    if (
-      earnPhoneSpan &&
-      isInsideContainer(SELECTION_CONTAINER_ID, SMART_NODES_VALUE_ID)
-    ) {
-      earnPhoneSpan.style.display = hasEarnPhone ? "block" : "none";
+      if (component && isInsideContainer(SELECTION_CONTAINER_ID, componentId)) {
+        component.style.display = canShow ? "block" : "none";
+        component.innerText = "";
+
+        const yellowLabel = document.createElement("strong");
+        let yellowAmount = value;
+        if (!yellowAmount) {
+          yellowAmount = `+${parseInt(String(amount / BASE_VALUES[1]))}`;
+        }
+
+        yellowLabel.innerText = yellowAmount;
+        yellowLabel.style.color = YELLOW_COLOR;
+        component.appendChild(yellowLabel);
+        component.appendChild(document.createTextNode(` ${text}`));
+      }
     }
   }
-  useEffect(handleBonusLabelVisibility, [amount]);
+  useEffect(handleBonusesVisibility, [amount]);
 
   function addReviewButtonEvent() {
     const reviewButton = document.getElementById(REVIEW_BUTTON_ID);
