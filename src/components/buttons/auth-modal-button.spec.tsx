@@ -25,4 +25,26 @@ describe("AuthModalButton", () => {
 
     expect(openAuthModal).toHaveBeenCalled();
   });
+
+  it("should call openAuthModal more then once", () => {
+    const openAuthModal = vi.fn();
+    (useAuthModal as Mock).mockReturnValue({ openAuthModal });
+
+    const buttons = [];
+
+    for (let i = 0; i < 2; i++) {
+      const button = document.createElement("button");
+      button.id = COMPONENT_ID;
+      document.body.appendChild(button);
+
+      buttons.push(button);
+    }
+
+    render(<AuthModalButton />);
+
+    for (const button of buttons) {
+      button.click();
+      expect(openAuthModal).toHaveBeenCalled();
+    }
+  });
 });

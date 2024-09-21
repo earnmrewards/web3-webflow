@@ -8,12 +8,14 @@ export function UserAddress() {
   const user = useUser();
 
   useEffect(() => {
-    const textField = document.getElementById(COMPONENT_ID);
-    if (!textField) return;
-
-    textField.textContent = user
-      ? shortenAddress(user.address)
-      : "Not Connected";
+    const textFields: NodeListOf<HTMLElement> = document.querySelectorAll(
+      `[id='${COMPONENT_ID}']`
+    );
+    for (const textField of textFields) {
+      textField.innerText = user
+        ? shortenAddress(user.address)
+        : "Not Connected";
+    }
   }, [user]);
 
   return null;

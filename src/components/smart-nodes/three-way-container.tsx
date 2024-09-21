@@ -38,7 +38,7 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = queryAmount > 0 || !user ? "none" : "flex";
+    container.style.display = queryAmount > 0 || !user ? "none" : "block";
   }
   useEffect(changeContainerVisibility, [user, queryAmount]);
 

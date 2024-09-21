@@ -8,13 +8,19 @@ export function AuthModalButton() {
   const { openAuthModal } = useAuthModal();
 
   useEffect(() => {
-    const button = document.getElementById(COMPONENT_ID);
-    if (!button) return;
+    const buttons: NodeListOf<HTMLElement> = document.querySelectorAll(
+      `[id='${COMPONENT_ID}']`
+    );
+    for (const button of buttons) {
+      button.style.display = user ? "none" : "block";
 
-    button.style.display = user ? "none" : "block";
+      button.addEventListener("click", openAuthModal);
+    }
 
-    button.onclick = () => {
-      openAuthModal();
+    return () => {
+      for (const button of buttons) {
+        button.removeEventListener("click", openAuthModal);
+      }
     };
   }, [openAuthModal, user]);
 
