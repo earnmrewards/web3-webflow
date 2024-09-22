@@ -102,7 +102,7 @@ export function ThreeWayContainer() {
         text: "Free SmartNodes",
       },
       {
-        baseValueIndex: 2,
+        baseValueIndex: 1,
         componentId: EARN_PHONE_VALUE_ID,
         value: "+1",
         text: "Free EarnPhone",
