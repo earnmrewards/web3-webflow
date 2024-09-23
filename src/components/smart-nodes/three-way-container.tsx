@@ -16,6 +16,7 @@ export function ThreeWayContainer() {
   const { navigate, searchParams } = useNavigate();
 
   const queryAmount = Number(searchParams.get("amount"));
+  const hasHash = !!searchParams.get("hash");
 
   function handleClickOption(index: number) {
     setAmount(BASE_VALUES[index]);
@@ -39,9 +40,10 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = queryAmount > 0 || !user ? "none" : "block";
+    const shouldShow = user && queryAmount <= 0 && !hasHash;
+    container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, queryAmount]);
+  useEffect(changeContainerVisibility, [user, queryAmount, hasHash]);
 
   function addOptionsButtonEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);

@@ -2,29 +2,37 @@ import { useEffect, useState } from "react";
 import { useUser } from "@account-kit/react";
 import { BASE_VALUES } from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
+import { useMint } from "../../hooks/smart-nodes/use-mint";
 
 const ORDER_CONTAINER_ID = "web3-smart-nodes-order";
 const BACK_BUTTON_ID = "web3-smart-nodes-navigate-back";
 const QUANTITY_LABEL_ID = "web3-smart-nodes-final-amount";
 const SMART_NODES_LABEL_ID = "web3-smart-nodes-final-bonus";
 const EARN_PHONE_LABEL_ID = "web3-smart-nodes-final-phone";
-// const REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
+const REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
+
+const ERROR_COMPONENT_ID = "web3-error-text";
+const LOADING_COMPONENT_ID = "web3-loading-container";
 
 export function OrderContainer() {
+  const [referralCode, setReferralCode] = useState("");
+  const [email, setEmail] = useState("");
+
   const user = useUser();
   const { back, searchParams } = useNavigate();
-  const [, setReferralCode] = useState("");
-  const [, setEmail] = useState("");
-
   const amount = Number(searchParams.get("amount"));
+  const hasHash = !!searchParams.get("hash");
+
+  const { mint, error, loading } = useMint({ email, referralCode, amount });
 
   function changeContainerVisibility() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = amount <= 0 || !user ? "none" : "block";
+    const shouldShow = user && amount > 0 && !hasHash;
+    container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, amount]);
+  useEffect(changeContainerVisibility, [user, amount, hasHash]);
 
   function addBackButtonEvent() {
     if (amount <= 0) return;
@@ -95,26 +103,33 @@ export function OrderContainer() {
   }
   useEffect(addInputEvent, []);
 
-  // useEffect(() => {
-  //   const button = document.getElementById(REVIEW_BUTTON_ID);
-  //   if (!button) return;
+  function reviewOrderButtonEvent() {
+    const button = document.getElementById(REVIEW_BUTTON_ID);
+    if (!button) return;
 
-  //   button.addEventListener("click", (event) => {
-  //     event.preventDefault();
+    button.addEventListener("click", mint);
 
-  //     console.log(referralCode);
-  //     console.log(email);
-  //   });
+    return () => {
+      button.removeEventListener("click", mint);
+    };
+  }
+  useEffect(reviewOrderButtonEvent, [mint]);
 
-  //   return () => {
-  //     button.removeEventListener("click", (event) => {
-  //       event.preventDefault();
+  function showErrorText() {
+    const textLabel = document.getElementById(ERROR_COMPONENT_ID);
+    if (!textLabel) return;
 
-  //       console.log(referralCode);
-  //       console.log(email);
-  //     });
-  //   };
-  // }, [referralCode, email]);
+    textLabel.innerText = error;
+  }
+  useEffect(showErrorText, [error]);
+
+  function showLoadingContainer() {
+    const container = document.getElementById(LOADING_COMPONENT_ID);
+    if (!container) return;
+
+    container.style.display = loading ? "block" : "none";
+  }
+  useEffect(showLoadingContainer, [loading]);
 
   return null;
 }
