@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES } from "./config";
+import {
+  AMOUNT_FINAL_LABEL_ID,
+  BACK_BUTTON_ID,
+  BASE_VALUES,
+  BONUS_FINAL_LABEL_ID,
+  ERROR_COMPONENT_ID,
+  LOADING_COMPONENT_ID,
+  ORDER_CONTAINER_ID,
+  ORDER_REVIEW_BUTTON_ID,
+  PHONE_FINAL_LABEL_ID,
+} from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
-import { useMint } from "../../hooks/smart-nodes/use-mint";
-
-const ORDER_CONTAINER_ID = "web3-smart-nodes-order";
-const BACK_BUTTON_ID = "web3-smart-nodes-navigate-back";
-const QUANTITY_LABEL_ID = "web3-smart-nodes-final-amount";
-const SMART_NODES_LABEL_ID = "web3-smart-nodes-final-bonus";
-const EARN_PHONE_LABEL_ID = "web3-smart-nodes-final-phone";
-const REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
-
-const ERROR_COMPONENT_ID = "web3-error-text";
-const LOADING_COMPONENT_ID = "web3-loading-container";
+import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
@@ -23,7 +23,11 @@ export function OrderContainer() {
   const amount = Number(searchParams.get("amount"));
   const hasHash = !!searchParams.get("hash");
 
-  const { mint, error, loading } = useMint({ email, referralCode, amount });
+  const { mint, error, loading } = useSmartNodesMint({
+    email,
+    referralCode,
+    amount,
+  });
 
   function changeContainerVisibility() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
@@ -53,17 +57,17 @@ export function OrderContainer() {
 
     const labels = [
       {
-        id: QUANTITY_LABEL_ID,
+        id: AMOUNT_FINAL_LABEL_ID,
         value: amount,
       },
       {
-        id: SMART_NODES_LABEL_ID,
+        id: BONUS_FINAL_LABEL_ID,
         value: parseInt(
           String(amount >= BASE_VALUES[1] ? amount / BASE_VALUES[1] : 0)
         ),
       },
       {
-        id: EARN_PHONE_LABEL_ID,
+        id: PHONE_FINAL_LABEL_ID,
         value: amount >= BASE_VALUES[1] ? "Yes" : "No",
       },
     ];
@@ -104,7 +108,7 @@ export function OrderContainer() {
   useEffect(addInputEvent, []);
 
   function reviewOrderButtonEvent() {
-    const button = document.getElementById(REVIEW_BUTTON_ID);
+    const button = document.getElementById(ORDER_REVIEW_BUTTON_ID);
     if (!button) return;
 
     button.addEventListener("click", mint);

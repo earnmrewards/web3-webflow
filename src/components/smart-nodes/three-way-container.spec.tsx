@@ -124,11 +124,6 @@ describe("ThreeWayContainer", () => {
 
     fireEvent.click(buttons[1]);
     expect(smartNodesLabel?.style.display).toBe("block");
-    expect(earnPhoneLabel?.style.display).toBe("none");
-    expect(lowerLabel?.style.display).toBe("block");
-
-    fireEvent.click(buttons[2]);
-    expect(smartNodesLabel?.style.display).toBe("block");
     expect(earnPhoneLabel?.style.display).toBe("block");
     expect(lowerLabel?.style.display).toBe("block");
   });

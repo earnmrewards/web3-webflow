@@ -4,14 +4,14 @@ import {
 } from "@account-kit/react";
 import { useState } from "react";
 import { z } from "zod";
-import { calculateMintFee } from "../../actions/calculate-mint-fee";
-import { isInsufficientFundsError } from "../../web3/errors/is-insufficient-funds-error";
-import { isRejectedError } from "../../web3/errors/is-rejected-error";
-import { CONTRACT_ADDRESS } from "../../config/contract";
+import { calculateMintFee } from "../actions/calculate-mint-fee";
+import { isInsufficientFundsError } from "../web3/errors/is-insufficient-funds-error";
+import { isRejectedError } from "../web3/errors/is-rejected-error";
+import { CONTRACT_ADDRESS } from "../config/contract";
 import { encodeFunctionData, parseEther } from "viem";
-import { abi } from "../../config/abi";
-import { storeUserData } from "../../actions/store-user-data";
-import { useNavigate } from "../../contexts/use-navigate";
+import { abi } from "../config/abi";
+import { storeUserData } from "../actions/store-user-data";
+import { useNavigate } from "../contexts/use-navigate";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
@@ -21,7 +21,7 @@ const mintSchema = z.object({
 
 type MintType = z.infer<typeof mintSchema>;
 
-export function useMint({ email, referralCode, amount }: MintType) {
+export function useSmartNodesMint({ email, referralCode, amount }: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
