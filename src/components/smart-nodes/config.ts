@@ -17,3 +17,10 @@ export const ORDER_REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
 export const AMOUNT_FINAL_LABEL_ID = "web3-smart-nodes-final-amount";
 export const BONUS_FINAL_LABEL_ID = "web3-smart-nodes-final-bonus";
 export const PHONE_FINAL_LABEL_ID = "web3-smart-nodes-final-phone";
+
+// Success Container
+export const SUCCESS_CONTAINER_ID = "web3-smart-nodes-success-container";
+
+// Success Container - Labels
+export const HASH_LABEL_ID = "web3-smart-nodes-transaction-hash";
+export const USER_REFERRAL_LABEL_ID = "web3-smart-nodes-referral-code";

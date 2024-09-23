@@ -1,4 +1,5 @@
 import { OrderContainer } from "./order-container";
+import { SuccessContainer } from "./success-container";
 import { ThreeWayContainer } from "./three-way-container";
 
 export function SmartNodesComponents() {
@@ -6,6 +7,7 @@ export function SmartNodesComponents() {
     <>
       <ThreeWayContainer />
       <OrderContainer />
+      <SuccessContainer />
     </>
   );
 }

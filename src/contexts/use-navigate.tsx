@@ -51,9 +51,13 @@ export function NavigateProvider({ children }: NavigateProviderProps) {
       return;
     }
 
-    query.forEach((value, key) => {
-      newUrl.searchParams.set(key, value);
-    });
+    if (query.size !== 0) {
+      query.forEach((value, key) => {
+        newUrl.searchParams.set(key, value);
+      });
+    } else {
+      newUrl.search = "";
+    }
 
     setUrl(newUrl);
     navigateTo(newUrl, !!path);
