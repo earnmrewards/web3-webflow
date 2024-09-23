@@ -38,7 +38,7 @@ export function useSmartNodesMint({ email, referralCode, amount }: MintType) {
     const testFlag = "testSuccessModalOption";
     if (params.get(testFlag)) {
       setTimeout(() => {
-        navigate({ query: new URLSearchParams({ hash: "0x123" }) });
+        navigate({ query: new URLSearchParams({ hash: "0x123456789abcdef" }) });
         setLoading(false);
       }, 3 * 1000); // 3s
       return;
