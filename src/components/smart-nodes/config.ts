@@ -6,6 +6,9 @@ export const YELLOW_COLOR = "#f9fd30";
 export const ERROR_COMPONENT_ID = "web3-error-text";
 export const LOADING_COMPONENT_ID = "web3-loading-container";
 
+// Log In Container
+export const LOG_IN_CONTAINER_ID = "web3-smart-nodes-log-in-container";
+
 // Order Container
 export const ORDER_CONTAINER_ID = "web3-smart-nodes-order";
 
