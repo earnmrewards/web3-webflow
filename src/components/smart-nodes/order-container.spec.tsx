@@ -42,17 +42,17 @@ describe("OrderContainer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     document.body.innerHTML = `
-      <div id="web3-smart-nodes-order">
-        <button id="web3-smart-nodes-navigate-back"></button>
-        <span id="web3-smart-nodes-final-amount"></span>
-        <span id="web3-smart-nodes-final-bonus"></span>
-        <span id="web3-smart-nodes-final-phone"></span>
+      <div id="${ORDER_CONTAINER_ID}">
+        <button id="${BACK_BUTTON_ID}"></button>
+        <span id="${AMOUNT_FINAL_LABEL_ID}"></span>
+        <span id="${BONUS_FINAL_LABEL_ID}"></span>
+        <span id="${PHONE_FINAL_LABEL_ID}"></span>
         <input />
         <input />
-        <button id="web3-smart-nodes-order-review-button"></button>
+        <button id="${ORDER_REVIEW_BUTTON_ID}"></button>
       </div>
-      <div id="web3-error-text"></div>
-      <div id="web3-loading-container"></div>
+      <div id="${ERROR_COMPONENT_ID}"></div>
+      <div id="${LOADING_COMPONENT_ID}"></div>
     `;
 
     (useUser as Mock).mockReturnValue({ address: "0x123" });
