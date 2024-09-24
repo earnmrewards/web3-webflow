@@ -8,6 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./tests/setup.ts",
     coverage: {
+      provider: "istanbul",
       reporter: ["text", "json", "html"],
       reportsDirectory: "./tests/coverage",
     },

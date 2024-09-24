@@ -8,7 +8,8 @@ export function isInsufficientFundsError(error: unknown) {
     const foundFunctionInMessages = error.metaMessages?.find((message) =>
       message.includes(gasFunctionName)
     );
-    return foundFunctionInMessages;
+
+    return foundFunctionInMessages || false;
   }
 
   return false;

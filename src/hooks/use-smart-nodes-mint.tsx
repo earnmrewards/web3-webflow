@@ -5,8 +5,8 @@ import {
 } from "@account-kit/react";
 import { useState } from "react";
 import { z } from "zod";
-import { isInsufficientFundsError } from "../web3/errors/is-insufficient-funds-error";
-import { isRejectedError } from "../web3/errors/is-rejected-error";
+import { isInsufficientFundsError } from "../errors/is-insufficient-funds-error";
+import { isRejectedError } from "../errors/is-rejected-error";
 import { TEST_CONTRACT_ADDRESS } from "../config/contract";
 import { encodeFunctionData } from "viem";
 import { testAbi } from "../config/abi";
