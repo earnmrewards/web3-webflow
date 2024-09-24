@@ -49,11 +49,11 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    const buttons = document.getElementsByTagName("a");
+    const buttons = container.getElementsByTagName("a");
     if (buttons.length === 0) return;
 
     for (const [index, button] of Array.from(buttons).entries()) {
-      if (index >= BASE_VALUES.length) return;
+      if (index >= BASE_VALUES.length) continue;
 
       button.addEventListener("click", () => handleClickOption(index));
     }
