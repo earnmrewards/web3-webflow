@@ -29,34 +29,18 @@ describe("ThreeWayContainer", () => {
       searchParams: new URLSearchParams(),
     });
 
-    const container = document.createElement("div");
-    container.id = CONTAINER_COMPONENT_ID;
-
-    BASE_VALUES.forEach(() => {
-      const button = document.createElement("button");
-      container.appendChild(button);
-    });
-
-    const input = document.createElement("input");
-    container.appendChild(input);
-
-    const smartNodesLabel = document.createElement("span");
-    smartNodesLabel.id = SMART_NODES_VALUE_ID;
-    container.appendChild(smartNodesLabel);
-
-    const earnPhoneLabel = document.createElement("span");
-    earnPhoneLabel.id = EARN_PHONE_VALUE_ID;
-    container.appendChild(earnPhoneLabel);
-
-    const lowerLabel = document.createElement("span");
-    lowerLabel.id = LOWER_VALUE_ID;
-    container.appendChild(lowerLabel);
-
-    const reviewButton = document.createElement("button");
-    reviewButton.id = REVIEW_BUTTON_ID;
-    container.appendChild(reviewButton);
-
-    document.body.appendChild(container);
+    document.body.innerHTML = `
+      <div id="${CONTAINER_COMPONENT_ID}">
+        <a></a>
+        <a></a>
+        <a></a>
+        <input />
+        <span id="${SMART_NODES_VALUE_ID}"></span>
+        <span id="${EARN_PHONE_VALUE_ID}"></span>
+        <span id="${LOWER_VALUE_ID}"></span>
+        <a id="${REVIEW_BUTTON_ID}"></a>
+      </div>
+    `;
   });
 
   afterEach(() => {
@@ -81,9 +65,7 @@ describe("ThreeWayContainer", () => {
     const mockIndex = 1;
     render(<ThreeWayContainer />);
 
-    const buttons = document.querySelectorAll(
-      `#${CONTAINER_COMPONENT_ID} button`
-    );
+    const buttons = document.querySelectorAll(`#${CONTAINER_COMPONENT_ID} a`);
     expect(buttons.length).toBeGreaterThan(0);
 
     fireEvent.click(buttons[mockIndex]);
@@ -117,9 +99,7 @@ describe("ThreeWayContainer", () => {
     const lowerLabel = document.getElementById(LOWER_VALUE_ID);
     expect(lowerLabel).not.toBeNull();
 
-    const buttons = document.querySelectorAll(
-      `#${CONTAINER_COMPONENT_ID} button`
-    );
+    const buttons = document.querySelectorAll(`#${CONTAINER_COMPONENT_ID} a`);
     expect(buttons.length).toBeGreaterThan(0);
 
     fireEvent.click(buttons[1]);
@@ -132,9 +112,7 @@ describe("ThreeWayContainer", () => {
     const mockIndex = 1;
     render(<ThreeWayContainer />);
 
-    const buttons = document.querySelectorAll(
-      `#${CONTAINER_COMPONENT_ID} button`
-    );
+    const buttons = document.querySelectorAll(`#${CONTAINER_COMPONENT_ID} a`);
     expect(buttons.length).toBeGreaterThan(0);
 
     fireEvent.click(buttons[mockIndex]);

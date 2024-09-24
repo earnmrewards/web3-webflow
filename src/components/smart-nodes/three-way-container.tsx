@@ -49,7 +49,7 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    const buttons = document.getElementsByTagName("button");
+    const buttons = document.getElementsByTagName("a");
     if (buttons.length === 0) return;
 
     for (const [index, button] of Array.from(buttons).entries()) {
