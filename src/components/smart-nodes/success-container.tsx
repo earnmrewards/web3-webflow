@@ -59,9 +59,7 @@ export function SuccessContainer() {
   }
 
   function addButtonEvents() {
-    const buttons = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} button`
-    );
+    const buttons = document.querySelectorAll(`#${SUCCESS_CONTAINER_ID} a`);
     if (buttons.length === 0) return;
 
     const events = [shareButtonEvent, buyMoreButtonEvent, openSeaButtonEvent];

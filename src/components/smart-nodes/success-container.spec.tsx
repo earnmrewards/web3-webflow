@@ -34,9 +34,9 @@ describe("SuccessContainer", () => {
       <div id="${SUCCESS_CONTAINER_ID}">
         <span id="${HASH_LABEL_ID}"></span>
         <span id="${USER_REFERRAL_LABEL_ID}"></span>
-        <button></button>
-        <button></button>
-        <button></button>
+        <a></a>
+        <a></a>
+        <a></a>
       </div>
     `;
 
@@ -76,7 +76,7 @@ describe("SuccessContainer", () => {
     render(<SuccessContainer />);
 
     const shareButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} button`
+      `#${SUCCESS_CONTAINER_ID} a`
     )[0];
     expect(shareButton).toBeDefined();
     fireEvent.click(shareButton);
@@ -91,7 +91,7 @@ describe("SuccessContainer", () => {
     render(<SuccessContainer />);
 
     const buyMoreButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} button`
+      `#${SUCCESS_CONTAINER_ID} a`
     )[1];
     expect(buyMoreButton).toBeDefined();
     fireEvent.click(buyMoreButton);
@@ -106,7 +106,7 @@ describe("SuccessContainer", () => {
     render(<SuccessContainer />);
 
     const openSeaButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} button`
+      `#${SUCCESS_CONTAINER_ID} a`
     )[2];
     expect(openSeaButton).toBeDefined();
     fireEvent.click(openSeaButton);
