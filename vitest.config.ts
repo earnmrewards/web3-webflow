@@ -7,5 +7,9 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: "./tests/setup.ts",
+    coverage: {
+      reporter: ["text", "json", "html"],
+      reportsDirectory: "./tests/coverage",
+    },
   },
 });

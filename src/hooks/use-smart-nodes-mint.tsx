@@ -1,17 +1,17 @@
 import {
   useSendUserOperation,
   useSmartAccountClient,
+  useUser,
 } from "@account-kit/react";
 import { useState } from "react";
 import { z } from "zod";
-import { calculateMintFee } from "../actions/calculate-mint-fee";
 import { isInsufficientFundsError } from "../web3/errors/is-insufficient-funds-error";
 import { isRejectedError } from "../web3/errors/is-rejected-error";
-import { CONTRACT_ADDRESS } from "../config/contract";
-import { encodeFunctionData, parseEther } from "viem";
-import { abi } from "../config/abi";
-import { storeUserData } from "../actions/store-user-data";
+import { TEST_CONTRACT_ADDRESS } from "../config/contract";
+import { encodeFunctionData } from "viem";
+import { testAbi } from "../config/abi";
 import { useNavigate } from "../contexts/use-navigate";
+import { Address } from "../types";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
@@ -21,10 +21,11 @@ const mintSchema = z.object({
 
 type MintType = z.infer<typeof mintSchema>;
 
-export function useSmartNodesMint({ email, referralCode, amount }: MintType) {
+export function useSmartNodesMint({ amount }: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const user = useUser();
   const { navigate } = useNavigate();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
@@ -45,28 +46,29 @@ export function useSmartNodesMint({ email, referralCode, amount }: MintType) {
     }
 
     try {
-      const mintFee = await calculateMintFee(amount);
-      const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
+      // const mintFee = await calculateMintFee(amount);
+      // const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
+      amount;
 
       const { hash } = await sendUserOperationAsync({
         uo: {
-          target: CONTRACT_ADDRESS,
+          target: TEST_CONTRACT_ADDRESS,
           data: encodeFunctionData({
-            abi,
-            functionName: "mint",
-            args: [amount],
+            abi: testAbi,
+            functionName: "mintTo",
+            args: [user?.address as Address],
           }),
-          value: parseEther(String(mintFeeWithPrecision)),
+          // value: parseEther(String(mintFeeWithPrecision)),
         },
       });
 
-      await storeUserData({
-        email,
-        referralCode: referralCode || "",
-        mintTxnHash: hash,
-        tokenIds: [],
-        wallet: "",
-      });
+      // await storeUserData({
+      //   email,
+      //   referralCode: referralCode || "",
+      //   mintTxnHash: hash,
+      //   tokenIds: [],
+      //   wallet: "",
+      // });
 
       navigate({ query: new URLSearchParams({ hash }) });
     } catch (error) {
