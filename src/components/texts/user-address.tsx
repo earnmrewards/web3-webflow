@@ -1,11 +1,15 @@
 import { useUser } from "@account-kit/react";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { shortenAddress } from "../../utils/shorten-address";
 
 const COMPONENT_ID = "web3-user-address";
 
 export function UserAddress() {
   const user = useUser();
+
+  const addCopyEvent = useCallback(() => {
+    navigator.clipboard.writeText(user?.address || "");
+  }, [user]);
 
   useEffect(() => {
     const textFields: NodeListOf<HTMLElement> = document.querySelectorAll(
@@ -15,8 +19,16 @@ export function UserAddress() {
       textField.innerText = user
         ? shortenAddress(user.address)
         : "Not Connected";
+
+      textField.addEventListener("click", addCopyEvent);
     }
-  }, [user]);
+
+    return () => {
+      for (const textField of textFields) {
+        textField.removeEventListener("click", addCopyEvent);
+      }
+    };
+  }, [user, addCopyEvent]);
 
   return null;
 }
