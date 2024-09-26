@@ -92,7 +92,7 @@ export function PartnerDashboard() {
     const formComponent = document.getElementById(FORM_ID);
     if (formComponent) {
       const shouldShow = revenue === null;
-      formComponent.style.display = shouldShow ? "block" : "none";
+      formComponent.style.display = shouldShow ? "grid" : "none";
     }
   }
   useEffect(changeComponentVisibility, [loading, error, revenue]);
