@@ -5,7 +5,6 @@ import "./styles/global.css";
 import { AuthModalButton } from "./components/buttons/auth-modal-button.tsx";
 import { LogoutButton } from "./components/buttons/logout-button.tsx";
 import { UserAddress } from "./components/texts/user-address.tsx";
-import { SuccessfullyTransactionHash } from "./components/texts/successfully-transaction-hash.tsx";
 import { SmartNodesComponents } from "./components/smart-nodes/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -14,7 +13,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <AuthModalButton />
       <LogoutButton />
       <UserAddress />
-      <SuccessfullyTransactionHash />
       <SmartNodesComponents />
     </Providers>
   </React.StrictMode>
