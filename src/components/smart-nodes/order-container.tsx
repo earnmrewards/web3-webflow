@@ -153,6 +153,15 @@ export function OrderContainer() {
   }
   useEffect(reviewOrderButtonEvent, [handleReviewButton]);
 
+  function reviewOrderButtonBackgroundHandler() {
+    const button = document.getElementById(ORDER_REVIEW_BUTTON_ID);
+    if (!button) return;
+
+    button.style.backgroundColor = agreed ? "#f9fd30" : "#98997D";
+    button.style.cursor = agreed ? "pointer" : "not-allowed";
+  }
+  useEffect(reviewOrderButtonBackgroundHandler, [agreed]);
+
   function showErrorText() {
     const textLabel = document.getElementById(ERROR_COMPONENT_ID);
     if (!textLabel) return;
