@@ -15,6 +15,7 @@ export const ORDER_CONTAINER_ID = "web3-smart-nodes-order";
 // Order Container - Buttons
 export const BACK_BUTTON_ID = "web3-smart-nodes-navigate-back";
 export const ORDER_REVIEW_BUTTON_ID = "web3-smart-nodes-order-review-button";
+export const CHECKBOX_BUTTON_ID = "smartnode-checkbox";
 
 // Order Container - Labels
 export const AMOUNT_FINAL_LABEL_ID = "web3-smart-nodes-final-amount";

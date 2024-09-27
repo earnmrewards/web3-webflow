@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@account-kit/react";
 import {
   AMOUNT_FINAL_LABEL_ID,
   BACK_BUTTON_ID,
   BASE_VALUES,
   BONUS_FINAL_LABEL_ID,
+  CHECKBOX_BUTTON_ID,
   ERROR_COMPONENT_ID,
   LOADING_COMPONENT_ID,
   ORDER_CONTAINER_ID,
@@ -17,6 +18,7 @@ import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
   const [email, setEmail] = useState("");
+  const [agreed, setAgreed] = useState(false);
 
   const user = useUser();
   const { back, searchParams } = useNavigate();
@@ -87,11 +89,18 @@ export function OrderContainer() {
     index === 0 ? setReferralCode(target.value) : setEmail(target.value);
   }
 
+  function blockNativeSubmitEvent(event: KeyboardEvent) {
+    if (event.key === "Enter") event.preventDefault();
+  }
+
   function addInputEvent() {
-    const inputs = document.querySelectorAll(`#${ORDER_CONTAINER_ID} input`);
+    const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+      `#${ORDER_CONTAINER_ID} input`
+    );
     if (inputs.length < 2) return;
 
     inputs.forEach((input, index) => {
+      input.addEventListener("keypress", blockNativeSubmitEvent);
       input.addEventListener("input", (event) =>
         handleInputEvent(event, index)
       );
@@ -99,6 +108,7 @@ export function OrderContainer() {
 
     return () => {
       inputs.forEach((input, index) => {
+        input.addEventListener("keypress", blockNativeSubmitEvent);
         input.removeEventListener("input", (event) =>
           handleInputEvent(event, index)
         );
@@ -107,17 +117,41 @@ export function OrderContainer() {
   }
   useEffect(addInputEvent, []);
 
+  function handleCheckboxEvent() {
+    setAgreed((prev) => !prev);
+  }
+
+  function checkboxButtonEvent() {
+    const checkbox = document.getElementById(CHECKBOX_BUTTON_ID);
+    if (!checkbox) return;
+
+    checkbox.addEventListener("click", handleCheckboxEvent);
+
+    return () => {
+      checkbox.removeEventListener("click", handleCheckboxEvent);
+    };
+  }
+  useEffect(checkboxButtonEvent, []);
+
+  const handleReviewButton = useCallback(
+    (event: Event) => {
+      if (!agreed) return;
+      mint(event);
+    },
+    [mint, agreed]
+  );
+
   function reviewOrderButtonEvent() {
     const button = document.getElementById(ORDER_REVIEW_BUTTON_ID);
     if (!button) return;
 
-    button.addEventListener("click", mint);
+    button.addEventListener("click", handleReviewButton);
 
     return () => {
-      button.removeEventListener("click", mint);
+      button.removeEventListener("click", handleReviewButton);
     };
   }
-  useEffect(reviewOrderButtonEvent, [mint]);
+  useEffect(reviewOrderButtonEvent, [handleReviewButton]);
 
   function showErrorText() {
     const textLabel = document.getElementById(ERROR_COMPONENT_ID);

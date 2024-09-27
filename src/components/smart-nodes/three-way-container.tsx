@@ -96,6 +96,25 @@ export function ThreeWayContainer() {
   }
   useEffect(addInputEvent, []);
 
+  function blockNativeSubmitEvent(event: KeyboardEvent) {
+    if (event.key === "Enter") event.preventDefault();
+  }
+
+  function blockSubmitInputEvent() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
+    if (!container) return;
+
+    const inputs = container.getElementsByTagName("input");
+    const input = inputs[0];
+    if (!input) return;
+
+    input.addEventListener("keypress", blockNativeSubmitEvent);
+    return () => {
+      input.removeEventListener("keypress", blockNativeSubmitEvent);
+    };
+  }
+  useEffect(blockSubmitInputEvent, []);
+
   function handleBonusesVisibility() {
     const bonuses = [
       {
