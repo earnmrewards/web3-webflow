@@ -7,21 +7,28 @@ import { useState } from "react";
 import { z } from "zod";
 import { isInsufficientFundsError } from "../errors/is-insufficient-funds-error";
 import { isRejectedError } from "../errors/is-rejected-error";
-import { TEST_CONTRACT_ADDRESS } from "../config/contract";
-import { encodeFunctionData } from "viem";
-import { testAbi } from "../config/abi";
+import { CONTRACT_ADDRESS } from "../config/contract";
+import { encodeFunctionData, parseEther } from "viem";
+import { abi } from "../config/abi";
 import { useNavigate } from "../contexts/use-navigate";
-import { Address } from "../types";
+import { calculateMintFee } from "../actions/calculate-mint-fee";
+import { storeUserData } from "../actions/store-user-data";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
   email: z.string().email(),
   amount: z.number().positive(),
+  bonusType: z.number(), // FIXME: Just for debugging
 });
 
 type MintType = z.infer<typeof mintSchema>;
 
-export function useSmartNodesMint({ amount }: MintType) {
+export function useSmartNodesMint({
+  email,
+  referralCode,
+  amount,
+  bonusType,
+}: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,33 +53,33 @@ export function useSmartNodesMint({ amount }: MintType) {
     }
 
     try {
-      // const mintFee = await calculateMintFee(amount);
-      // const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
-      amount;
+      if (!user) throw new Error();
+
+      const mintFee = await calculateMintFee(amount);
+      const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
 
       const { hash } = await sendUserOperationAsync({
         uo: {
-          target: TEST_CONTRACT_ADDRESS,
+          target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
-            abi: testAbi,
-            functionName: "mintTo",
-            args: [user?.address as Address],
+            abi,
+            functionName: "mint",
+            args: [amount, bonusType],
           }),
-          // value: parseEther(String(mintFeeWithPrecision)),
+          value: parseEther(String(mintFeeWithPrecision)),
         },
       });
 
-      // await storeUserData({
-      //   email,
-      //   referralCode: referralCode || "",
-      //   mintTxnHash: hash,
-      //   tokenIds: [],
-      //   wallet: "",
-      // });
+      await storeUserData({
+        email,
+        referralCode,
+        mintTxnHash: hash,
+        amount,
+        wallet: user.address,
+      });
 
       navigate({ query: new URLSearchParams({ hash }) });
     } catch (error) {
-      console.log(error);
       if (isInsufficientFundsError(error)) {
         setError(
           "Oops! You do not have sufficient funds to complete your purchase."

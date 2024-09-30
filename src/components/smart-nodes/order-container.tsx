@@ -24,11 +24,13 @@ export function OrderContainer() {
   const { back, searchParams } = useNavigate();
   const amount = Number(searchParams.get("amount"));
   const hasHash = !!searchParams.get("hash");
+  const bonusType = Number(searchParams.get("bonusType")) || 1;
 
   const { mint, error, loading } = useSmartNodesMint({
     email,
     referralCode,
     amount,
+    bonusType,
   });
 
   function changeContainerVisibility() {
