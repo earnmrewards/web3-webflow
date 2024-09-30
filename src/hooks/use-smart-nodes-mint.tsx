@@ -61,7 +61,7 @@ export function useSmartNodesMint({
       setTimeout(() => {
         const operationResult = encryptData({
           hash: "0x123456789abcdef",
-          email: "test@gmail.com",
+          email,
         });
 
         navigate({
