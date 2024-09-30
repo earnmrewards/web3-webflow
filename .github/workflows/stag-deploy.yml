@@ -3,7 +3,7 @@ name: STAG - Plugin files build & upload
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   build:
