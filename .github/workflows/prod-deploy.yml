@@ -1,4 +1,4 @@
-name: [PROD] Deploy Web3 plugin files
+name: PROD - Plugin files build & upload
 
 on:
   push:

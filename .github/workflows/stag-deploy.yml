@@ -1,4 +1,4 @@
-name: [STAG] Deploy Web3 plugin files
+name: STAG - Plugin files build & upload
 
 on:
   push:
@@ -36,8 +36,8 @@ jobs:
 
       - name: 📝 Rename build artifacts for staging
         run: |
-            mv dist/plugin.js dist/plugin-staging.js
-            mv dist/plugin.css dist/plugin-staging.css
+          mv dist/plugin.js dist/plugin-staging.js
+          mv dist/plugin.css dist/plugin-staging.css
 
       - name: 🖥️ Upload build artifacts
         uses: actions/upload-artifact@v3
