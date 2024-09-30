@@ -12,9 +12,9 @@ vi.mock("../services/api", () => ({
 const validUserData = {
   referralCode: "ABC123",
   email: "test@test.com",
-  tokenIds: ["token1", "token2"],
   mintTxnHash: "0x123",
   wallet: "0x123",
+  amount: 1,
 };
 
 describe("storeUserData case", () => {
@@ -38,15 +38,10 @@ describe("storeUserData case", () => {
     );
   });
 
-  it("should throw InvalidPayloadError if tokenIds are less then 1 or more then 10", async () => {
-    const emptyIds = { ...validUserData, tokenIds: [] };
-    const overloadIds = {
-      ...validUserData,
-      tokenIds: new Array(11).fill("0x123"),
-    };
+  it("should throw InvalidPayloadError if amount is lower then 1", async () => {
+    const lowerAmount = { ...validUserData, amount: 0 };
 
-    await expect(storeUserData(emptyIds)).rejects.toThrow(InvalidPayloadError);
-    await expect(storeUserData(overloadIds)).rejects.toThrow(
+    await expect(storeUserData(lowerAmount)).rejects.toThrow(
       InvalidPayloadError
     );
   });
