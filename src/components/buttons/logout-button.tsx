@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 import { useStore } from "../../contexts/use-store";
 
 const COMPONENT_ID = "web3-logout-button";
+const SALE_COMPONENT_ID = "sale";
 
 export function LogoutButton() {
   const user = useUser();
@@ -10,6 +11,11 @@ export function LogoutButton() {
   const { clearStore } = useStore();
 
   const handleLogout = useCallback(() => {
+    const saleComponent = document.getElementById(SALE_COMPONENT_ID);
+    if (saleComponent) {
+      saleComponent.scrollIntoView({ behavior: "smooth" });
+    }
+
     clearStore();
     logout();
   }, [clearStore, logout]);

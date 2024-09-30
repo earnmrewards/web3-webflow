@@ -5,7 +5,7 @@ import { arbitrumSepolia } from "@account-kit/infra";
 const uiConfig: AlchemyAccountsUIConfig = {
   illustrationStyle: "outline",
   auth: {
-    sections: [[{ type: "email" }], [{ type: "injected" }]],
+    sections: [[{ type: "injected" }]],
   },
 };
 
