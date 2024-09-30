@@ -102,6 +102,8 @@ export function OrderContainer() {
     if (inputs.length < 2) return;
 
     inputs.forEach((input, index) => {
+      if (index > 1) return;
+
       input.addEventListener("keypress", blockNativeSubmitEvent);
       input.addEventListener("input", (event) =>
         handleInputEvent(event, index)
@@ -110,6 +112,8 @@ export function OrderContainer() {
 
     return () => {
       inputs.forEach((input, index) => {
+        if (index > 1) return;
+
         input.addEventListener("keypress", blockNativeSubmitEvent);
         input.removeEventListener("input", (event) =>
           handleInputEvent(event, index)
