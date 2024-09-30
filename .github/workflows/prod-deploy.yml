@@ -1,0 +1,60 @@
+name: [PROD] Deploy Web3 plugin files
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: 📥 Check out the code...
+        uses: actions/checkout@v3
+
+      - name: ⚒️ Set up Node.js v${{ matrix.node-version }}...
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: ⚙️ Installing dependencies...
+        run: npm install
+
+      - name: 🚀 Building application...
+        env:
+          VITE_ALCHEMY_API_KEY: ${{ secrets.VITE_ALCHEMY_API_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_API_SECRET: ${{ secrets.VITE_API_SECRET }}
+        run: npm run build
+
+      - name: 🖥️ Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: plugin-build
+          path: |
+            dist/plugin.js
+            dist/plugin.css
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: 📥 Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: plugin-build
+          path: ./static
+
+      - name: 🖥️ Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./static

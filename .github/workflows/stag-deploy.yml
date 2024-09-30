@@ -1,4 +1,4 @@
-name: Deploy Web3 plugin files
+name: [STAG] Deploy Web3 plugin files
 
 on:
   push:
@@ -32,16 +32,20 @@ jobs:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
           VITE_API_SECRET: ${{ secrets.VITE_API_SECRET }}
-          VITE_LAMBDA_KEY: ${{ secrets.VITE_LAMBDA_KEY }}
         run: npm run build
+
+      - name: 📝 Rename build artifacts for staging
+        run: |
+            mv dist/plugin.js dist/plugin-staging.js
+            mv dist/plugin.css dist/plugin-staging.css
 
       - name: 🖥️ Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: plugin-build
           path: |
-            dist/plugin.js
-            dist/plugin.css
+            dist/plugin-staging.js
+            dist/plugin-staging.css
 
   deploy:
     runs-on: ubuntu-latest
