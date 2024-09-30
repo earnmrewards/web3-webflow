@@ -42,6 +42,18 @@ export function useSmartNodesMint({
     setLoading(true);
     setError("");
 
+    const { error } = mintSchema.safeParse({
+      email,
+      referralCode,
+      amount,
+      bonusType,
+    });
+    if (error) {
+      setError("Oops! It looks like you didn't fill in the email correctly");
+      setLoading(false);
+      return;
+    }
+
     const params = new URL(window.location.href).searchParams;
     const testFlag = "testSuccessModalOption";
     if (params.get(testFlag)) {

@@ -23,14 +23,27 @@ export function SuccessContainer() {
   }
   useEffect(changeContainerVisibility, [user, hash]);
 
+  const handleCopyEvent = useCallback(() => {
+    navigator.clipboard.writeText(hash || "");
+  }, [hash]);
+
   function updateLabels() {
     const hashLabel = document.getElementById(HASH_LABEL_ID);
-    if (hashLabel) hashLabel.innerText = shortenAddress(hash || "");
+    if (hashLabel) {
+      hashLabel.innerText = shortenAddress(hash || "");
+      hashLabel.addEventListener("click", handleCopyEvent);
+    }
 
     const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
     if (referralLabel) referralLabel.innerText = "Coming Soon";
+
+    return () => {
+      if (hashLabel) {
+        hashLabel.removeEventListener("click", handleCopyEvent);
+      }
+    };
   }
-  useEffect(updateLabels, [hash]);
+  useEffect(updateLabels, [hash, handleCopyEvent]);
 
   function shareButtonEvent(event: Event) {
     event.preventDefault();
