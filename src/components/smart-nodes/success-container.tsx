@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "../../contexts/use-navigate";
 import { useUser } from "@account-kit/react";
 import {
@@ -10,9 +10,31 @@ import { shortenAddress } from "../../utils/shorten-address";
 
 export function SuccessContainer() {
   const { navigate, searchParams } = useNavigate();
+  const [referralCode, setReferralCode] = useState("");
 
   const user = useUser();
   const hash = searchParams.get("hash");
+
+  useEffect(() => {
+    (async () => {
+      const request = await fetch(
+        `https://g5vv4opzusgzy4ectn3twhtmsm0iyrlt.lambda-url.us-west-2.on.aws?address=${user?.address}`,
+        {
+          method: "GET",
+          headers: {
+            "x-api-key": import.meta.env.VITE_LAMBDA_KEY,
+          },
+        }
+      );
+      const response = (await request.json()) as Record<string, string>;
+      if (!response || !response["referral_code"]) {
+        setReferralCode("Unknown");
+        return;
+      }
+
+      setReferralCode(response["referral_code"]);
+    })();
+  }, [user?.address]);
 
   function changeContainerVisibility() {
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
@@ -35,7 +57,7 @@ export function SuccessContainer() {
     }
 
     const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
-    if (referralLabel) referralLabel.innerText = "Coming Soon";
+    if (referralLabel) referralLabel.innerText = referralCode;
 
     return () => {
       if (hashLabel) {
@@ -43,7 +65,7 @@ export function SuccessContainer() {
       }
     };
   }
-  useEffect(updateLabels, [hash, handleCopyEvent]);
+  useEffect(updateLabels, [hash, handleCopyEvent, referralCode]);
 
   function shareButtonEvent(event: Event) {
     event.preventDefault();
