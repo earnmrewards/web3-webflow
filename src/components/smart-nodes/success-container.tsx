@@ -17,11 +17,14 @@ export function SuccessContainer() {
   const hash = searchParams.get("hash");
 
   useEffect(() => {
+    const shouldProceed = user && user.address && hash;
+    if (!shouldProceed) return;
+
     (async () => {
       const userCode = await getUserReferralCode(user?.address || "0x");
       setReferralCode(userCode);
     })();
-  }, [user]);
+  }, [user, hash]);
 
   function changeContainerVisibility() {
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
@@ -44,7 +47,7 @@ export function SuccessContainer() {
     }
 
     const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
-    if (referralLabel) referralLabel.innerText = referralCode;
+    if (referralLabel) referralLabel.innerText = referralCode || "...";
 
     return () => {
       if (hashLabel) {

@@ -1,3 +1,4 @@
+import { api } from "../services/api";
 import { Address } from "../types";
 
 interface Response {
@@ -7,23 +8,12 @@ interface Response {
 const UNKNOWN_CODE = "Unknown";
 
 export async function getUserReferralCode(address: Address) {
-  try {
-    const request = await fetch(
-      `https://g5vv4opzusgzy4ectn3twhtmsm0iyrlt.lambda-url.us-west-2.on.aws?address=${address}`,
-      {
-        method: "GET",
-        headers: {
-          "x-api-key": import.meta.env.VITE_LAMBDA_KEY,
-        },
-      }
-    );
-    const response = (await request.json()) as Response;
-    if (!response || response.referral_code) {
-      return UNKNOWN_CODE;
-    }
-
-    return response.referral_code;
-  } catch (error) {
+  const { data } = await api.get<Response>(
+    `/smartnodes/referral_code?address=${address}&email=wilson.macedo@modemobile.com`
+  );
+  if (!data) {
     return UNKNOWN_CODE;
   }
+
+  return data.referral_code;
 }
