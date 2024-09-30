@@ -7,6 +7,7 @@ import {
   USER_REFERRAL_LABEL_ID,
 } from "./config";
 import { shortenAddress } from "../../utils/shorten-address";
+import { getUserReferralCode } from "../../actions/get-user-referral-code";
 
 export function SuccessContainer() {
   const { navigate, searchParams } = useNavigate();
@@ -17,24 +18,10 @@ export function SuccessContainer() {
 
   useEffect(() => {
     (async () => {
-      const request = await fetch(
-        `https://g5vv4opzusgzy4ectn3twhtmsm0iyrlt.lambda-url.us-west-2.on.aws?address=${user?.address}`,
-        {
-          method: "GET",
-          headers: {
-            "x-api-key": import.meta.env.VITE_LAMBDA_KEY,
-          },
-        }
-      );
-      const response = (await request.json()) as Record<string, string>;
-      if (!response || !response["referral_code"]) {
-        setReferralCode("Unknown");
-        return;
-      }
-
-      setReferralCode(response["referral_code"]);
+      const userCode = await getUserReferralCode(user?.address || "0x");
+      setReferralCode(userCode);
     })();
-  }, [user?.address]);
+  }, [user]);
 
   function changeContainerVisibility() {
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
@@ -67,16 +54,18 @@ export function SuccessContainer() {
   }
   useEffect(updateLabels, [hash, handleCopyEvent, referralCode]);
 
-  function shareButtonEvent(event: Event) {
-    event.preventDefault();
+  const shareButtonEvent = useCallback(
+    (event: Event) => {
+      event.preventDefault();
+      if (referralCode.length === 0) return;
 
-    // TODO: Get the referral code from a API
-    const referralCode = "Coming Soon";
-    window.open(
-      `https://x.com/intent/tweet?text=I%20just%20got%20whitelisted%20for%20%24EARNM%27s%20upcoming%20%40SmartN0des%20sale!%20%0A%0A%40EARNMrewards%20has%208M%2B%20connected%20wallets%20with%20%248B%2B%20in%20connected%20assets%2C%20and%20represents%205%25%20of%20all%20transactions%20on%20POL!%20%0A%0AUse%20my%20referral%20code%20for%20a%2025%25%20bonus%3A%20${referralCode}%20%0A%0Aearnm.com/smartnodes`,
-      "_blank"
-    );
-  }
+      window.open(
+        `https://x.com/intent/tweet?text=I%20just%20got%20whitelisted%20for%20%24EARNM%27s%20upcoming%20%40SmartN0des%20sale!%20%0A%0A%40EARNMrewards%20has%208M%2B%20connected%20wallets%20with%20%248B%2B%20in%20connected%20assets%2C%20and%20represents%205%25%20of%20all%20transactions%20on%20POL!%20%0A%0AUse%20my%20referral%20code%20for%20a%2025%25%20bonus%3A%20${referralCode}%20%0A%0Aearnm.com/smartnodes`,
+        "_blank"
+      );
+    },
+    [referralCode]
+  );
 
   const buyMoreButtonEvent = useCallback(
     (event: Event) => {
@@ -108,7 +97,7 @@ export function SuccessContainer() {
       }
     };
   }
-  useEffect(addButtonEvents, [buyMoreButtonEvent]);
+  useEffect(addButtonEvents, [buyMoreButtonEvent, shareButtonEvent]);
 
   return null;
 }
