@@ -13,6 +13,7 @@ import { abi } from "../config/abi";
 import { useNavigate } from "../contexts/use-navigate";
 import { calculateMintFee } from "../actions/calculate-mint-fee";
 import { storeUserData } from "../actions/store-user-data";
+import { encryptData } from "../utils/encrypt-data";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
@@ -58,7 +59,14 @@ export function useSmartNodesMint({
     const testFlag = "testSuccessModalOption";
     if (params.get(testFlag)) {
       setTimeout(() => {
-        navigate({ query: new URLSearchParams({ hash: "0x123456789abcdef" }) });
+        const operationResult = encryptData({
+          hash: "0x123456789abcdef",
+          email: "test@gmail.com",
+        });
+
+        navigate({
+          query: new URLSearchParams({ operationResult }),
+        });
         setLoading(false);
       }, 3 * 1000); // 3s
       return;
@@ -90,7 +98,8 @@ export function useSmartNodesMint({
         wallet: user.address,
       });
 
-      navigate({ query: new URLSearchParams({ hash }) });
+      const operationResult = encryptData({ hash, email });
+      navigate({ query: new URLSearchParams({ operationResult }) });
     } catch (error) {
       if (isInsufficientFundsError(error)) {
         setError(

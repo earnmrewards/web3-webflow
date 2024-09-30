@@ -23,7 +23,7 @@ export function OrderContainer() {
   const user = useUser();
   const { back, searchParams } = useNavigate();
   const amount = Number(searchParams.get("amount"));
-  const hasHash = !!searchParams.get("hash");
+  const hasOperationResult = !!searchParams.get("operationResult");
   const bonusType = Number(searchParams.get("bonusType")) || 1;
 
   const { mint, error, loading } = useSmartNodesMint({
@@ -37,10 +37,10 @@ export function OrderContainer() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
     if (!container) return;
 
-    const shouldShow = user && amount > 0 && !hasHash;
+    const shouldShow = user && amount > 0 && !hasOperationResult;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, amount, hasHash]);
+  useEffect(changeContainerVisibility, [user, amount, hasOperationResult]);
 
   function addBackButtonEvent() {
     if (amount <= 0) return;

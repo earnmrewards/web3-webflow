@@ -8,32 +8,37 @@ import {
 } from "./config";
 import { shortenAddress } from "../../utils/shorten-address";
 import { getUserReferralCode } from "../../actions/get-user-referral-code";
+import { getEncryptedData } from "../../utils/get-encrypted-data";
+import { OperationResultType } from "../../types";
 
 export function SuccessContainer() {
   const { navigate, searchParams } = useNavigate();
   const [referralCode, setReferralCode] = useState("");
 
   const user = useUser();
-  const hash = searchParams.get("hash");
+  const operationResult = searchParams.get("operationResult");
+  const { hash, email } = getEncryptedData<OperationResultType>(
+    operationResult || ""
+  );
 
   useEffect(() => {
-    const shouldProceed = user && user.address && hash;
+    const shouldProceed = user && user.address && operationResult;
     if (!shouldProceed) return;
 
     (async () => {
-      const userCode = await getUserReferralCode(user?.address || "0x");
+      const userCode = await getUserReferralCode(user?.address, email);
       setReferralCode(userCode);
     })();
-  }, [user, hash]);
+  }, [user, email, operationResult]);
 
   function changeContainerVisibility() {
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
     if (!container) return;
 
-    const shouldShow = user && hash;
+    const shouldShow = user && operationResult;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, hash]);
+  useEffect(changeContainerVisibility, [user, operationResult]);
 
   const handleCopyEvent = useCallback(() => {
     navigator.clipboard.writeText(hash || "");
