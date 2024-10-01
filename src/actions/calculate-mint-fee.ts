@@ -9,7 +9,7 @@ export async function calculateMintFee(amount: number): Promise<string> {
     `/smartnodes/mintfee?amount=${amount}`
   );
   if (status !== 200 || !data) {
-    return "140000000000000000";
+    throw new Error();
   }
 
   return data.mintFeeWei;

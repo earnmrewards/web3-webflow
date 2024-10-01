@@ -74,8 +74,7 @@ export function useSmartNodesMint({
     try {
       if (!user) throw new Error();
 
-      const mintFee = await calculateMintFee(amount);
-
+      const mintFeeWei = await calculateMintFee(amount);
       const { hash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
@@ -84,7 +83,7 @@ export function useSmartNodesMint({
             functionName: "mint",
             args: [amount, bonusType],
           }),
-          value: BigInt(mintFee),
+          value: BigInt(mintFeeWei),
         },
       });
 

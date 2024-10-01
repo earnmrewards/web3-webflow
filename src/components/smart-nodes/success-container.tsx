@@ -58,15 +58,19 @@ export function SuccessContainer() {
   }
   useEffect(handleReferralLabelEvent, [referralCode, handleReferralCopy]);
 
-  const handleCopyEvent = useCallback(() => {
-    navigator.clipboard.writeText(hash || "");
+  const handleHashClick = useCallback(() => {
+    const explorerLink =
+      import.meta.env.VITE_ENVIRONMENT === "production"
+        ? "arbiscan.io"
+        : "sepolia.arbiscan.io";
+    window.open(`https://${explorerLink}/tx/${hash}`, "_blank");
   }, [hash]);
 
   function updateLabels() {
     const hashLabel = document.getElementById(HASH_LABEL_ID);
     if (hashLabel) {
       hashLabel.innerText = shortenAddress(hash || "");
-      hashLabel.addEventListener("click", handleCopyEvent);
+      hashLabel.addEventListener("click", handleHashClick);
     }
 
     const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
@@ -74,11 +78,11 @@ export function SuccessContainer() {
 
     return () => {
       if (hashLabel) {
-        hashLabel.removeEventListener("click", handleCopyEvent);
+        hashLabel.removeEventListener("click", handleHashClick);
       }
     };
   }
-  useEffect(updateLabels, [hash, handleCopyEvent, referralCode]);
+  useEffect(updateLabels, [hash, handleHashClick, referralCode]);
 
   const shareButtonEvent = useCallback(
     (event: Event) => {
