@@ -100,6 +100,9 @@ export function useSmartNodesMint({
       const operationResult = encryptData({ hash, email });
       navigate({ query: new URLSearchParams({ operationResult }) });
     } catch (error) {
+      if (params.get("debugging")) {
+        console.log(error);
+      }
       if (isInsufficientFundsError(error)) {
         setError(
           "Oops! You do not have sufficient funds to complete your purchase."
