@@ -105,7 +105,7 @@ export function SuccessContainer() {
   function openSeaButtonEvent(event: Event) {
     event.preventDefault();
 
-    window.open("https://opensea.io/collection/smart-nodes", "_blank");
+    window.open("https://opensea.io/collection/earnm-smartnodes", "_blank");
   }
 
   function addButtonEvents() {
