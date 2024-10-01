@@ -3,7 +3,6 @@ import { useUser } from "@account-kit/react";
 import {
   AMOUNT_FINAL_LABEL_ID,
   BACK_BUTTON_ID,
-  BASE_SMART_NODE_VALUE,
   BASE_VALUES,
   BONUS_FINAL_LABEL_ID,
   CHECKBOX_BUTTON_ID,
@@ -17,6 +16,7 @@ import {
 } from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
 import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
+import { getValueByTier } from "./get-value-by-tier";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
@@ -60,9 +60,16 @@ export function OrderContainer() {
   useEffect(addBackButtonEvent, [amount, back]);
 
   function handleSmartNodeValue() {
+    const tierLabel = document.querySelector(".tier-letter") as HTMLSpanElement;
+    let tier = "S";
+    if (tierLabel) {
+      tier = tierLabel.innerText;
+    }
+
+    const priceValue = getValueByTier(tier);
     const unitPriceLabel = document.getElementById(UNIT_NODE_LABEL_ID);
     if (unitPriceLabel)
-      unitPriceLabel.innerText = BASE_SMART_NODE_VALUE.toLocaleString("en-US", {
+      unitPriceLabel.innerText = priceValue.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",
       });
@@ -70,13 +77,10 @@ export function OrderContainer() {
     const totalPriceLabel = document.getElementById(TOTAL_NODES_LABEL_ID);
     if (!totalPriceLabel) return;
 
-    totalPriceLabel.innerText = (amount * BASE_SMART_NODE_VALUE).toLocaleString(
-      "en-US",
-      {
-        style: "currency",
-        currency: "USD",
-      }
-    );
+    totalPriceLabel.innerText = (amount * priceValue).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
   }
   useEffect(handleSmartNodeValue, [amount]);
 

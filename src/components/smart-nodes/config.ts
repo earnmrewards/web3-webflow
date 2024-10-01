@@ -23,7 +23,17 @@ export const BONUS_FINAL_LABEL_ID = "web3-smart-nodes-final-bonus";
 export const PHONE_FINAL_LABEL_ID = "web3-smart-nodes-final-phone";
 export const UNIT_NODE_LABEL_ID = "web3-unit-smart-node-value";
 export const TOTAL_NODES_LABEL_ID = "web3-total-smart-node-value";
-export const BASE_SMART_NODE_VALUE = 150;
+export const SMART_NODES_TIERS_VALUE: Record<string, number> = {
+  S: 150,
+  M: 175,
+  A: 200,
+  R: 250,
+  T: 275,
+  N: 325,
+  O: 425,
+  D: 500,
+  E: 750,
+};
 
 // Success Container
 export const SUCCESS_CONTAINER_ID = "web3-smart-nodes-success-container";
