@@ -86,7 +86,7 @@ export function SuccessContainer() {
       if (referralCode.length === 0) return;
 
       window.open(
-        `https://x.com/intent/tweet?text=I%20just%20got%20whitelisted%20for%20%24EARNM%27s%20upcoming%20%40SmartN0des%20sale!%20%0A%0A%40EARNMrewards%20has%208M%2B%20connected%20wallets%20with%20%248B%2B%20in%20connected%20assets%2C%20and%20represents%205%25%20of%20all%20transactions%20on%20POL!%20%0A%0AUse%20my%20referral%20code%20for%20a%2025%25%20bonus%3A%20${referralCode}%20%0A%0Aearnm.com/smartnodes`,
+        `https://x.com/intent/post?text=I%27m+officially+an+%24EARNM+%40SmartN0des+holder%21+%0A%0A%40EARNMrewards+has+8M%2B+connected+wallets+with+%248B%2B+in+connected+assets%2C+and+represents+5%25+of+all+transactions+on+POL%21+%0A%0AUse+my+referral+code+for+a+25%25+bonus%3A+${referralCode}+%0A%0Aearnm.com%2Fsmartnodes`,
         "_blank"
       );
     },
