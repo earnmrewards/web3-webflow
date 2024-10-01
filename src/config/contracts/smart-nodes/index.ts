@@ -1,24 +1,4 @@
-export const testAbi = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-    ],
-    name: "mintTo",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-] as const;
+import { Address } from "../../../types";
 
 export const abi = [
   {
@@ -666,3 +646,6 @@ export const abi = [
     type: "function",
   },
 ] as const;
+
+export const CONTRACT_ADDRESS = import.meta.env
+  .VITE_SMART_NODES_CONTRACT_ADDRESS as Address;

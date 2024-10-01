@@ -7,19 +7,18 @@ import { useState } from "react";
 import { z } from "zod";
 import { isInsufficientFundsError } from "../errors/is-insufficient-funds-error";
 import { isRejectedError } from "../errors/is-rejected-error";
-import { CONTRACT_ADDRESS } from "../config/contract";
 import { encodeFunctionData, parseEther } from "viem";
-import { abi } from "../config/abi";
 import { useNavigate } from "../contexts/use-navigate";
 import { calculateMintFee } from "../actions/calculate-mint-fee";
 import { storeUserData } from "../actions/store-user-data";
 import { encryptData } from "../utils/encrypt-data";
+import { abi, CONTRACT_ADDRESS } from "../config/contracts/smart-nodes";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
   email: z.string().email(),
   amount: z.number().positive(),
-  bonusType: z.number(), // FIXME: Just for debugging
+  bonusType: z.number(),
 });
 
 type MintType = z.infer<typeof mintSchema>;

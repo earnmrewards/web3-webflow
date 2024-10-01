@@ -32,6 +32,8 @@ jobs:
           VITE_API_BASE_URL: ${{ secrets.VITE_PROD_API_BASE_URL }}
           VITE_API_KEY: ${{ secrets.VITE_PROD_API_KEY }}
           VITE_API_SECRET: ${{ secrets.VITE_PROD_API_SECRET }}
+          VITE_SMART_NODES_CONTRACT_ADDRESS: ${{ secrets.VITE_PROD_SMART_NODES_CONTRACT_ADDRESS }}
+          VITE_ENVIRONMENT: ${{ secrets.VITE_PROD_ENVIRONMENT }}
         run: npm run build
 
       - name: 🖥️ Upload build artifacts
