@@ -7,7 +7,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { isInsufficientFundsError } from "../errors/is-insufficient-funds-error";
 import { isRejectedError } from "../errors/is-rejected-error";
-import { encodeFunctionData, parseEther } from "viem";
+import { encodeFunctionData } from "viem";
 import { useNavigate } from "../contexts/use-navigate";
 import { calculateMintFee } from "../actions/calculate-mint-fee";
 import { storeUserData } from "../actions/store-user-data";
@@ -75,7 +75,6 @@ export function useSmartNodesMint({
       if (!user) throw new Error();
 
       const mintFee = await calculateMintFee(amount);
-      const mintFeeWithPrecision = Number(mintFee) / 10 ** 18;
 
       const { hash } = await sendUserOperationAsync({
         uo: {
@@ -85,7 +84,7 @@ export function useSmartNodesMint({
             functionName: "mint",
             args: [amount, bonusType],
           }),
-          value: parseEther(String(mintFeeWithPrecision)),
+          value: BigInt(mintFee),
         },
       });
 
