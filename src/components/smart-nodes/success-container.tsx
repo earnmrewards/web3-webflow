@@ -21,7 +21,7 @@ export function SuccessContainer() {
     operationResult || ""
   );
 
-  useEffect(() => {
+  function fetchReferralCode() {
     const shouldProceed = user && user.address && operationResult;
     if (!shouldProceed) return;
 
@@ -29,7 +29,8 @@ export function SuccessContainer() {
       const userCode = await getUserReferralCode(user?.address, email);
       setReferralCode(userCode);
     })();
-  }, [user, email, operationResult]);
+  }
+  useEffect(fetchReferralCode, [user, email, operationResult]);
 
   function changeContainerVisibility() {
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
@@ -39,6 +40,23 @@ export function SuccessContainer() {
     container.style.display = shouldShow ? "block" : "none";
   }
   useEffect(changeContainerVisibility, [user, operationResult]);
+
+  const handleReferralCopy = useCallback(() => {
+    navigator.clipboard.writeText(referralCode);
+  }, [referralCode]);
+
+  function handleReferralLabelEvent() {
+    if (referralCode.length === 0) return;
+
+    const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
+    if (!referralLabel) return;
+
+    referralLabel.addEventListener("click", handleReferralCopy);
+    return () => {
+      referralLabel.removeEventListener("click", handleReferralCopy);
+    };
+  }
+  useEffect(handleReferralLabelEvent, [referralCode, handleReferralCopy]);
 
   const handleCopyEvent = useCallback(() => {
     navigator.clipboard.writeText(hash || "");
