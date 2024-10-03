@@ -5,8 +5,20 @@ interface Response<T> {
   status: number;
 }
 
-function fetcher(route: string, method: Method, body?: unknown) {
-  return fetch(`${import.meta.env.VITE_API_BASE_URL}${route}`, {
+const APIs = {
+  TOOLKIT: import.meta.env.VITE_API_BASE_URL,
+  SMART_NODES: import.meta.env.VITE_SMART_NODES_API,
+} as const;
+
+interface FetcherData {
+  route: string;
+  method: Method;
+  body?: unknown;
+  api?: keyof typeof APIs;
+}
+
+function fetcher({ route, method, body, api = "TOOLKIT" }: FetcherData) {
+  return fetch(`${APIs[api]}${route}`, {
     method,
     headers: {
       "Content-Type": "application/json",
@@ -17,8 +29,11 @@ function fetcher(route: string, method: Method, body?: unknown) {
   });
 }
 
-async function get<T>(route: string): Promise<Response<T>> {
-  const request = await fetcher(route, "GET");
+async function get<T>(
+  route: string,
+  api?: keyof typeof APIs
+): Promise<Response<T>> {
+  const request = await fetcher({ route, method: "GET", api });
 
   try {
     const response = await request.json();
@@ -29,8 +44,12 @@ async function get<T>(route: string): Promise<Response<T>> {
   }
 }
 
-async function post<T, K>(route: string, body: K): Promise<Response<T>> {
-  const request = await fetcher(route, "POST", body);
+async function post<T, K>(
+  route: string,
+  body: K,
+  api?: keyof typeof APIs
+): Promise<Response<T>> {
+  const request = await fetcher({ route, method: "POST", body, api });
 
   try {
     const response = await request.json();

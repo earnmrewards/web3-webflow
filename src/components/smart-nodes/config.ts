@@ -1,10 +1,14 @@
 // Constants
 export const BASE_VALUES = [1, 3, 6];
 export const YELLOW_COLOR = "#f9fd30";
+export const STORAGE_KEY = "smart-nodes";
 
 // Generic Components
 export const ERROR_COMPONENT_ID = "web3-error-text";
 export const LOADING_COMPONENT_ID = "web3-loading-container";
+
+// Email Container
+export const EMAIL_CONTAINER_ID = "web3-smart-nodes-email-container";
 
 // Log In Container
 export const LOG_IN_CONTAINER_ID = "web3-smart-nodes-log-in-container";

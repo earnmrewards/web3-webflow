@@ -1,73 +1,77 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { Address } from "../types";
+
+enum Storage {
+  SESSION,
+  LOCAL,
+}
+
+type StorageItemType<T> = Record<string, T>;
 
 interface StoreContextProps {
-  getTransactionHash: () => Address | null;
-  storeTransactionHash: (hash: Address) => boolean;
-  clearStore: () => boolean;
+  // TODO: Improve the generic T return
+  get<T>(key: string): StorageItemType<T> | null;
+  set: (key: string, data: StorageItemType<string | number>) => void;
 }
 
 interface StoreProviderProps {
   children: ReactNode;
 }
 
-const STORE_KEY = "web3-store";
+const STORE_KEY = "@web3-store";
+const DEFAULT_STORE: Storage = Storage.SESSION;
 
 const StoreContext = createContext({} as StoreContextProps);
 
 export function StoreProvider({ children }: StoreProviderProps) {
-  const [transactionHash, setTransactionHash] = useState<Address | null>(null);
+  const [storedData, setStoredData] = useState<Map<
+    string,
+    StorageItemType<string | number>
+  > | null>(null);
 
   function getStore() {
-    if (typeof window === "undefined" || !localStorage) return false;
-
-    return localStorage;
-  }
-
-  function storeTransactionHash(hash: Address) {
-    const store = getStore();
-    if (!store) return false;
-
-    try {
-      setTransactionHash(hash);
-      store.setItem(STORE_KEY, hash);
-      return true;
-    } catch (error) {
-      return false;
+    switch (DEFAULT_STORE) {
+      case Storage.LOCAL:
+        return localStorage;
+      default:
+        return sessionStorage;
     }
   }
 
-  function getTransactionHash() {
-    if (transactionHash) return transactionHash;
+  function get<T>(key: string) {
+    if (storedData !== null) {
+      const data = storedData.get(key);
+      if (data) return data as StorageItemType<T>;
+    }
 
     const store = getStore();
-    if (!store) return null;
-
-    const data = store.getItem(STORE_KEY) as Address | null;
+    const data = store.getItem(`${STORE_KEY}/${key}`);
     if (!data) return null;
 
-    setTransactionHash(data);
+    try {
+      const parsedData = JSON.parse(data) as StorageItemType<T>;
+      const dataMap = new Map();
 
-    return data;
+      dataMap.set(key, parsedData as StorageItemType<T>);
+      setStoredData(dataMap);
+
+      return parsedData;
+    } catch {
+      return null;
+    }
   }
 
-  function clearStore() {
+  function set(key: string, data: StorageItemType<string | number>) {
     const store = getStore();
-    if (!store) return false;
 
-    try {
-      setTransactionHash(null);
-      store.removeItem(STORE_KEY);
-      return true;
-    } catch (error) {
-      return false;
-    }
+    store.setItem(`${STORE_KEY}/${key}`, JSON.stringify(data));
+
+    const dataMap = new Map();
+    dataMap.set(key, data);
+    setStoredData(dataMap);
   }
 
   return (
-    <StoreContext.Provider
-      value={{ getTransactionHash, storeTransactionHash, clearStore }}
-    >
+    <StoreContext.Provider value={{ get, set }}>
       {children}
     </StoreContext.Provider>
   );

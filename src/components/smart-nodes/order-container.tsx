@@ -11,26 +11,27 @@ import {
   ORDER_CONTAINER_ID,
   ORDER_REVIEW_BUTTON_ID,
   PHONE_FINAL_LABEL_ID,
+  STORAGE_KEY,
   TOTAL_NODES_LABEL_ID,
   UNIT_NODE_LABEL_ID,
 } from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
 import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
 import { getValueByTier } from "./get-value-by-tier";
+import { useStore } from "../../contexts/use-store";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
-  const [email, setEmail] = useState("");
   const [agreed, setAgreed] = useState(false);
 
   const user = useUser();
+  const store = useStore();
   const { back, searchParams } = useNavigate();
   const amount = Number(searchParams.get("amount"));
   const hasOperationResult = !!searchParams.get("operationResult");
   const bonusType = Number(searchParams.get("bonusType")) || 1;
 
   const { mint, error, loading } = useSmartNodesMint({
-    email,
     referralCode,
     amount,
     bonusType,
@@ -40,10 +41,16 @@ export function OrderContainer() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
     if (!container) return;
 
-    const shouldShow = user && amount > 0 && !hasOperationResult;
+    const storedEmail = store.get(STORAGE_KEY);
+    const shouldShow = user && amount > 0 && !hasOperationResult && storedEmail;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, amount, hasOperationResult]);
+  useEffect(changeContainerVisibility, [
+    user,
+    amount,
+    hasOperationResult,
+    store,
+  ]);
 
   function addBackButtonEvent() {
     if (amount <= 0) return;
@@ -113,10 +120,10 @@ export function OrderContainer() {
   }
   useEffect(handleLabelsValue, [amount]);
 
-  function handleInputEvent(event: Event, index: number) {
+  function handleInputEvent(event: Event) {
     const target = event.target as HTMLInputElement;
 
-    index === 0 ? setReferralCode(target.value) : setEmail(target.value);
+    setReferralCode(target.value);
   }
 
   function blockNativeSubmitEvent(event: KeyboardEvent) {
@@ -124,29 +131,19 @@ export function OrderContainer() {
   }
 
   function addInputEvent() {
-    const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
-      `#${ORDER_CONTAINER_ID} input`
-    );
-    if (inputs.length < 2) return;
+    const container = document.getElementById(ORDER_CONTAINER_ID);
+    if (!container) return;
 
-    inputs.forEach((input, index) => {
-      if (index > 1) return;
+    const inputs = container.getElementsByTagName("input");
+    const input = inputs[0];
+    if (!input) return;
 
-      input.addEventListener("keypress", blockNativeSubmitEvent);
-      input.addEventListener("input", (event) =>
-        handleInputEvent(event, index)
-      );
-    });
+    input.addEventListener("keypress", blockNativeSubmitEvent);
+    input.addEventListener("input", handleInputEvent);
 
     return () => {
-      inputs.forEach((input, index) => {
-        if (index > 1) return;
-
-        input.addEventListener("keypress", blockNativeSubmitEvent);
-        input.removeEventListener("input", (event) =>
-          handleInputEvent(event, index)
-        );
-      });
+      input.removeEventListener("keypress", blockNativeSubmitEvent);
+      input.removeEventListener("input", handleInputEvent);
     };
   }
   useEffect(addInputEvent, []);

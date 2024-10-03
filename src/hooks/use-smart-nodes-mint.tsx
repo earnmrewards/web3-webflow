@@ -13,10 +13,11 @@ import { calculateMintFee } from "../actions/calculate-mint-fee";
 import { storeUserData } from "../actions/store-user-data";
 import { encryptData } from "../utils/encrypt-data";
 import { abi, CONTRACT_ADDRESS } from "../config/contracts/smart-nodes";
+import { useStore } from "../contexts/use-store";
+import { STORAGE_KEY } from "../components/smart-nodes/config";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
-  email: z.string().email(),
   amount: z.number().positive(),
   bonusType: z.number(),
 });
@@ -24,7 +25,6 @@ const mintSchema = z.object({
 type MintType = z.infer<typeof mintSchema>;
 
 export function useSmartNodesMint({
-  email,
   referralCode,
   amount,
   bonusType,
@@ -33,6 +33,7 @@ export function useSmartNodesMint({
   const [error, setError] = useState("");
 
   const user = useUser();
+  const store = useStore();
   const { navigate } = useNavigate();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
@@ -43,7 +44,6 @@ export function useSmartNodesMint({
     setError("");
 
     const { error } = mintSchema.safeParse({
-      email,
       referralCode,
       amount,
       bonusType,
@@ -53,6 +53,10 @@ export function useSmartNodesMint({
       setLoading(false);
       return;
     }
+
+    const storage = store.get<string>(STORAGE_KEY);
+    if (!storage) throw new Error();
+    const { email } = storage;
 
     const params = new URL(window.location.href).searchParams;
     const testFlag = "testSuccessModalOption";
