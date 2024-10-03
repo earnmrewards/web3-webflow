@@ -194,10 +194,13 @@ export function OrderContainer() {
   useEffect(reviewOrderButtonBackgroundHandler, [agreed]);
 
   function showErrorText() {
-    const textLabel = document.getElementById(ERROR_COMPONENT_ID);
-    if (!textLabel) return;
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      document.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    if (textLabels.length === 0) return;
 
-    textLabel.innerText = error;
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
   }
   useEffect(showErrorText, [error]);
 
