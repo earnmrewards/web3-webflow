@@ -34,6 +34,7 @@ jobs:
           VITE_API_SECRET: ${{ secrets.VITE_API_SECRET }}
           VITE_SMART_NODES_CONTRACT_ADDRESS: ${{ secrets.VITE_SMART_NODES_CONTRACT_ADDRESS }}
           VITE_ENVIRONMENT: ${{ secrets.VITE_ENVIRONMENT }}
+          VITE_SMART_NODES_API: ${{ secrets.VITE_SMART_NODES_API }}
         run: npm run build
 
       - name: 📝 Rename build artifacts for staging

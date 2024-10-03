@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_API_SECRET: string;
   readonly VITE_SMART_NODES_CONTRACT_ADDRESS: string;
   readonly VITE_ENVIRONMENT: string;
+  readonly VITE_SMART_NODES_API: string;
 }
 
 interface ImportMeta {

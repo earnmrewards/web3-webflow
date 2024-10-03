@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { isInsideContainer } from "../../utils/is-inside-container";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES, YELLOW_COLOR } from "./config";
+import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "./config";
 import { useNavigate } from "../../contexts/use-navigate";
+import { useStore } from "../../contexts/use-store";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
@@ -12,8 +13,10 @@ const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
 export function ThreeWayContainer() {
   const [amount, setAmount] = useState(1);
+
   const user = useUser();
   const { navigate, searchParams } = useNavigate();
+  const store = useStore();
 
   const queryAmount = Number(searchParams.get("amount"));
   const hasOperationResult = !!searchParams.get("operationResult");
@@ -40,10 +43,17 @@ export function ThreeWayContainer() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
     if (!container) return;
 
-    const shouldShow = user && queryAmount <= 0 && !hasOperationResult;
+    const storedEmail = store.get(STORAGE_KEY);
+    const shouldShow =
+      user && queryAmount <= 0 && !hasOperationResult && storedEmail;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeContainerVisibility, [user, queryAmount, hasOperationResult]);
+  useEffect(changeContainerVisibility, [
+    user,
+    queryAmount,
+    hasOperationResult,
+    store,
+  ]);
 
   function addOptionsButtonEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
@@ -89,7 +99,6 @@ export function ThreeWayContainer() {
     if (!input) return;
 
     input.addEventListener("input", handleInputChange);
-
     return () => {
       input.removeEventListener("input", handleInputChange);
     };
