@@ -23,6 +23,7 @@ import { useStore } from "../../contexts/use-store";
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [price, setPrice] = useState(0);
 
   const user = useUser();
   const store = useStore();
@@ -35,6 +36,7 @@ export function OrderContainer() {
     referralCode,
     amount,
     bonusType,
+    price,
   });
 
   function changeContainerVisibility() {
@@ -75,11 +77,13 @@ export function OrderContainer() {
 
     const priceValue = getValueByTier(tier);
     const unitPriceLabel = document.getElementById(UNIT_NODE_LABEL_ID);
-    if (unitPriceLabel)
+    if (unitPriceLabel) {
       unitPriceLabel.innerText = priceValue.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",
       });
+      setPrice(priceValue);
+    }
 
     const totalPriceLabel = document.getElementById(TOTAL_NODES_LABEL_ID);
     if (!totalPriceLabel) return;

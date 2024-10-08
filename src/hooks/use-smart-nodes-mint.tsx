@@ -20,6 +20,7 @@ const mintSchema = z.object({
   referralCode: z.string().optional(),
   amount: z.number().positive(),
   bonusType: z.number(),
+  price: z.number(),
 });
 
 type MintType = z.infer<typeof mintSchema>;
@@ -28,6 +29,7 @@ export function useSmartNodesMint({
   referralCode,
   amount,
   bonusType,
+  price,
 }: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -47,6 +49,7 @@ export function useSmartNodesMint({
       referralCode,
       amount,
       bonusType,
+      price,
     });
     if (error) {
       setError("Oops! It looks like you didn't fill in the email correctly");
@@ -97,6 +100,8 @@ export function useSmartNodesMint({
         mintTxnHash: hash,
         amount,
         wallet: user.address,
+        price: 200,
+        bonusType,
       });
 
       const operationResult = encryptData({ hash, email });

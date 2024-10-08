@@ -15,6 +15,8 @@ const validUserData = {
   mintTxnHash: "0x123",
   wallet: "0x123",
   amount: 1,
+  price: 100,
+  bonusType: 1,
 };
 
 describe("storeUserData case", () => {

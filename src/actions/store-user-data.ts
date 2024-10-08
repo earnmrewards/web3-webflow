@@ -8,6 +8,8 @@ const requestSchema = z.object({
   mintTxnHash: z.string().trim().max(2048),
   wallet: z.string(),
   amount: z.number().positive(),
+  price: z.number(),
+  bonusType: z.number(),
 });
 
 type RequestType = z.infer<typeof requestSchema>;
@@ -18,7 +20,11 @@ export async function storeUserData(userData: RequestType) {
     throw new InvalidPayloadError();
   }
 
-  const { data: response } = await api.post("/smartnodes", data);
+  try {
+    const { data: response } = await api.post("/smartnodes", data);
 
-  return response;
+    return response;
+  } catch {
+    return null;
+  }
 }
