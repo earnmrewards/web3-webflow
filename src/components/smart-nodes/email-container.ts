@@ -21,6 +21,10 @@ export function EmailContainer() {
   }
   useEffect(changeContainerVisibility, [user, store]);
 
+  function blockNativeSubmitEvent(event: KeyboardEvent) {
+    if (event.key === "Enter") event.preventDefault();
+  }
+
   const handleInput = useCallback((event: Event) => {
     const target = event.target as HTMLInputElement;
 
@@ -35,8 +39,10 @@ export function EmailContainer() {
     const input = inputs[0];
     if (!input) return;
 
+    input.addEventListener("keypress", blockNativeSubmitEvent);
     input.addEventListener("input", handleInput);
     return () => {
+      input.removeEventListener("keypress", blockNativeSubmitEvent);
       input.removeEventListener("input", handleInput);
     };
   }
@@ -74,10 +80,13 @@ export function EmailContainer() {
   useEffect(addSubmitEvent, [handleSubmitEvent]);
 
   function showErrorText() {
-    const textLabel = document.getElementById(ERROR_COMPONENT_ID);
-    if (!textLabel) return;
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      document.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    if (textLabels.length === 0) return;
 
-    textLabel.innerText = error;
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
   }
   useEffect(showErrorText, [error]);
 
