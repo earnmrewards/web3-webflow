@@ -47,7 +47,7 @@ const mockMint = {
 };
 
 const mockStore = {
-  get: vi.fn(() => "test@test.test"),
+  get: vi.fn(() => "test@t.com"),
 };
 
 describe("OrderContainer", () => {

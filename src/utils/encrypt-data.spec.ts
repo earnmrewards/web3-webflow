@@ -3,7 +3,7 @@ import { encryptData } from "./encrypt-data";
 
 describe("encryptData", () => {
   it("should correctly encode data to a base64 string", () => {
-    const data = { email: "test@test.test" };
+    const data = { email: "test@t.com" };
     const jsonData = JSON.stringify(data);
     const expectedBase64 = btoa(jsonData);
 

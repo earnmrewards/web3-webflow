@@ -5,7 +5,7 @@ type Data = { email: string; hash: string };
 
 describe("getEncryptedData", () => {
   it("should correctly decrypt and parse valid encrypted data", () => {
-    const data = { email: "test@test.test", hash: "0x123" };
+    const data = { email: "test@t.com", hash: "0x123" };
     const jsonData = JSON.stringify(data);
     const encryptedData = btoa(jsonData);
 

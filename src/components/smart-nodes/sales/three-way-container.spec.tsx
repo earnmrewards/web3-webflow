@@ -26,7 +26,7 @@ const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
 const mockUser = { address: "0x1234567890abcdef" };
 const mockNavigate = vi.fn();
-const mockStore = { get: vi.fn(() => "test@test.test") };
+const mockStore = { get: vi.fn(() => "test@t.com") };
 
 describe("ThreeWayContainer", () => {
   beforeEach(() => {

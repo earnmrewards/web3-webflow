@@ -50,7 +50,7 @@ describe("EmailContainer", () => {
   });
 
   it("should hide the container if an email is already stored", () => {
-    mockStore.get.mockReturnValue("test@test.test");
+    mockStore.get.mockReturnValue("test@t.com");
 
     render(<EmailContainer />);
 
@@ -70,7 +70,7 @@ describe("EmailContainer", () => {
   });
 
   it("should update the email state on input", () => {
-    const mockEmail = "test@test.test";
+    const mockEmail = "test@t.com";
 
     render(<EmailContainer />);
 
@@ -88,7 +88,7 @@ describe("EmailContainer", () => {
     render(<EmailContainer />);
 
     const input = document.querySelector(`#${EMAIL_CONTAINER_ID} input`);
-    fireEvent.input(input!, { target: { value: "test@test.test" } });
+    fireEvent.input(input!, { target: { value: "test@t.com" } });
 
     const submitButton = document.querySelector(`#${EMAIL_CONTAINER_ID} a`);
     await act(async () => {
@@ -96,11 +96,11 @@ describe("EmailContainer", () => {
     });
 
     expect(emailSubmission).toHaveBeenCalledWith({
-      email: "test@test.test",
+      email: "test@t.com",
       url: window.location.href,
     });
     expect(mockStore.set).toHaveBeenCalledWith(STORAGE_KEY, {
-      email: "test@test.test",
+      email: "test@t.com",
     });
   });
 
@@ -110,7 +110,7 @@ describe("EmailContainer", () => {
     render(<EmailContainer />);
 
     const input = document.querySelector(`#${EMAIL_CONTAINER_ID} input`);
-    fireEvent.input(input!, { target: { value: "invalid@test.test" } });
+    fireEvent.input(input!, { target: { value: "invalid@t.com" } });
 
     const submitButton = document.querySelector(`#${EMAIL_CONTAINER_ID} a`);
     await act(async () => {
@@ -131,7 +131,7 @@ describe("EmailContainer", () => {
     render(<EmailContainer />);
 
     const input = document.querySelector(`#${EMAIL_CONTAINER_ID} input`);
-    fireEvent.input(input!, { target: { value: "invalid@test.test" } });
+    fireEvent.input(input!, { target: { value: "invalid@t.com" } });
 
     const submitButton = document.querySelector(`#${EMAIL_CONTAINER_ID} a`);
     await act(async () => {

@@ -30,7 +30,7 @@ describe("LogInContainer", () => {
   });
 
   it("should show the container when there is a stored email and no user", () => {
-    mockStore.get.mockReturnValue("test@test.test");
+    mockStore.get.mockReturnValue("test@t.com");
 
     render(<LogInContainer />);
 
@@ -40,7 +40,7 @@ describe("LogInContainer", () => {
 
   it("should hide the container when the user is logged in", () => {
     (useUser as Mock).mockReturnValue(mockUser);
-    mockStore.get.mockReturnValue("test@test.test");
+    mockStore.get.mockReturnValue("test@t.com");
 
     render(<LogInContainer />);
 
