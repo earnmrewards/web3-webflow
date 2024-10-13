@@ -1,4 +1,4 @@
-import { SMART_NODES_TIERS_VALUE } from "./config";
+import { SMART_NODES_TIERS_VALUE } from "../config";
 
 export function getValueByTier(tier: string) {
   const availableTiers = Object.keys(SMART_NODES_TIERS_VALUE);

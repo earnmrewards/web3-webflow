@@ -14,11 +14,11 @@ import {
   STORAGE_KEY,
   TOTAL_NODES_LABEL_ID,
   UNIT_NODE_LABEL_ID,
-} from "./config";
-import { useNavigate } from "../../contexts/use-navigate";
-import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
+} from "../config";
+import { useNavigate } from "../../../contexts/use-navigate";
+import { useSmartNodesMint } from "../../../hooks/use-smart-nodes-mint";
 import { getValueByTier } from "./get-value-by-tier";
-import { useStore } from "../../contexts/use-store";
+import { useStore } from "../../../contexts/use-store";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");

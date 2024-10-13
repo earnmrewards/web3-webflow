@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { LOG_IN_CONTAINER_ID, STORAGE_KEY } from "./config";
+import { LOG_IN_CONTAINER_ID, STORAGE_KEY } from "../config";
 import { useUser } from "@account-kit/react";
-import { useStore } from "../../contexts/use-store";
+import { useStore } from "../../../contexts/use-store";
 
 export function LogInContainer() {
   const user = useUser();

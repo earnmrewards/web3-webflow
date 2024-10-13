@@ -3,12 +3,12 @@ import {
   HASH_LABEL_ID,
   SUCCESS_CONTAINER_ID,
   USER_REFERRAL_LABEL_ID,
-} from "./config";
+} from "../config";
 import { useUser } from "@account-kit/react";
-import { useNavigate } from "../../contexts/use-navigate";
+import { useNavigate } from "../../../contexts/use-navigate";
 import { fireEvent, render } from "@testing-library/react";
 import { SuccessContainer } from "./success-container";
-import { shortenAddress } from "../../utils/shorten-address";
+import { shortenAddress } from "../../../utils/shorten-address";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),

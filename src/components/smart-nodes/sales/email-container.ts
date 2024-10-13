@@ -1,8 +1,8 @@
 import { useUser } from "@account-kit/react";
 import { useCallback, useEffect, useState } from "react";
-import { EMAIL_CONTAINER_ID, ERROR_COMPONENT_ID, STORAGE_KEY } from "./config";
-import { useStore } from "../../contexts/use-store";
-import { emailSubmission } from "../../actions/email-submission";
+import { EMAIL_CONTAINER_ID, ERROR_COMPONENT_ID, STORAGE_KEY } from "../config";
+import { useStore } from "../../../contexts/use-store";
+import { emailSubmission } from "../../../actions/email-submission";
 
 export function EmailContainer() {
   const [email, setEmail] = useState("");

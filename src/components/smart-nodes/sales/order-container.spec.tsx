@@ -1,6 +1,6 @@
 import { useUser } from "@account-kit/react";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { useNavigate } from "../../contexts/use-navigate";
+import { useNavigate } from "../../../contexts/use-navigate";
 import { fireEvent, render } from "@testing-library/react";
 import { OrderContainer } from "./order-container";
 import {
@@ -12,8 +12,8 @@ import {
   ORDER_CONTAINER_ID,
   ORDER_REVIEW_BUTTON_ID,
   PHONE_FINAL_LABEL_ID,
-} from "./config";
-import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
+} from "../config";
+import { useSmartNodesMint } from "../../../hooks/use-smart-nodes-mint";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),

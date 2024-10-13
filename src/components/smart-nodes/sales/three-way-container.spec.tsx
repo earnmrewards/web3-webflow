@@ -1,9 +1,9 @@
 import { fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { ThreeWayContainer } from "./three-way-container";
-import { BASE_VALUES } from "./config";
+import { BASE_VALUES } from "../config";
 import { useUser } from "@account-kit/react";
-import { useNavigate } from "../../contexts/use-navigate";
+import { useNavigate } from "../../../contexts/use-navigate";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),

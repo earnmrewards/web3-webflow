@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { LOG_IN_CONTAINER_ID } from "./config";
+import { LOG_IN_CONTAINER_ID } from "../config";
 import { render } from "@testing-library/react";
 import { LogInContainer } from "./log-in-container";
 import { useUser } from "@account-kit/react";
