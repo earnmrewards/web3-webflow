@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../services/api";
+import { api } from "@/services/api";
 import { InvalidReferralCode } from "./errors/invalid-referral-code";
 
 const responseSchema = z.object({
