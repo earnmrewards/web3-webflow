@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "../../../contexts/use-navigate";
+import { useNavigate } from "@/contexts/use-navigate";
 import { useUser } from "@account-kit/react";
 import {
   HASH_LABEL_ID,
   SUCCESS_CONTAINER_ID,
   USER_REFERRAL_LABEL_ID,
 } from "../config";
-import { shortenAddress } from "../../../utils/shorten-address";
-import { getUserReferralCode } from "../../../actions/get-user-referral-code";
-import { getEncryptedData } from "../../../utils/get-encrypted-data";
-import { OperationResultType } from "../../../types";
+import { shortenAddress } from "@/utils/shorten-address";
+import { getUserReferralCode } from "@/actions/get-user-referral-code";
+import { getEncryptedData } from "@/utils/get-encrypted-data";
+import { OperationResultType } from "@/types";
 
 export function SuccessContainer() {
   const { navigate, searchParams } = useNavigate();

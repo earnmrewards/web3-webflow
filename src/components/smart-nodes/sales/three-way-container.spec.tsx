@@ -3,14 +3,19 @@ import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { ThreeWayContainer } from "./three-way-container";
 import { BASE_VALUES } from "../config";
 import { useUser } from "@account-kit/react";
-import { useNavigate } from "../../../contexts/use-navigate";
+import { useNavigate } from "@/contexts/use-navigate";
+import { useStore } from "@/contexts/use-store";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),
 }));
 
-vi.mock("../../contexts/use-navigate", () => ({
+vi.mock("@/contexts/use-navigate", () => ({
   useNavigate: vi.fn(),
+}));
+
+vi.mock("@/contexts/use-store", () => ({
+  useStore: vi.fn(),
 }));
 
 const CONTAINER_COMPONENT_ID = "web3-smart-nodes-selection";
@@ -18,8 +23,10 @@ const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
 const EARN_PHONE_VALUE_ID = "web3-smart-nodes-phone-amount";
 const LOWER_VALUE_ID = "web3-smart-nodes-lower-value";
 const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
+
 const mockUser = { address: "0x1234567890abcdef" };
 const mockNavigate = vi.fn();
+const mockStore = { get: vi.fn(() => "test@test.test") };
 
 describe("ThreeWayContainer", () => {
   beforeEach(() => {
@@ -28,6 +35,7 @@ describe("ThreeWayContainer", () => {
       navigate: mockNavigate,
       searchParams: new URLSearchParams(),
     });
+    (useStore as Mock).mockReturnValue(mockStore);
 
     document.body.innerHTML = `
       <div id="${CONTAINER_COMPONENT_ID}">
@@ -78,6 +86,8 @@ describe("ThreeWayContainer", () => {
   });
 
   it("should update the amount based on user input action", () => {
+    render(<ThreeWayContainer />);
+
     const input = document.querySelector(
       `#${CONTAINER_COMPONENT_ID} input`
     ) as HTMLInputElement;
@@ -133,5 +143,17 @@ describe("ThreeWayContainer", () => {
 
     const container = document.getElementById(CONTAINER_COMPONENT_ID);
     expect(container?.style.display).toBe("none");
+  });
+
+  it("should show container when user is available and queryAmount is 0", () => {
+    (useNavigate as Mock).mockReturnValue({
+      navigate: mockNavigate,
+      searchParams: new URLSearchParams({ amount: "0" }),
+    });
+
+    render(<ThreeWayContainer />);
+
+    const container = document.getElementById(CONTAINER_COMPONENT_ID);
+    expect(container?.style.display).toBe("block");
   });
 });

@@ -5,27 +5,37 @@ import {
   USER_REFERRAL_LABEL_ID,
 } from "../config";
 import { useUser } from "@account-kit/react";
-import { useNavigate } from "../../../contexts/use-navigate";
-import { fireEvent, render } from "@testing-library/react";
+import { useNavigate } from "@/contexts/use-navigate";
+import { shortenAddress } from "@/utils/shorten-address";
+import { getEncryptedData } from "@/utils/get-encrypted-data";
+import { getUserReferralCode } from "@/actions/get-user-referral-code";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import { SuccessContainer } from "./success-container";
-import { shortenAddress } from "../../../utils/shorten-address";
+import { encryptData } from "@/utils/encrypt-data";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),
 }));
 
-vi.mock("../../contexts/use-navigate", () => ({
+vi.mock("@/contexts/use-navigate", () => ({
   useNavigate: vi.fn(),
 }));
 
-vi.mock("../../utils/shorten-address", () => ({
+vi.mock("@/actions/get-user-referral-code", () => ({
+  getUserReferralCode: vi.fn(() => Promise.resolve("ref123")),
+}));
+
+vi.mock("@/utils/shorten-address", () => ({
   shortenAddress: vi.fn(),
 }));
 
-const mockNavigate = {
-  navigate: vi.fn(),
-  searchParams: new URLSearchParams({ hash: "0x123" }),
-};
+vi.mock("@/utils/get-encrypted-data", () => ({
+  getEncryptedData: vi.fn(),
+}));
+
+const mockNavigate = { navigate: vi.fn(), searchParams: new URLSearchParams() };
+const mockUser = { address: "0x123" };
+const mockOperationResult = { hash: "0x123", email: "someEmail" };
 
 describe("SuccessContainer", () => {
   beforeEach(() => {
@@ -40,79 +50,146 @@ describe("SuccessContainer", () => {
       </div>
     `;
 
-    (useUser as Mock).mockReturnValue({ address: "0x123" });
+    (useUser as Mock).mockReturnValue(mockUser);
     (useNavigate as Mock).mockReturnValue(mockNavigate);
     (shortenAddress as Mock).mockImplementation((address) => address);
+    (getEncryptedData as Mock).mockReturnValue({
+      hash: "0x123",
+      email: "someEmail",
+    });
+
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: vi.fn().mockResolvedValue(""),
+      },
+    });
+
+    mockNavigate.searchParams.set(
+      "operationResult",
+      encryptData(mockOperationResult)
+    );
   });
 
-  it("should display the success container if user and hash exist", () => {
-    render(<SuccessContainer />);
+  it("should display the success container when user and operationResult exist", async () => {
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
 
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
     expect(container?.style.display).toBe("block");
   });
 
-  it("should hide the success container if there is no hash", () => {
-    mockNavigate.searchParams.delete("hash");
-    render(<SuccessContainer />);
+  it("should hide the success container if operationResult is missing", async () => {
+    mockNavigate.searchParams.delete("operationResult");
+
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
 
     const container = document.getElementById(SUCCESS_CONTAINER_ID);
     expect(container?.style.display).toBe("none");
   });
 
-  it("should update the hash label and referral label", () => {
-    mockNavigate.searchParams.set("hash", "0x123");
-    render(<SuccessContainer />);
+  it("should fetch and display the referral code", async () => {
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
 
-    const hashLabel = document.getElementById(HASH_LABEL_ID);
     const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
 
-    expect(hashLabel?.innerText).toBe("0x123");
-    expect(referralLabel?.innerText).toBe("Coming Soon");
+    await waitFor(() => {
+      expect(referralLabel?.innerText).toBe("ref123");
+    });
+
+    const { hash, email } = mockOperationResult;
+    expect(getUserReferralCode).toHaveBeenCalledWith(hash, email);
   });
 
-  it("should trigger share button event and open X share intent", () => {
+  it("should copy the referral code to clipboard when clicked", async () => {
+    const writeTextSpy = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue();
+
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
+
+    const referralLabel = document.getElementById(USER_REFERRAL_LABEL_ID);
+    expect(referralLabel).not.toBeNull();
+
+    fireEvent.click(referralLabel!);
+
+    await waitFor(() => {
+      expect(writeTextSpy).toHaveBeenCalledWith("ref123");
+    });
+  });
+
+  it("should open the correct transaction link when the hash is clicked", async () => {
     window.open = vi.fn();
-    render(<SuccessContainer />);
 
-    const shareButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} a`
-    )[0];
-    expect(shareButton).toBeDefined();
-    fireEvent.click(shareButton);
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
 
-    expect(window.open).toHaveBeenCalledWith(
-      expect.stringContaining("https://x.com/intent/tweet"),
-      "_blank"
-    );
+    const hashLabel = document.getElementById(HASH_LABEL_ID);
+    expect(hashLabel).not.toBeNull();
+
+    fireEvent.click(hashLabel!);
+
+    const { hash } = mockOperationResult;
+    const expectedUrl = `https://sepolia.arbiscan.io/tx/${hash}`;
+    expect(window.open).toHaveBeenCalledWith(expectedUrl, "_blank");
   });
 
-  it("should trigger buy more button event and navigate", () => {
-    render(<SuccessContainer />);
+  it("should trigger the share button event correctly", async () => {
+    window.open = vi.fn();
 
-    const buyMoreButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} a`
-    )[1];
-    expect(buyMoreButton).toBeDefined();
-    fireEvent.click(buyMoreButton);
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
+
+    const buttons = document.querySelectorAll(`#${SUCCESS_CONTAINER_ID} a`);
+    expect(buttons.length).toBeGreaterThan(0);
+
+    fireEvent.click(buttons[0]);
+
+    await waitFor(() => {
+      expect(window.open).toHaveBeenCalledWith(
+        expect.stringContaining("https://x.com/intent/post"),
+        "_blank"
+      );
+    });
+  });
+
+  it("should navigate correctly on 'Buy More' button click", async () => {
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
+
+    const buttons = document.querySelectorAll(`#${SUCCESS_CONTAINER_ID} a`);
+    expect(buttons.length).toBeGreaterThan(0);
+
+    fireEvent.click(buttons[1]);
 
     expect(mockNavigate.navigate).toHaveBeenCalledWith({
       query: new URLSearchParams(),
     });
   });
 
-  it("should trigger OpenSea button event and open OpenSea URL", () => {
+  it("should open the OpenSea link on button click", async () => {
     window.open = vi.fn();
-    render(<SuccessContainer />);
 
-    const openSeaButton = document.querySelectorAll(
-      `#${SUCCESS_CONTAINER_ID} a`
-    )[2];
-    expect(openSeaButton).toBeDefined();
-    fireEvent.click(openSeaButton);
+    await act(async () => {
+      render(<SuccessContainer />);
+    });
+
+    const buttons = document.querySelectorAll(`#${SUCCESS_CONTAINER_ID} a`);
+    expect(buttons.length).toBeGreaterThan(0);
+
+    fireEvent.click(buttons[2]);
 
     expect(window.open).toHaveBeenCalledWith(
-      "https://opensea.io/collection/smart-nodes",
+      "https://opensea.io/collection/earnm-smartnodes",
       "_blank"
     );
   });

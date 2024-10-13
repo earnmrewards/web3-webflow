@@ -11,14 +11,14 @@ import {
   ORDER_CONTAINER_ID,
   ORDER_REVIEW_BUTTON_ID,
   PHONE_FINAL_LABEL_ID,
+  SMART_NODES_TIERS_VALUE,
   STORAGE_KEY,
   TOTAL_NODES_LABEL_ID,
   UNIT_NODE_LABEL_ID,
 } from "../config";
-import { useNavigate } from "../../../contexts/use-navigate";
-import { useSmartNodesMint } from "../../../hooks/use-smart-nodes-mint";
-import { getValueByTier } from "./get-value-by-tier";
-import { useStore } from "../../../contexts/use-store";
+import { useNavigate } from "@/contexts/use-navigate";
+import { useSmartNodesMint } from "@/hooks/use-smart-nodes-mint";
+import { useStore } from "@/contexts/use-store";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
@@ -75,7 +75,10 @@ export function OrderContainer() {
       tier = tierLabel.innerText;
     }
 
-    const priceValue = getValueByTier(tier);
+    const availableTiers = Object.keys(SMART_NODES_TIERS_VALUE);
+    const priceKey = !availableTiers.includes(tier) ? availableTiers[0] : tier;
+    const priceValue = SMART_NODES_TIERS_VALUE[priceKey];
+
     const unitPriceLabel = document.getElementById(UNIT_NODE_LABEL_ID);
     if (unitPriceLabel) {
       unitPriceLabel.innerText = priceValue.toLocaleString("en-US", {
