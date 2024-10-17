@@ -8,10 +8,12 @@ import {
 } from "./config";
 import { useSmartNodesPartnerTransfer } from "@/hooks/use-smart-nodes-partner-transfer";
 import { ERROR_COMPONENT_ID, LOADING_COMPONENT_ID } from "../config";
+import { useUser } from "@account-kit/react";
 
 export function OrderContainer() {
   const [selectedAmount, setSelectedAmount] = useState(1);
 
+  const user = useUser();
   const { data, loading: partnerDataLoading } = usePartner();
   const { transfer, loading, error } = useSmartNodesPartnerTransfer({
     amount: selectedAmount,
@@ -22,10 +24,10 @@ export function OrderContainer() {
     if (!container) return;
 
     const shouldShow =
-      !partnerDataLoading && data && data.availableSmartNodes > 0;
+      user && !partnerDataLoading && data && data.availableSmartNodes > 0;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeVisibility, [data, partnerDataLoading]);
+  useEffect(changeVisibility, [user, data, partnerDataLoading]);
 
   function updateAmount() {
     const label = document.getElementById(ORDER_AMOUNT_LABEL_ID);
