@@ -9,9 +9,57 @@
     <div id="root" feature="smart-nodes-partner-sales"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Sold Out -->
-    <div id="web3-smart-nodes-partner-sold-out-container" style="display: none">
-      Sold out!!
+    <div
+      class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
+    >
+      <!-- Loader -->
+      <div id="web3-smart-nodes-partner-loader-container" style="display: none">
+        Loading...
+      </div>
+
+      <!-- Partner Not Found -->
+      <div id="web3-smart-nodes-partner-not-found">Partner not found</div>
+
+      <!-- Sold Out -->
+      <div
+        id="web3-smart-nodes-partner-sold-out-container"
+        style="display: none"
+      >
+        Sold out!!
+      </div>
+
+      <!-- Order -->
+      <div
+        id="web3-smart-nodes-partner-order-container"
+        style="display: none"
+        class="block max-w-[400px] space-y-2 p-4 border bg-zinc-50 rounded"
+      >
+        <span>Order Container</span>
+
+        <div class="flex justify-between items-center gap-2">
+          <span>Available</span>
+          <span id="web3-smart-nodes-partner-available-amount"></span>
+        </div>
+        <div class="flex justify-between items-center gap-2">
+          <span>Bonus</span>
+          <span id="web3-smart-nodes-partner-bonus"></span>
+        </div>
+
+        <label>Amount</label>
+        <input placeholder="3" class="w-full p-1 rounded border" />
+
+        <button
+          id="web3-smart-nodes-partner-purchase-button"
+          class="w-full border rounded hover:shadow-sm"
+        >
+          Purchase
+        </button>
+
+        <span id="web3-error-text" class="text-center"></span>
+        <div id="web3-loading-container" class="hidden text-center">
+          <span>Loading...</span>
+        </div>
+      </div>
     </div>
   </body>
 </html>
