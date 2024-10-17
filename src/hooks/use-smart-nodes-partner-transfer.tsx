@@ -1,4 +1,5 @@
 import { getConversionRate } from "@/actions/get-conversion-rate";
+import { getUserReferralCode } from "@/actions/get-user-referral-code";
 import { purchaseTracker } from "@/actions/purchase-tracker";
 import { STORAGE_KEY } from "@/components/smart-nodes/config";
 import { useNavigate } from "@/contexts/use-navigate";
@@ -130,6 +131,8 @@ export function useSmartNodesPartnerTransfer({
         },
       });
 
+      const userReferralCode = await getUserReferralCode(user.address, email);
+
       const status = await purchaseTracker({
         partnerId,
         transactionHash: hash as string,
@@ -138,6 +141,8 @@ export function useSmartNodesPartnerTransfer({
         quantity: amount,
         bonusPlan: bonusType,
         wallet: user?.address,
+        email,
+        userReferralCode,
       });
 
       const operationResult = encryptData({ hash, email });

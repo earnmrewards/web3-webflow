@@ -8,6 +8,8 @@ const schema = z.object({
   quantity: z.number(),
   bonusPlan: z.number(),
   wallet: z.string(),
+  email: z.string().email(),
+  userReferralCode: z.string(),
 });
 
 type PurchaseTrackerType = z.infer<typeof schema>;
@@ -20,43 +22,30 @@ export async function purchaseTracker({
   quantity,
   bonusPlan,
   wallet,
+  email,
+  userReferralCode,
 }: PurchaseTrackerType) {
   // TODO: Add a way to change the x-api-key in the api service
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data = {
-        partnerId,
-        transactionHash,
-        totalInEth,
-        totalInUsd,
+  const request = await fetch(
+    `${import.meta.env.VITE_SMART_NODES_PARTNER_API}/smartnodes/transaction`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": partnerId,
+      },
+      body: JSON.stringify({
+        transaction_hash: transactionHash,
+        eth_amount: totalInEth,
+        usd_amount: totalInUsd,
         quantity,
-        bonusPlan,
+        bonus_plan: bonusPlan,
         wallet,
-      };
-      console.log({ data });
-      resolve(true);
-    }, 3 * 1000);
-  });
+        email,
+        user_referral_code: userReferralCode,
+      }),
+    }
+  );
 
-  // const request = await fetch(
-  //   `${
-  //     import.meta.env.VITE_SMART_NODES_PARTNER_API
-  //   }/api/v1/smartnodes/transaction`,
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       "x-api-key": partnerId,
-  //     },
-  //     body: JSON.stringify({
-  //       transaction_hash: transactionHash,
-  //       eth_amount: totalInEth,
-  //       usd_amount: totalInUsd,
-  //       quantity,
-  //       bonus_plan,
-  //       wallet,
-  //     }),
-  //   }
-  // );
-
-  // return request.status === 201;
+  return request.status === 201;
 }
