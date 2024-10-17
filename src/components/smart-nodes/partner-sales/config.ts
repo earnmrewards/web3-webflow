@@ -1,3 +1,5 @@
+export const FIXED_SMART_NODES_VALUE = "web3-smart-nodes-partner-fixed-value";
+
 export const NOT_FOUND_CONTAINER_ID = "web3-smart-nodes-partner-not-found";
 export const SOLD_OUT_CONTAINER_ID =
   "web3-smart-nodes-partner-sold-out-container";
