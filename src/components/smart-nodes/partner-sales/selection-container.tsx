@@ -63,7 +63,7 @@ export function SelectionContainer() {
     if (!data) return;
 
     const bonusValue = parseInt(String(amount >= 3 ? amount / 3 : 0));
-    if (amount + bonusValue > data?.maxSmartNodes) {
+    if (amount + bonusValue > data?.availableSmartNodes) {
       return;
     }
 
@@ -81,7 +81,7 @@ export function SelectionContainer() {
     for (const [index, button] of Array.from(buttons).entries()) {
       if (index >= BASE_VALUES.length) continue;
 
-      if (BASE_VALUES[index] > data.maxSmartNodes) {
+      if (BASE_VALUES[index] > data.availableSmartNodes) {
         button.style.display = "none";
       }
     }
