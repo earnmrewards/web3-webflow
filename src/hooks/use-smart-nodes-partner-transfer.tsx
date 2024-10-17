@@ -12,6 +12,7 @@ import {
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
+import { ethers } from "ethers";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -46,6 +47,13 @@ export function useSmartNodesPartnerTransfer({
     }
 
     return true;
+  }
+
+  async function validateNetwork() {
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+    const { chainId } = await provider.getNetwork();
+
+    return chainId === 421614n;
   }
 
   async function transfer(event: Event) {
@@ -96,6 +104,13 @@ export function useSmartNodesPartnerTransfer({
     }
 
     try {
+      const usingRightNetwork = await validateNetwork();
+      if (!usingRightNetwork) {
+        setError(`Oops! Looks like you're using a wrong network`);
+        setLoading(false);
+        return;
+      }
+
       if (!user || !data) throw new Error();
       const { currentPrice, paymentsWallet } = data;
 

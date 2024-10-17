@@ -1,6 +1,11 @@
 import { usePartner } from "@/contexts/use-partner";
 import { useCallback, useEffect, useState } from "react";
-import { ORDER_AMOUNT_LABEL_ID, ORDER_CONTAINER_ID } from "./config";
+import {
+  ORDER_AMOUNT_LABEL_ID,
+  ORDER_CONTAINER_ID,
+  ORDER_TOTAL_COST_ID,
+  ORDER_UNIT_PRICE_ID,
+} from "./config";
 import { useSmartNodesPartnerTransfer } from "@/hooks/use-smart-nodes-partner-transfer";
 import {
   AMOUNT_FINAL_LABEL_ID,
@@ -71,15 +76,34 @@ export function OrderContainer() {
   useEffect(addBackButtonEvent, [amount, back]);
 
   function updateAmount() {
-    const label = document.getElementById(ORDER_AMOUNT_LABEL_ID);
-    if (!label || !data) return;
+    if (!data) return;
 
-    label.innerText = data.availableSmartNodes.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
+    const amountLabel = document.getElementById(ORDER_AMOUNT_LABEL_ID);
+    if (amountLabel) {
+      amountLabel.innerText = data.availableSmartNodes.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+    }
+
+    const unitLabel = document.getElementById(ORDER_UNIT_PRICE_ID);
+    if (unitLabel) {
+      unitLabel.innerText = data.currentPrice.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+    }
+
+    const costLabel = document.getElementById(ORDER_TOTAL_COST_ID);
+    if (costLabel) {
+      const totalCost = amount * data.currentPrice;
+      costLabel.innerText = totalCost.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+    }
   }
-  useEffect(updateAmount, [data]);
+  useEffect(updateAmount, [data, amount]);
 
   function updateBonus() {
     if (amount <= 0) return;

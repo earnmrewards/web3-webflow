@@ -8,3 +8,5 @@ export const ORDER_AMOUNT_LABEL_ID =
   "web3-smart-nodes-partner-available-amount";
 export const ORDER_BONUS_LABEL_ID = "web3-smart-nodes-partner-bonus";
 export const ORDER_BUTTON_ID = "web3-smart-nodes-partner-purchase-button";
+export const ORDER_UNIT_PRICE_ID = "web3-smart-nodes-partner-unit-price";
+export const ORDER_TOTAL_COST_ID = "web3-smart-nodes-partner-total-cost";
