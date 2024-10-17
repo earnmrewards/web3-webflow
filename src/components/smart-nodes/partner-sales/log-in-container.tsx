@@ -3,7 +3,7 @@ import { LOG_IN_CONTAINER_ID } from "../config";
 import { useEffect } from "react";
 import { usePartner } from "@/contexts/use-partner";
 
-export function LogIn() {
+export function LogInContainer() {
   const user = useUser();
   const { data, loading } = usePartner();
 

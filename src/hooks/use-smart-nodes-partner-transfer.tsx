@@ -1,9 +1,12 @@
 import { getConversionRate } from "@/actions/get-conversion-rate";
 import { purchaseTracker } from "@/actions/purchase-tracker";
+import { STORAGE_KEY } from "@/components/smart-nodes/config";
 import { useNavigate } from "@/contexts/use-navigate";
 import { usePartner } from "@/contexts/use-partner";
+import { useStore } from "@/contexts/use-store";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
+import { encryptData } from "@/utils/encrypt-data";
 import {
   useSendUserOperation,
   useSmartAccountClient,
@@ -14,16 +17,21 @@ import { z } from "zod";
 
 const transferSchema = z.object({
   amount: z.number(),
+  bonusType: z.number(),
 });
 
 type TransferType = z.infer<typeof transferSchema>;
 
-export function useSmartNodesPartnerTransfer({ amount }: TransferType) {
+export function useSmartNodesPartnerTransfer({
+  amount,
+  bonusType,
+}: TransferType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const { data } = usePartner();
   const user = useUser();
+  const store = useStore();
   const { navigate } = useNavigate();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
@@ -47,6 +55,7 @@ export function useSmartNodesPartnerTransfer({ amount }: TransferType) {
 
     const { error } = transferSchema.safeParse({
       amount,
+      bonusType,
     });
     if (error) {
       setError("Oops! It looks like you didn't fill in the amount correctly");
@@ -62,13 +71,27 @@ export function useSmartNodesPartnerTransfer({ amount }: TransferType) {
       return;
     }
 
+    const storage = store.get<string>(STORAGE_KEY);
+    if (!storage) {
+      setError("Oops! Error to retrieve your email");
+      setLoading(false);
+      return;
+    }
+    const { email } = storage;
+
     const params = new URL(window.location.href).searchParams;
     const testFlag = "testSuccessModalOption";
     if (params.get(testFlag)) {
       setTimeout(() => {
-        navigate({
-          query: new URLSearchParams({ success: "true" }),
+        const operationResult = encryptData({
+          hash: "0x123456789abcdef",
+          email,
         });
+
+        navigate({
+          query: new URLSearchParams({ operationResult }),
+        });
+        setLoading(false);
       }, 3 * 1000); // 3s
     }
 
@@ -96,9 +119,12 @@ export function useSmartNodesPartnerTransfer({ amount }: TransferType) {
         totalInEth,
         totalInUsd,
         quantity: amount,
-        bonusPlan: 1,
+        bonusPlan: bonusType,
         wallet: user?.address,
       });
+
+      const operationResult = encryptData({ hash, email });
+      navigate({ query: new URLSearchParams({ operationResult }) });
       if (!status) {
         setError(
           "Oops! Looks like an error occurred while trying to complete your purchase."

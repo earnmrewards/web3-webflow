@@ -2,7 +2,7 @@ import { usePartner } from "@/contexts/use-partner";
 import { NOT_FOUND_CONTAINER_ID } from "./config";
 import { useEffect } from "react";
 
-export function NotFound() {
+export function NotFoundContainer() {
   const { data, loading } = usePartner();
 
   function handleVisibility() {

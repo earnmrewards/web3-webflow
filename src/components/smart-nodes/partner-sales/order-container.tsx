@@ -1,95 +1,171 @@
 import { usePartner } from "@/contexts/use-partner";
-import { useEffect, useState } from "react";
-import {
-  ORDER_AMOUNT_LABEL_ID,
-  ORDER_BONUS_LABEL_ID,
-  ORDER_BUTTON_ID,
-  ORDER_CONTAINER_ID,
-} from "./config";
+import { useCallback, useEffect, useState } from "react";
+import { ORDER_AMOUNT_LABEL_ID, ORDER_CONTAINER_ID } from "./config";
 import { useSmartNodesPartnerTransfer } from "@/hooks/use-smart-nodes-partner-transfer";
-import { ERROR_COMPONENT_ID, LOADING_COMPONENT_ID } from "../config";
+import {
+  AMOUNT_FINAL_LABEL_ID,
+  BACK_BUTTON_ID,
+  BASE_VALUES,
+  BONUS_FINAL_LABEL_ID,
+  CHECKBOX_BUTTON_ID,
+  ERROR_COMPONENT_ID,
+  LOADING_COMPONENT_ID,
+  ORDER_REVIEW_BUTTON_ID,
+  PHONE_FINAL_LABEL_ID,
+  STORAGE_KEY,
+} from "../config";
 import { useUser } from "@account-kit/react";
+import { useNavigate } from "@/contexts/use-navigate";
+import { useStore } from "@/contexts/use-store";
 
 export function OrderContainer() {
-  const [selectedAmount, setSelectedAmount] = useState(1);
+  const [agreed, setAgreed] = useState(false);
 
+  const { searchParams } = useNavigate();
+
+  const amount = Number(searchParams.get("amount"));
+  const hasOperationResult = !!searchParams.get("operationResult");
+  const bonusType = Number(searchParams.get("bonusType")) || 1;
+
+  const { back } = useNavigate();
   const user = useUser();
+  const store = useStore();
   const { data, loading: partnerDataLoading } = usePartner();
   const { transfer, loading, error } = useSmartNodesPartnerTransfer({
-    amount: selectedAmount,
+    amount,
+    bonusType,
   });
 
   function changeVisibility() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
     if (!container) return;
 
+    const storedEmail = store.get(STORAGE_KEY);
+    const notSoldOut =
+      !partnerDataLoading && data && data.availableSmartNodes > 0;
     const shouldShow =
-      user && !partnerDataLoading && data && data.availableSmartNodes > 0;
+      user && notSoldOut && amount > 0 && !hasOperationResult && storedEmail;
     container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(changeVisibility, [user, data, partnerDataLoading]);
+  useEffect(changeVisibility, [
+    user,
+    data,
+    partnerDataLoading,
+    hasOperationResult,
+    amount,
+    store,
+  ]);
+
+  function addBackButtonEvent() {
+    if (amount <= 0) return;
+
+    const backButton = document.getElementById(BACK_BUTTON_ID);
+    if (!backButton) return;
+
+    backButton.addEventListener("click", back);
+
+    return () => {
+      backButton.removeEventListener("click", back);
+    };
+  }
+  useEffect(addBackButtonEvent, [amount, back]);
 
   function updateAmount() {
     const label = document.getElementById(ORDER_AMOUNT_LABEL_ID);
-    if (!label) return;
+    if (!label || !data) return;
 
-    label.innerText = String(data?.availableSmartNodes);
+    label.innerText = data.availableSmartNodes.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
   }
   useEffect(updateAmount, [data]);
 
   function updateBonus() {
-    const label = document.getElementById(ORDER_BONUS_LABEL_ID);
-    if (!label) return;
+    if (amount <= 0) return;
 
-    const bonusValue = parseInt(
-      String(selectedAmount >= 3 ? selectedAmount / 3 : 0)
-    );
+    const labels = [
+      {
+        id: AMOUNT_FINAL_LABEL_ID,
+        value: amount,
+      },
+      {
+        id: BONUS_FINAL_LABEL_ID,
+        value: parseInt(
+          String(amount >= BASE_VALUES[1] ? amount / BASE_VALUES[1] : 0)
+        ),
+      },
+      {
+        id: PHONE_FINAL_LABEL_ID,
+        value: amount >= BASE_VALUES[1] ? "Yes" : "No",
+      },
+    ];
 
-    label.innerText = String(bonusValue);
+    for (const { id, value } of labels) {
+      const component = document.getElementById(id);
+      if (!component) continue;
+
+      component.innerText = String(value);
+    }
   }
-  useEffect(updateBonus, [selectedAmount]);
-
-  function handleInputEvent(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const newAmount = Number(target.value);
-    if (isNaN(newAmount)) return;
-
-    setSelectedAmount(newAmount);
-  }
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
+  useEffect(updateBonus, [amount]);
 
   function addInputEvent() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
-    if (!container) return;
+    if (!container || !data) return;
 
     const inputs = container.getElementsByTagName("input");
     const input = inputs[0];
     if (!input) return;
 
-    input.value = "1";
+    input.disabled = true;
+    input.value = data.referralCode;
+  }
+  useEffect(addInputEvent, [data]);
 
-    input.addEventListener("keypress", blockNativeSubmitEvent);
-    input.addEventListener("input", handleInputEvent);
+  function handleCheckboxEvent() {
+    setAgreed((prev) => !prev);
+  }
+
+  function checkboxButtonEvent() {
+    const checkbox = document.getElementById(CHECKBOX_BUTTON_ID);
+    if (!checkbox) return;
+
+    checkbox.addEventListener("click", handleCheckboxEvent);
+
     return () => {
-      input.removeEventListener("keypress", blockNativeSubmitEvent);
-      input.removeEventListener("input", handleInputEvent);
+      checkbox.removeEventListener("click", handleCheckboxEvent);
     };
   }
-  useEffect(addInputEvent, []);
+  useEffect(checkboxButtonEvent, []);
 
-  function handleButton() {
-    const button = document.getElementById(ORDER_BUTTON_ID);
+  const handleReviewButton = useCallback(
+    (event: Event) => {
+      if (!agreed) return;
+      transfer(event);
+    },
+    [transfer, agreed]
+  );
+
+  function reviewOrderButtonEvent() {
+    const button = document.getElementById(ORDER_REVIEW_BUTTON_ID);
     if (!button) return;
 
-    button.addEventListener("click", transfer);
+    button.addEventListener("click", handleReviewButton);
     return () => {
-      button.removeEventListener("click", transfer);
+      button.removeEventListener("click", handleReviewButton);
     };
   }
-  useEffect(handleButton, [transfer]);
+  useEffect(reviewOrderButtonEvent, [handleReviewButton]);
+
+  function reviewOrderButtonBackgroundHandler() {
+    const button = document.getElementById(ORDER_REVIEW_BUTTON_ID);
+    if (!button) return;
+
+    button.style.backgroundColor = agreed ? "#f9fd30" : "#98997D";
+    button.style.cursor = agreed ? "pointer" : "not-allowed";
+  }
+  useEffect(reviewOrderButtonBackgroundHandler, [agreed]);
 
   function showErrorText() {
     const textLabels: NodeListOf<HTMLParagraphElement> =
