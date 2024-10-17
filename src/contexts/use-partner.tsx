@@ -13,6 +13,7 @@ type PartnerData = Awaited<ReturnType<typeof getPartnerData>>;
 interface PartnerContextProps {
   loading: boolean;
   data: PartnerData | null;
+  getPartnerId: () => string | null;
 }
 
 const PartnerContext = createContext({} as PartnerContextProps);
@@ -31,18 +32,25 @@ export function PartnerProvider({ children }: PartnerProviderProps) {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
+  function getPartnerId() {
     const { pathname } = window.location;
     const [partnerId] = pathname.split("/").filter((path) => path.length > 0);
+
+    return partnerId;
+  }
+
+  useEffect(() => {
+    const partnerId = getPartnerId();
     if (!partnerId) return;
 
     setLoading(true);
-    fetchPartnerData("CODE_123");
+    fetchPartnerData(partnerId);
   }, [fetchPartnerData]);
 
   const value: PartnerContextProps = {
     loading,
     data: partnerData,
+    getPartnerId,
   };
 
   return (

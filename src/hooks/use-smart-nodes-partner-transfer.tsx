@@ -30,7 +30,7 @@ export function useSmartNodesPartnerTransfer({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { data } = usePartner();
+  const { data, getPartnerId } = usePartner();
   const user = useUser();
   const store = useStore();
   const { navigate } = useNavigate();
@@ -111,7 +111,9 @@ export function useSmartNodesPartnerTransfer({
         return;
       }
 
-      if (!user || !data) throw new Error();
+      const partnerId = getPartnerId();
+      if (!user || !data || !partnerId) throw new Error();
+
       const { currentPrice, paymentsWallet } = data;
 
       const totalInUsd = currentPrice * amount;
@@ -129,7 +131,7 @@ export function useSmartNodesPartnerTransfer({
       });
 
       const status = await purchaseTracker({
-        partnerId: data.referralCode,
+        partnerId,
         transactionHash: hash as string,
         totalInEth,
         totalInUsd,
