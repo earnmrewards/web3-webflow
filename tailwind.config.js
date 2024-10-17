@@ -3,7 +3,7 @@ import { createColorSet, withAccountKitUi } from "@account-kit/react/tailwind";
 export default withAccountKitUi(
   // /** @type {import('tailwindcss').Config} */
   {
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    content: ["./*.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
       extend: {},
     },

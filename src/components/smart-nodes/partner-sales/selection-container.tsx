@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { isInsideContainer } from "../../utils/is-inside-container";
+import { isInsideContainer } from "../../../utils/is-inside-container";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "./config";
-import { useNavigate } from "../../contexts/use-navigate";
-import { useStore } from "../../contexts/use-store";
+import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "../config";
+import { useNavigate } from "../../../contexts/use-navigate";
+import { useStore } from "../../../contexts/use-store";
+import { usePartner } from "@/contexts/use-partner";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
@@ -11,15 +12,39 @@ const EARN_PHONE_VALUE_ID = "web3-smart-nodes-phone-amount";
 const LOWER_VALUE_ID = "web3-smart-nodes-lower-value";
 const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
-export function ThreeWayContainer() {
+export function SelectionContainer() {
   const [amount, setAmount] = useState(1);
 
   const user = useUser();
   const { navigate, searchParams } = useNavigate();
   const store = useStore();
+  const { data, loading } = usePartner();
 
   const queryAmount = Number(searchParams.get("amount"));
   const hasOperationResult = !!searchParams.get("operationResult");
+
+  function changeContainerVisibility() {
+    const container = document.getElementById(SELECTION_CONTAINER_ID);
+    if (!container) return;
+
+    const storedEmail = store.get(STORAGE_KEY);
+    const hasValidPartner = !loading && data && data.availableSmartNodes > 0;
+    const shouldShow =
+      user &&
+      queryAmount <= 0 &&
+      !hasOperationResult &&
+      storedEmail &&
+      hasValidPartner;
+    container.style.display = shouldShow ? "block" : "none";
+  }
+  useEffect(changeContainerVisibility, [
+    user,
+    queryAmount,
+    hasOperationResult,
+    store,
+    loading,
+    data,
+  ]);
 
   function handleClickOption(index: number) {
     setAmount(BASE_VALUES[index]);
@@ -35,25 +60,33 @@ export function ThreeWayContainer() {
   }
 
   const handleOrderClick = useCallback(() => {
+    if (!data) return;
+
+    const bonusValue = parseInt(String(amount >= 3 ? amount / 3 : 0));
+    if (amount + bonusValue > data?.availableSmartNodes) {
+      return;
+    }
+
     const searchParams = new URLSearchParams({ amount: String(amount) });
     navigate({ query: searchParams });
-  }, [amount, navigate]);
+  }, [amount, navigate, data]);
 
-  function changeContainerVisibility() {
+  function disableOptionButtons() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
-    if (!container) return;
+    if (!container || !data) return;
 
-    const storedEmail = store.get(STORAGE_KEY);
-    const shouldShow =
-      user && queryAmount <= 0 && !hasOperationResult && storedEmail;
-    container.style.display = shouldShow ? "block" : "none";
+    const buttons = container.getElementsByTagName("a");
+    if (buttons.length === 0) return;
+
+    for (const [index, button] of Array.from(buttons).entries()) {
+      if (index >= BASE_VALUES.length) continue;
+
+      if (BASE_VALUES[index] > data.availableSmartNodes) {
+        button.style.display = "none";
+      }
+    }
   }
-  useEffect(changeContainerVisibility, [
-    user,
-    queryAmount,
-    hasOperationResult,
-    store,
-  ]);
+  useEffect(disableOptionButtons, [data]);
 
   function addOptionsButtonEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
@@ -92,7 +125,7 @@ export function ThreeWayContainer() {
 
   function addInputEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
-    if (!container) return;
+    if (!container || !data) return;
 
     const inputs = container.getElementsByTagName("input");
     const input = inputs[0];
@@ -103,7 +136,7 @@ export function ThreeWayContainer() {
       input.removeEventListener("input", handleInputChange);
     };
   }
-  useEffect(addInputEvent, []);
+  useEffect(addInputEvent, [data]);
 
   function blockNativeSubmitEvent(event: KeyboardEvent) {
     if (event.key === "Enter") event.preventDefault();

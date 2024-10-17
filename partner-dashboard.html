@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alchemy Web3 Embed System for Webflow</title>
+  </head>
+  <body>
+    <div id="root" feature="smart-nodes-partner-dashboard"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div
+      id="smartnode-partner-dash"
+      class="w-layout-grid c-section_grid partner-dash"
+    >
+      <div
+        id="wf-form-whitelist-form"
+        class="api-partner-dash-form w-node-_6b01c6b8-49e5-c833-0067-66753baaa50c-e595933f w-form"
+      >
+        <form
+          id="wf-form-referral-code-input"
+          name="wf-form-referral-code-input"
+          data-name="referral-code-input"
+          method="get"
+          class="form-flex-partner-dash"
+          data-wf-page-id="66f4196637410c16e595933f"
+          data-wf-element-id="6b01c6b8-49e5-c833-0067-66753baaa50d"
+          aria-label="referral-code-input"
+        >
+          <div class="field-wrapper-partner-dash">
+            <input
+              class="api-input w-input"
+              maxlength="256"
+              name="field"
+              data-name=""
+              placeholder="Your Referral Code"
+              type="text"
+              id="referral-code-input"
+              required=""
+            />
+          </div>
+          <input
+            type="submit"
+            data-wait="Please wait..."
+            id="referral-submit-button"
+            class="c-button button-partner w-button"
+            value="Show Results  👀"
+          />
+          <div class="captcha-div">
+            <div
+              class="w-form-formrecaptcha recaptcha g-recaptcha g-recaptcha-error g-recaptcha-disabled g-recaptcha-invalid-key"
+            ></div>
+          </div>
+          <input
+            type="submit"
+            data-wait="Please wait..."
+            class="c-button skip-email w-button"
+            value="continue without email"
+          />
+        </form>
+        <div
+          class="success-message-partner-dash w-form-done"
+          tabindex="-1"
+          role="region"
+          aria-label="referral-code-input success"
+        >
+          <div class="div-block-97">
+            <div
+              id="w-node-_24d72ada-2b25-a008-78a1-a4a813a302ec-e595933f"
+              class="div-block-99"
+            >
+              <p class="c-paragraph-1 form-success-mbs-copy partner-dash">
+                Success! <br />
+              </p>
+            </div>
+            <div
+              id="w-node-_05070ac5-c29c-baf8-89bc-394e874c9314-e595933f"
+              class="div-block-98"
+            >
+              <p class="c-paragraph-1 api-success-message question">
+                Having an issue with your referral code? <br />
+              </p>
+              <p class="c-paragraph-1 api-success-message">
+                Please contact your partnership representative or shoot us a
+                message and we'll get it sorted. <br />
+              </p>
+              <a
+                id="mb-codes-link"
+                href="mailto:partnerships@earnm.com?subject=Partnership%20Dashboard%20Inquiry"
+                class="c-button partner-dash-success-button w-button"
+                >partnerships@earnm.com</a
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          id="error-message"
+          class="error-message-partner-dash w-form-fail"
+          tabindex="-1"
+          role="region"
+          aria-label="referral-code-input failure"
+        >
+          <div class="div-error-mbs">
+            Oops! Something went <br />wrong while submitting the form.
+          </div>
+          <p class="error-text-partner">
+            <strong>Referral Code Error </strong> — Contact Your KOL Rep
+          </p>
+        </div>
+      </div>
+      <div
+        id="w-node-_8eaf498a-62ef-35a0-d398-9b7723cceba3-e595933f"
+        class="c-div-partner-dash"
+      >
+        <div
+          id="div-for-codes"
+          class="partner-dash-stats-1 w-node-_8eaf498a-62ef-35a0-d398-9b7723cceba4-e595933f"
+        >
+          <h1 class="partner-stats-heading">Your Code's Results:</h1>
+          <div>
+            <div class="partner-name-div-copy">
+              <p class="paragraph-7-copy">SmartNodes Minted with Your Code</p>
+              <p id="smartnodes-minted" class="paragraph-partner-stat">...</p>
+            </div>
+            <div class="partner-name-div-copy">
+              <p class="paragraph-7-copy">Total Revenue Collected</p>
+              <p id="total-revenue-collected" class="paragraph-partner-stat">
+                ...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

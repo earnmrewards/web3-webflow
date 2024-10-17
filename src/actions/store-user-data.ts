@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { InvalidPayloadError } from "./errors/invalid-payload-error";
-import { api } from "../services/api";
+import { api } from "@/services/api";
 
 const requestSchema = z.object({
   referralCode: z.string().optional(),
