@@ -8,9 +8,11 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
 dist-ssr
 *.local
+
+dist/assets
+dist/*.html
 
 # Tests
 tests/coverage
