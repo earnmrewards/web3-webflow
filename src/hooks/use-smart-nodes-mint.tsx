@@ -81,6 +81,8 @@ export function useSmartNodesMint({
     try {
       if (!user) throw new Error();
 
+      // TODO: Add a network check validator
+
       const mintFeeWei = await calculateMintFee(amount);
       const { hash } = await sendUserOperationAsync({
         uo: {

@@ -13,7 +13,6 @@ export function LogInContainer() {
 
     const storedEmail = store.get(STORAGE_KEY);
     const shouldShow = !user && !!storedEmail;
-    console.log(shouldShow, storedEmail);
     container.style.display = shouldShow ? "block" : "none";
   }
   useEffect(changeVisibility, [user, store]);

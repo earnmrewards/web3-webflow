@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react";
-import { SOLD_OUT_CONTAINER_ID } from "./config";
-import { getPartnerData } from "@/actions/get-partner-data";
+import { useEffect } from "react";
+import { LOADER_CONTAINER_ID, SOLD_OUT_CONTAINER_ID } from "./config";
+import { usePartner } from "@/contexts/use-partner";
 
 export function SoldOutContainer() {
-  const [hasAvailableSN, setHasAvailableSN] = useState(true);
-  // TODO: Add a loader container
-
-  function fetchPartnerData() {
-    const [partnerId] = window.location.pathname
-      .split("/")
-      .filter((path) => path.length > 0);
-    if (!partnerId) return;
-
-    (async () => {
-      const data = await getPartnerData(partnerId);
-      setHasAvailableSN(data.remainingAmount > 0);
-    })();
-  }
-  useEffect(fetchPartnerData, []);
+  const { data, loading } = usePartner();
 
   function handleVisibility() {
     const container = document.getElementById(SOLD_OUT_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = !hasAvailableSN ? "block" : "none";
+    const shouldShow = !loading && data && data.availableSmartNodes <= 0;
+    container.style.display = shouldShow ? "block" : "none";
   }
-  useEffect(handleVisibility, [hasAvailableSN]);
+  useEffect(handleVisibility, [data, loading]);
+
+  function handleLoaderVisibility() {
+    const container = document.getElementById(LOADER_CONTAINER_ID);
+    if (!container) return;
+
+    container.style.display = loading ? "block" : "none";
+  }
+  useEffect(handleLoaderVisibility, [loading]);
 
   return null;
 }
