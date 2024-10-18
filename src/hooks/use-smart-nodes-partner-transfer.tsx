@@ -19,14 +19,14 @@ import { z } from "zod";
 
 const transferSchema = z.object({
   amount: z.number(),
-  bonusType: z.number(),
+  bonusPlan: z.number(),
 });
 
 type TransferType = z.infer<typeof transferSchema>;
 
 export function useSmartNodesPartnerTransfer({
   amount,
-  bonusType,
+  bonusPlan,
 }: TransferType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,7 +64,7 @@ export function useSmartNodesPartnerTransfer({
 
     const { error } = transferSchema.safeParse({
       amount,
-      bonusType,
+      bonusPlan,
     });
     if (error) {
       setError("Oops! It looks like you didn't fill in the amount correctly");
@@ -139,7 +139,7 @@ export function useSmartNodesPartnerTransfer({
         totalInEth,
         totalInUsd,
         quantity: amount,
-        bonusPlan: bonusType,
+        bonusPlan,
         wallet: user?.address,
         email,
         userReferralCode,

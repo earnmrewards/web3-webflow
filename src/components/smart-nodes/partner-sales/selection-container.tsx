@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { isInsideContainer } from "../../../utils/is-inside-container";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "../config";
+import {
+  BASE_VALUES,
+  BONUS_PLAN_VALUES,
+  STORAGE_KEY,
+  YELLOW_COLOR,
+} from "../config";
 import { useNavigate } from "../../../contexts/use-navigate";
 import { useStore } from "../../../contexts/use-store";
 import { usePartner } from "@/contexts/use-partner";
@@ -22,6 +27,7 @@ export function SelectionContainer() {
 
   const queryAmount = Number(searchParams.get("amount"));
   const hasOperationResult = !!searchParams.get("operationResult");
+  const bonusPlan = Number(searchParams.get("bonusPlan")) || 1;
 
   function changeContainerVisibility() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
@@ -46,9 +52,12 @@ export function SelectionContainer() {
     data,
   ]);
 
-  function handleClickOption(index: number) {
-    setAmount(BASE_VALUES[index]);
-  }
+  const handleClickOption = useCallback(
+    (index: number) => {
+      setAmount(BONUS_PLAN_VALUES[bonusPlan][index]);
+    },
+    [bonusPlan]
+  );
 
   function handleInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -99,6 +108,24 @@ export function SelectionContainer() {
       if (index >= BASE_VALUES.length) continue;
 
       button.addEventListener("click", () => handleClickOption(index));
+
+      if (bonusPlan === 2) {
+        const bolderNumber = button.querySelector(
+          `.bolder-smartnode-number`
+        ) as HTMLElement;
+        if (!bolderNumber) return;
+
+        const planValue: Record<string, string> = {
+          three: "four",
+          six: "eight",
+        };
+
+        Object.keys(planValue).forEach((key) => {
+          if (button.innerText.toLowerCase().includes(key)) {
+            bolderNumber.innerText = planValue[key].toUpperCase();
+          }
+        });
+      }
     }
 
     return () => {
@@ -109,7 +136,7 @@ export function SelectionContainer() {
       }
     };
   }
-  useEffect(addOptionsButtonEvent, []);
+  useEffect(addOptionsButtonEvent, [bonusPlan, handleClickOption]);
 
   function updateInputValueByAmount() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
@@ -179,7 +206,7 @@ export function SelectionContainer() {
     ];
 
     for (const { baseValueIndex, componentId, value, text } of bonuses) {
-      const canShow = amount >= BASE_VALUES[baseValueIndex];
+      const canShow = amount >= BONUS_PLAN_VALUES[bonusPlan][baseValueIndex];
       const component = document.getElementById(componentId);
 
       if (component && isInsideContainer(SELECTION_CONTAINER_ID, componentId)) {
@@ -189,7 +216,25 @@ export function SelectionContainer() {
         const yellowLabel = document.createElement("strong");
         let yellowAmount = value;
         if (!yellowAmount) {
-          yellowAmount = `+${parseInt(String(amount / BASE_VALUES[1]))}`;
+          let bonusValue = 0;
+          if (bonusPlan === 1) {
+            if (amount >= 9) {
+              bonusValue = BASE_VALUES[1];
+            } else {
+              bonusValue = parseInt(
+                String(amount / BONUS_PLAN_VALUES[bonusPlan][1])
+              );
+            }
+            // TODO: Improve to a more generic rule
+          } else if (bonusPlan === 2) {
+            if (amount >= 8) {
+              bonusValue = BONUS_PLAN_VALUES[bonusPlan][1];
+            } else if (amount >= 4) {
+              bonusValue = BONUS_PLAN_VALUES[bonusPlan][1] / 2;
+            }
+          }
+
+          yellowAmount = `+${bonusValue}`;
         }
 
         yellowLabel.innerText = yellowAmount;
@@ -199,7 +244,7 @@ export function SelectionContainer() {
       }
     }
   }
-  useEffect(handleBonusesVisibility, [amount]);
+  useEffect(handleBonusesVisibility, [amount, bonusPlan]);
 
   function addReviewButtonEvent() {
     const reviewButton = document.getElementById(REVIEW_BUTTON_ID);

@@ -1,5 +1,9 @@
 // Constants
 export const BASE_VALUES = [1, 3, 6];
+export const BONUS_PLAN_VALUES: Record<number, number[]> = {
+  1: BASE_VALUES,
+  2: [1, 4, 8],
+};
 export const YELLOW_COLOR = "#f9fd30";
 export const STORAGE_KEY = "smart-nodes";
 
