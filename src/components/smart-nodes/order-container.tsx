@@ -23,7 +23,6 @@ import { useStore } from "../../contexts/use-store";
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
   const [agreed, setAgreed] = useState(false);
-  const [price, setPrice] = useState(0);
 
   const user = useUser();
   const store = useStore();
@@ -36,7 +35,6 @@ export function OrderContainer() {
     referralCode,
     amount,
     bonusType,
-    price,
   });
 
   function changeContainerVisibility() {
@@ -82,7 +80,6 @@ export function OrderContainer() {
         style: "currency",
         currency: "USD",
       });
-      setPrice(priceValue);
     }
 
     const totalPriceLabel = document.getElementById(TOTAL_NODES_LABEL_ID);
