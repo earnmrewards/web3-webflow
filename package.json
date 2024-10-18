@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
+    "dev:sales": "vite --mode sales --port 3000",
+    "dev:partner-dashboard": "vite --mode partner-dashboard --port 3000",
+    "dev:partner-sales": "vite --mode partner-sales --port 3000",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",

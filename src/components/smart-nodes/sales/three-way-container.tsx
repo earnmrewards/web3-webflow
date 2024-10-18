@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { isInsideContainer } from "../../utils/is-inside-container";
+import { isInsideContainer } from "../../../utils/is-inside-container";
 import { useUser } from "@account-kit/react";
-import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "./config";
-import { useNavigate } from "../../contexts/use-navigate";
-import { useStore } from "../../contexts/use-store";
+import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "../config";
+import { useNavigate } from "../../../contexts/use-navigate";
+import { useStore } from "../../../contexts/use-store";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";

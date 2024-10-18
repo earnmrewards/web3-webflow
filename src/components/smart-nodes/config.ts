@@ -1,7 +1,16 @@
 // Constants
 export const BASE_VALUES = [1, 3, 6];
+export const BONUS_PLAN_VALUES: Record<number, number[]> = {
+  1: BASE_VALUES,
+  2: [1, 4, 8],
+};
 export const YELLOW_COLOR = "#f9fd30";
 export const STORAGE_KEY = "smart-nodes";
+
+// Features Keys
+export const SMART_NODES_SALES_FEATURE_ID = "smart-nodes-sales";
+export const SMART_NODES_PARTNER_DASHBOARD_ID = "smart-nodes-partner-dashboard";
+export const SMART_NODES_PARTNER_SALES_ID = "smart-nodes-partner-sales";
 
 // Generic Components
 export const ERROR_COMPONENT_ID = "web3-error-text";

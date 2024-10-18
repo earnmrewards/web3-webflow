@@ -8,6 +8,7 @@ interface Response<T> {
 const APIs = {
   TOOLKIT: import.meta.env.VITE_API_BASE_URL,
   SMART_NODES: import.meta.env.VITE_SMART_NODES_API,
+  SN_PARTNER: import.meta.env.VITE_SMART_NODES_PARTNER_API,
 } as const;
 
 interface FetcherData {

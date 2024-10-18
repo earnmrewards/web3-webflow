@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alchemy Web3 Embed System for Webflow</title>
+  </head>
+  <body>
+    <div id="root" feature="smart-nodes-sales"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  
+    <div
+      class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
+    >
+      <div class="flex gap-2">
+        <span>Address:</span>
+        <span id="web3-user-address"></span>
+      </div>
+
+      <div id="web3-smart-nodes-email-container" class="block space-y-2 p-4 border bg-zinc-50 rounded">
+        Email Container
+
+        <input class="w-full p-1 border rounded" placeholder="E-mail" />
+
+        <a class="w-full inline-block text-center border rounded cursor-pointer hover:shadow-sm">Submit</a>
+      </div>
+
+      <div id="web3-smart-nodes-log-in-container" class="block space-y-2 p-4 border bg-zinc-50 rounded">
+        Log In Container
+      </div>
+    
+      <div
+        id="web3-smart-nodes-selection"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded"
+        style="display: none"
+      >
+        <div class="w-full space-y-1">
+          <a href="#" class="p-1 inline-block text-center w-full border rounded cursor-pointer">One SmartNode</a>
+          <a href="#" class="p-1 inline-block text-center w-full border rounded cursor-pointer">Three SmartNodes</a>
+          <a class="p-1 inline-block text-center w-full border rounded cursor-pointer">Six SmartNodes</a>
+        </div>
+
+        <label>Enter Quantity:</label>
+        <input class="w-full p-1 border rounded"/>
+
+        <span id="web3-smart-nodes-amount">+2 Free SmartNodes</span>
+        <span id="web3-smart-nodes-phone-amount">+1 Free EarnPhone</span>
+        <span id="web3-smart-nodes-lower-value">25% Lower FDV</span>
+
+        <a id="web3-smart-nodes-review-button" class="w-full inline-block text-center border rounded cursor-pointer hover:shadow-sm">Review Order</a>
+      </div>
+
+      <div
+        id="web3-smart-nodes-order"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded"
+        style="display: none"
+      >
+        <a id="web3-smart-nodes-navigate-back" class="p-1 border rounded cursor-pointer">X</a>
+
+        <div class="flex justify-between items-center gap-2">
+          <span>Quantity</span>
+          <span id="web3-smart-nodes-final-amount">1</span>
+        </div>
+
+        <div
+          id="web3-smart-nodes-amount"
+          class="flex justify-between items-center gap-2"
+        >
+          <span>Bonus SmartNodes</span>
+          <span id="web3-smart-nodes-final-bonus">1</span>
+        </div>
+
+        <div
+          id="web3-smart-nodes-phone-amount"
+          class="flex justify-between items-center gap-2"
+        >
+          <span>Free EarnPhone</span>
+          <span id="web3-smart-nodes-final-phone">1</span>
+        </div>
+
+        <label>Referral Code</label>
+        <input placeholder="referral code"/>
+
+        <input type="checkbox" id="smartnode-checkbox" name="checkbox" data-name="Checkbox">
+
+        <button id="web3-smart-nodes-order-review-button" class="w-full border rounded hover:shadow-sm">Order</button>
+      </div>
+
+      <div 
+        id="web3-smart-nodes-success-container" 
+        class="flex flex-col space-y-2 p-4 border bg-zinc-50 rounded"
+        style="display: none"
+      >
+        <div class="w-full flex justify-between">
+          <span>Transaction Hash</span>
+          <span id="web3-smart-nodes-transaction-hash"></span>
+        </div>
+
+        <div class="w-full flex justify-between">
+          <span>Referral Code</span>
+          <span id="web3-smart-nodes-referral-code"></span>
+        </div>
+
+        <div class="w-full space-y-2">
+          <a class="p-1 inline-block text-center w-full border rounded hover:shadow-sm cursor-pointer">Share Your Referral Code</a>
+          <a class="p-1 inline-block text-center w-full border rounded hover:shadow-sm cursor-pointer">Buy More SmartNodes</a>
+          <a class="p-1 inline-block text-center w-full border rounded hover:shadow-sm cursor-pointer">Your SmartNodes On OpenSea</a>
+        </div>
+      </div>
+
+      <span id="web3-error-text"></span>
+      <div id="web3-loading-container" class="hidden">
+        <span>Loading...</span>
+      </div>
+
+      <div class="flex gap-2">
+        <button
+          class="px-2 py-1 rounded bg-white shadow border"
+          id="web3-auth-modal-button"
+        >
+          Open Auth Modal
+        </button>
+        <p
+          class="px-2 py-1 rounded bg-white shadow border"
+          id="web3-logout-button"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

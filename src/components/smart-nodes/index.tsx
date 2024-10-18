@@ -1,19 +1,19 @@
-import { EmailContainer } from "./email-container";
-import { LogInContainer } from "./log-in-container";
-import { OrderContainer } from "./order-container";
+import { validateFeature } from "@/utils/validate-feature";
 import { PartnerDashboard } from "./partner-dashboard";
-import { SuccessContainer } from "./success-container";
-import { ThreeWayContainer } from "./three-way-container";
+import { PartnerSales } from "./partner-sales";
+import { Sales } from "./sales";
 
 export function SmartNodesComponents() {
-  return (
-    <>
-      <EmailContainer />
-      <LogInContainer />
-      <ThreeWayContainer />
-      <OrderContainer />
-      <SuccessContainer />
-      <PartnerDashboard />
-    </>
-  );
+  const features = [Sales, PartnerDashboard, PartnerSales];
+  const availableComponents: typeof features = [];
+
+  features.forEach((component) => {
+    if (validateFeature(component.featureId)) {
+      availableComponents.push(component);
+    }
+  });
+
+  return availableComponents.map((Component, index) => (
+    <Component key={index} />
+  ));
 }

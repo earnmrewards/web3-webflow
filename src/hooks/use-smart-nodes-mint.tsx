@@ -14,8 +14,10 @@ import { storeUserData } from "../actions/store-user-data";
 import { encryptData } from "../utils/encrypt-data";
 import { abi, CONTRACT_ADDRESS } from "../config/contracts/smart-nodes";
 import { useStore } from "../contexts/use-store";
-import { STORAGE_KEY } from "../components/smart-nodes/config";
-import { getValueByTier } from "../components/smart-nodes/get-value-by-tier";
+import {
+  SMART_NODES_TIERS_VALUE,
+  STORAGE_KEY,
+} from "../components/smart-nodes/config";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
@@ -46,8 +48,11 @@ export function useSmartNodesMint({
       tier = tierLabel.innerText;
     }
 
-    const unitPrice = getValueByTier(tier);
-    return unitPrice;
+    const availableTiers = Object.keys(SMART_NODES_TIERS_VALUE);
+    const priceKey = !availableTiers.includes(tier) ? availableTiers[0] : tier;
+    const priceValue = SMART_NODES_TIERS_VALUE[priceKey];
+
+    return priceValue;
   }
 
   async function mint(event: Event) {
@@ -89,6 +94,8 @@ export function useSmartNodesMint({
 
     try {
       if (!user) throw new Error();
+
+      // TODO: Add a network check validator
 
       const mintFeeWei = await calculateMintFee(amount);
       const { hash } = await sendUserOperationAsync({
