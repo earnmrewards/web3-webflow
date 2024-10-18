@@ -4,6 +4,7 @@ import { useUser } from "@account-kit/react";
 import {
   BASE_VALUES,
   BONUS_PLAN_VALUES,
+  ERROR_COMPONENT_ID,
   STORAGE_KEY,
   YELLOW_COLOR,
 } from "../config";
@@ -19,6 +20,7 @@ const REVIEW_BUTTON_ID = "web3-smart-nodes-review-button";
 
 export function SelectionContainer() {
   const [amount, setAmount] = useState(1);
+  const [error, setError] = useState("");
 
   const user = useUser();
   const { navigate, searchParams } = useNavigate();
@@ -73,6 +75,9 @@ export function SelectionContainer() {
 
     const bonusValue = parseInt(String(amount >= 3 ? amount / 3 : 0));
     if (amount + bonusValue > data?.availableSmartNodes) {
+      setError(
+        `Oops! It looks like we don't have enough SmartNodes to complete your purchase`
+      );
       return;
     }
 
@@ -110,6 +115,16 @@ export function SelectionContainer() {
       button.addEventListener("click", () => handleClickOption(index));
 
       if (bonusPlan === 2) {
+        // TODO: Improve to a more generic component
+        const spans = button.querySelectorAll(
+          ".free-things-para"
+        ) as NodeListOf<HTMLSpanElement>;
+        for (const span of spans) {
+          if (span.innerText.includes("+2")) {
+            span.innerText = "+4";
+          }
+        }
+
         const bolderNumber = button.querySelector(
           `.bolder-smartnode-number`
         ) as HTMLElement;
@@ -262,6 +277,17 @@ export function SelectionContainer() {
     };
   }
   useEffect(addReviewButtonEvent, [handleOrderClick]);
+
+  function showErrorText() {
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      document.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    if (textLabels.length === 0) return;
+
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
+  }
+  useEffect(showErrorText, [error]);
 
   return null;
 }
