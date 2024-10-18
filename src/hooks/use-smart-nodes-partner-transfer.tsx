@@ -1,4 +1,5 @@
 import { getConversionRate } from "@/actions/get-conversion-rate";
+import { getPartnerData } from "@/actions/get-partner-data";
 import { getUserReferralCode } from "@/actions/get-user-referral-code";
 import { purchaseTracker } from "@/actions/purchase-tracker";
 import { STORAGE_KEY } from "@/components/smart-nodes/config";
@@ -38,12 +39,15 @@ export function useSmartNodesPartnerTransfer({
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
 
-  function validateAmount() {
-    if (!data) return false;
+  async function validateAmount() {
+    const partnerId = getPartnerId();
+    if (!partnerId) return false;
 
-    const { maxSmartNodes } = data;
+    const validator = await getPartnerData(partnerId);
+    if (!validator) return false;
+
     const bonusValue = parseInt(String(amount >= 3 ? amount / 3 : 0));
-    if (amount + bonusValue > maxSmartNodes) {
+    if (amount + bonusValue > validator.availableSmartNodes) {
       return false;
     }
 
@@ -72,7 +76,8 @@ export function useSmartNodesPartnerTransfer({
       return;
     }
 
-    if (!validateAmount()) {
+    const validAmount = await validateAmount();
+    if (!validAmount) {
       setError(
         "Oops! It looks like you are trying to buy more than we have available."
       );

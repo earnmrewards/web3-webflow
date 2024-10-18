@@ -81,6 +81,7 @@ export function SelectionContainer() {
       return;
     }
 
+    setError("");
     const searchParams = new URLSearchParams({ amount: String(amount) });
     navigate({ query: searchParams });
   }, [amount, navigate, data]);

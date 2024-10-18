@@ -3,6 +3,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 interface NavigateProps {
   path?: string;
   query?: URLSearchParams;
+  redefine?: boolean;
 }
 
 interface NavigateContextProps {
@@ -41,7 +42,7 @@ export function NavigateProvider({ children }: NavigateProviderProps) {
     );
   }
 
-  function navigate({ path, query }: NavigateProps) {
+  function navigate({ path, query, redefine }: NavigateProps) {
     const newUrl = new URL(url.href);
 
     if (path) newUrl.pathname = path;
@@ -52,9 +53,18 @@ export function NavigateProvider({ children }: NavigateProviderProps) {
     }
 
     if (query.size !== 0) {
-      query.forEach((value, key) => {
-        newUrl.searchParams.set(key, value);
-      });
+      if (redefine) {
+        const newQuery = new URLSearchParams();
+        query.forEach((value, key) => {
+          newQuery.set(key, value);
+        });
+
+        newUrl.search = newQuery.toString();
+      } else {
+        query.forEach((value, key) => {
+          newUrl.searchParams.set(key, value);
+        });
+      }
     } else {
       newUrl.search = "";
     }

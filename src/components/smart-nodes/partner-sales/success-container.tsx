@@ -101,7 +101,11 @@ export function SuccessContainer() {
     (event: Event) => {
       event.preventDefault();
 
-      navigate({ query: new URLSearchParams() });
+      const query = new URLSearchParams(window.location.search);
+      query.delete("operationResult");
+      query.delete("amount");
+
+      navigate({ query, redefine: true });
     },
     [navigate]
   );
