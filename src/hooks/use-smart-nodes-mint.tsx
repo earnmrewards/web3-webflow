@@ -15,12 +15,12 @@ import { encryptData } from "../utils/encrypt-data";
 import { abi, CONTRACT_ADDRESS } from "../config/contracts/smart-nodes";
 import { useStore } from "../contexts/use-store";
 import { STORAGE_KEY } from "../components/smart-nodes/config";
+import { getValueByTier } from "../components/smart-nodes/get-value-by-tier";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
   amount: z.number().positive(),
   bonusType: z.number(),
-  price: z.number(),
 });
 
 type MintType = z.infer<typeof mintSchema>;
@@ -29,7 +29,6 @@ export function useSmartNodesMint({
   referralCode,
   amount,
   bonusType,
-  price,
 }: MintType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +39,17 @@ export function useSmartNodesMint({
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
 
+  function getUnitPrice() {
+    const tierLabel = document.querySelector(".tier-letter") as HTMLSpanElement;
+    let tier = "S";
+    if (tierLabel) {
+      tier = tierLabel.innerText;
+    }
+
+    const unitPrice = getValueByTier(tier);
+    return unitPrice;
+  }
+
   async function mint(event: Event) {
     event.preventDefault();
     setLoading(true);
@@ -49,7 +59,6 @@ export function useSmartNodesMint({
       referralCode,
       amount,
       bonusType,
-      price,
     });
     if (error) {
       setError("Oops! It looks like you didn't fill in the email correctly");
@@ -96,13 +105,14 @@ export function useSmartNodesMint({
         },
       });
 
+      const unitPrice = getUnitPrice();
       await storeUserData({
         email,
         referralCode,
         mintTxnHash: hash,
         amount,
         wallet: user.address,
-        price,
+        price: unitPrice,
         bonusType,
       });
 
