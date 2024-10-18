@@ -102,7 +102,7 @@ export function useSmartNodesMint({
         mintTxnHash: hash,
         amount,
         wallet: user.address,
-        price: 200,
+        price,
         bonusType,
       });
 
