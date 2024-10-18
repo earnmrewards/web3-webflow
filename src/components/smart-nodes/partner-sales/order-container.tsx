@@ -30,7 +30,7 @@ export function OrderContainer() {
 
   const amount = Number(searchParams.get("amount"));
   const hasOperationResult = !!searchParams.get("operationResult");
-  const bonusType = Number(searchParams.get("bonusType")) || 1;
+  const bonusPlan = Number(searchParams.get("bonusPlan")) || 1;
 
   const { back } = useNavigate();
   const user = useUser();
@@ -38,7 +38,7 @@ export function OrderContainer() {
   const { data, loading: partnerDataLoading } = usePartner();
   const { transfer, loading, error } = useSmartNodesPartnerTransfer({
     amount,
-    bonusType,
+    bonusPlan,
   });
 
   function changeVisibility() {
@@ -143,6 +143,8 @@ export function OrderContainer() {
     if (!input) return;
 
     input.disabled = true;
+    input.style.backgroundColor = "transparent";
+    input.style.filter = "brightness(.75)";
     input.value = data.referralCode;
   }
   useEffect(addInputEvent, [data]);
