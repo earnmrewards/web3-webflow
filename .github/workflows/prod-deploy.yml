@@ -35,6 +35,7 @@ jobs:
           VITE_SMART_NODES_CONTRACT_ADDRESS: ${{ secrets.VITE_PROD_SMART_NODES_CONTRACT_ADDRESS }}
           VITE_ENVIRONMENT: ${{ secrets.VITE_PROD_ENVIRONMENT }}
           VITE_SMART_NODES_API: ${{ secrets.VITE_PROD_SMART_NODES_API }}
+          VITE_SMART_NODES_PARTNER_API: ${{ secrets.VITE_PROD_SMART_NODES_PARTNER_API }}
         run: npm run build
 
       - name: 🖥️ Upload build artifacts

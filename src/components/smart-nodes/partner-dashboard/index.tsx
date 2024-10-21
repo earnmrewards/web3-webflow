@@ -10,6 +10,7 @@ import {
   SUCCESS_COMPONENT_ID,
 } from "./config";
 import { getDashboardData } from "../../../actions/get-dashboard-data";
+import { SMART_NODES_PARTNER_DASHBOARD_ID } from "../config";
 
 export function PartnerDashboard() {
   const [referralCode, setReferralCode] = useState("");
@@ -119,3 +120,5 @@ export function PartnerDashboard() {
 
   return null;
 }
+
+PartnerDashboard.featureId = SMART_NODES_PARTNER_DASHBOARD_ID;

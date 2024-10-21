@@ -11,7 +11,7 @@ vi.mock("../services/api", () => ({
 
 const validUserData = {
   referralCode: "ABC123",
-  email: "test@test.com",
+  email: "test@t.com",
   mintTxnHash: "0x123",
   wallet: "0x123",
   amount: 1,

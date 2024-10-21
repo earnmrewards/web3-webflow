@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alchemy Web3 Embed System for Webflow</title>
+  </head>
+  <body>
+    <div id="root" feature="smart-nodes-partner-sales"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div
+      class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
+    >
+      <!-- Loader -->
+      <div id="web3-smart-nodes-partner-loader-container" style="display: none">
+        Loading...
+      </div>
+
+      <!-- Partner Not Found -->
+      <div id="web3-smart-nodes-partner-not-found">Partner not found</div>
+
+      <!-- Sold Out -->
+      <div
+        id="web3-smart-nodes-partner-sold-out-container"
+        style="display: none"
+      >
+        Sold out!!
+      </div>
+
+      <!-- Email -->
+      <div
+        id="web3-smart-nodes-email-container"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded"
+      >
+        Email Container
+
+        <input class="w-full p-1 border rounded" placeholder="E-mail" />
+
+        <a
+          class="w-full inline-block text-center border rounded cursor-pointer hover:shadow-sm"
+          >Submit</a
+        >
+      </div>
+
+      <!-- Log In -->
+      <div
+        id="web3-smart-nodes-log-in-container"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded"
+      >
+        Log In Container
+      </div>
+
+      <!-- Selection -->
+      <div
+      id="web3-smart-nodes-selection"
+      class="block space-y-2 p-4 border bg-zinc-50 rounded"
+      style="display: none"
+    >
+      <div class="w-full space-y-1">
+        <a class="p-1 inline-block text-center w-full border rounded cursor-pointer">
+          <strong class="bolder-smartnode-number">One</strong> SmartNode
+        </a>
+        <a class="p-1 inline-block text-center w-full border rounded cursor-pointer">
+          <strong class="bolder-smartnode-number">Three</strong> SmartNodes
+        </a>
+        <a class="p-1 inline-block text-center w-full border rounded cursor-pointer">
+          <strong class="bolder-smartnode-number">Six</strong> SmartNodes
+        </a>
+      </div>
+
+      <label>Enter Quantity:</label>
+      <input class="w-full p-1 border rounded"/>
+
+      <span id="web3-smart-nodes-amount">+2 Free SmartNodes</span>
+      <span id="web3-smart-nodes-phone-amount">+1 Free EarnPhone</span>
+      <span id="web3-smart-nodes-lower-value">25% Lower FDV</span>
+
+      <a id="web3-smart-nodes-review-button" class="w-full inline-block text-center border rounded cursor-pointer hover:shadow-sm">Review Order</a>
+    </div>
+
+      <!-- Order -->
+      <div
+        id="web3-smart-nodes-partner-order-container"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded"
+        style="display: none"
+      >
+        <a
+          id="web3-smart-nodes-navigate-back"
+          class="p-1 border rounded cursor-pointer"
+          >X</a
+        >
+
+        <div class="flex justify-between items-center gap-2">
+          <span>Price per Smart Nodes</span>
+          <span id="web3-smart-nodes-partner-unit-price"></span>
+        </div>
+
+        <div class="flex justify-between items-center gap-2">
+          <span>Quantity</span>
+          <span id="web3-smart-nodes-final-amount">1</span>
+        </div>
+
+        <div
+          id="web3-smart-nodes-amount"
+          class="flex justify-between items-center gap-2"
+        >
+          <span>Bonus SmartNodes</span>
+          <span id="web3-smart-nodes-final-bonus">1</span>
+        </div>
+
+        <div
+          id="web3-smart-nodes-phone-amount"
+          class="flex justify-between items-center gap-2"
+        >
+          <span>Free EarnPhone</span>
+          <span id="web3-smart-nodes-final-phone">1</span>
+        </div>
+
+        <div class="flex justify-between items-center gap-2">
+          <span>Total Cost</span>
+          <span id="web3-smart-nodes-partner-total-cost"></span>
+        </div>
+
+        <label>Referral Code</label>
+        <input placeholder="referral code" class="disabled:brightness-75" />
+
+        <input
+          type="checkbox"
+          id="smartnode-checkbox"
+          name="checkbox"
+          data-name="Checkbox"
+        />
+
+        <button
+          id="web3-smart-nodes-order-review-button"
+          class="w-full border rounded hover:shadow-sm"
+        >
+          Order
+        </button>
+
+        <span id="web3-error-text" class="text-center"></span>
+        <div id="web3-loading-container" class="hidden text-center">
+          <span>Loading...</span>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div 
+      id="web3-smart-nodes-success-container" 
+      class="flex flex-col space-y-2 p-4 border bg-zinc-50 rounded"
+      style="display: none"
+    >
+      <div class="w-full flex justify-between">
+        <span>Transaction Hash</span>
+        <span id="web3-smart-nodes-transaction-hash"></span>
+      </div>
+
+      <div class="w-full flex justify-between">
+        <span>Referral Code</span>
+        <span id="web3-smart-nodes-referral-code"></span>
+      </div>
+
+      <div class="w-full space-y-2">
+        <a class="p-1 inline-block text-center w-full border rounded hover:shadow-sm cursor-pointer">Share Your Referral Code</a>
+        <a class="p-1 inline-block text-center w-full border rounded hover:shadow-sm cursor-pointer">Buy More SmartNodes</a>
+      </div>
+    </div>
+
+      <div class="flex gap-2">
+        <button
+          class="px-2 py-1 rounded bg-white shadow border"
+          id="web3-auth-modal-button"
+        >
+          Open Auth Modal
+        </button>
+        <p
+          class="px-2 py-1 rounded bg-white shadow border"
+          id="web3-logout-button"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+    
+  </body>
+</html>

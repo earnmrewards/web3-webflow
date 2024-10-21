@@ -1,30 +1,38 @@
 import { useUser } from "@account-kit/react";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { useNavigate } from "../../contexts/use-navigate";
+import { useNavigate } from "../../../contexts/use-navigate";
 import { fireEvent, render } from "@testing-library/react";
 import { OrderContainer } from "./order-container";
 import {
   AMOUNT_FINAL_LABEL_ID,
   BACK_BUTTON_ID,
   BONUS_FINAL_LABEL_ID,
+  CHECKBOX_BUTTON_ID,
   ERROR_COMPONENT_ID,
   LOADING_COMPONENT_ID,
   ORDER_CONTAINER_ID,
   ORDER_REVIEW_BUTTON_ID,
   PHONE_FINAL_LABEL_ID,
-} from "./config";
-import { useSmartNodesMint } from "../../hooks/use-smart-nodes-mint";
+  TOTAL_NODES_LABEL_ID,
+  UNIT_NODE_LABEL_ID,
+} from "../config";
+import { useSmartNodesMint } from "../../../hooks/use-smart-nodes-mint";
+import { useStore } from "@/contexts/use-store";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),
 }));
 
-vi.mock("../../contexts/use-navigate", () => ({
+vi.mock("@/contexts/use-navigate", () => ({
   useNavigate: vi.fn(),
 }));
 
-vi.mock("../../hooks/use-smart-nodes-mint", () => ({
+vi.mock("@/hooks/use-smart-nodes-mint", () => ({
   useSmartNodesMint: vi.fn(),
+}));
+
+vi.mock("@/contexts/use-store", () => ({
+  useStore: vi.fn(),
 }));
 
 const mockNavigate = {
@@ -38,12 +46,18 @@ const mockMint = {
   loading: false,
 };
 
+const mockStore = {
+  get: vi.fn(() => "test@t.com"),
+};
+
 describe("OrderContainer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     document.body.innerHTML = `
       <div id="${ORDER_CONTAINER_ID}">
         <button id="${BACK_BUTTON_ID}"></button>
+        <span id="${UNIT_NODE_LABEL_ID}"></span>
+        <span id="${TOTAL_NODES_LABEL_ID}"></span>
         <span id="${AMOUNT_FINAL_LABEL_ID}"></span>
         <span id="${BONUS_FINAL_LABEL_ID}"></span>
         <span id="${PHONE_FINAL_LABEL_ID}"></span>
@@ -51,6 +65,7 @@ describe("OrderContainer", () => {
         <input />
         <button id="${ORDER_REVIEW_BUTTON_ID}"></button>
       </div>
+      <div id="${CHECKBOX_BUTTON_ID}"></div>
       <div id="${ERROR_COMPONENT_ID}"></div>
       <div id="${LOADING_COMPONENT_ID}"></div>
     `;
@@ -58,17 +73,18 @@ describe("OrderContainer", () => {
     (useUser as Mock).mockReturnValue({ address: "0x123" });
     (useNavigate as Mock).mockReturnValue(mockNavigate);
     (useSmartNodesMint as Mock).mockReturnValue(mockMint);
+    (useStore as Mock).mockReturnValue(mockStore);
   });
 
-  it("should display the container if user is logged in, amount > 0", () => {
+  it("should display the container if user is logged in and amount > 0", () => {
     render(<OrderContainer />);
 
     const container = document.getElementById(ORDER_CONTAINER_ID);
     expect(container?.style.display).toBe("block");
   });
 
-  it("should hide the container if there is a hash in search params", () => {
-    mockNavigate.searchParams.set("hash", "0x123");
+  it("should hide the container if operationResult exists", () => {
+    mockNavigate.searchParams.set("operationResult", "encryptedData");
     render(<OrderContainer />);
 
     const container = document.getElementById(ORDER_CONTAINER_ID);
@@ -87,10 +103,14 @@ describe("OrderContainer", () => {
   it("should update label values when amount is provided", () => {
     render(<OrderContainer />);
 
+    const unitPriceLabel = document.getElementById(UNIT_NODE_LABEL_ID);
+    const totalPriceLabel = document.getElementById(TOTAL_NODES_LABEL_ID);
     const amountLabel = document.getElementById(AMOUNT_FINAL_LABEL_ID);
     const bonusLabel = document.getElementById(BONUS_FINAL_LABEL_ID);
     const phoneLabel = document.getElementById(PHONE_FINAL_LABEL_ID);
 
+    expect(unitPriceLabel?.innerText).toContain("$150.00");
+    expect(totalPriceLabel?.innerText).toContain("$450.00");
     expect(amountLabel?.innerText).toBe("3");
     expect(bonusLabel?.innerText).toBe("1");
     expect(phoneLabel?.innerText).toBe("Yes");
@@ -113,8 +133,31 @@ describe("OrderContainer", () => {
     expect(emailInput.value).toBe("email");
   });
 
-  it("should handle review order button click", () => {
+  it("should toggle agreement state on checkbox click", () => {
     render(<OrderContainer />);
+
+    const checkbox = document.getElementById(CHECKBOX_BUTTON_ID);
+    fireEvent.click(checkbox!);
+
+    const orderButton = document.getElementById(ORDER_REVIEW_BUTTON_ID);
+
+    expect(orderButton?.style.cursor).toBe("pointer");
+  });
+
+  it("should handle review button background based on agreement state", () => {
+    render(<OrderContainer />);
+
+    const reviewButton = document.getElementById(ORDER_REVIEW_BUTTON_ID);
+    fireEvent.click(document.getElementById(CHECKBOX_BUTTON_ID)!);
+
+    expect(reviewButton?.style.backgroundColor).toBe("rgb(249, 253, 48)");
+  });
+
+  it("should call mint on review button click when agreed", () => {
+    render(<OrderContainer />);
+
+    const checkboxButton = document.getElementById(CHECKBOX_BUTTON_ID);
+    fireEvent.click(checkboxButton!);
 
     const reviewButton = document.getElementById(ORDER_REVIEW_BUTTON_ID);
     fireEvent.click(reviewButton!);
