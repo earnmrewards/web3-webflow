@@ -24,6 +24,7 @@ import { useNavigate } from "@/contexts/use-navigate";
 import { useStore } from "@/contexts/use-store";
 
 export function OrderContainer() {
+  const [referralCode, setReferralCode] = useState("");
   const [agreed, setAgreed] = useState(false);
 
   const { searchParams } = useNavigate();
@@ -37,6 +38,7 @@ export function OrderContainer() {
   const store = useStore();
   const { data, loading: partnerDataLoading } = usePartner();
   const { transfer, loading, error } = useSmartNodesPartnerTransfer({
+    referralCode,
     amount,
     bonusPlan,
   });
@@ -134,6 +136,16 @@ export function OrderContainer() {
   }
   useEffect(updateBonus, [amount]);
 
+  function handleInputEvent(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    setReferralCode(target.value);
+  }
+
+  function blockNativeSubmitEvent(event: KeyboardEvent) {
+    if (event.key === "Enter") event.preventDefault();
+  }
+
   function addInputEvent() {
     const container = document.getElementById(ORDER_CONTAINER_ID);
     if (!container || !data) return;
@@ -142,10 +154,13 @@ export function OrderContainer() {
     const input = inputs[0];
     if (!input) return;
 
-    input.disabled = true;
-    input.style.backgroundColor = "transparent";
-    input.style.filter = "brightness(.75)";
-    input.value = data.referralCode;
+    input.addEventListener("keypress", blockNativeSubmitEvent);
+    input.addEventListener("input", handleInputEvent);
+
+    return () => {
+      input.removeEventListener("keypress", blockNativeSubmitEvent);
+      input.removeEventListener("input", handleInputEvent);
+    };
   }
   useEffect(addInputEvent, [data]);
 

@@ -10,6 +10,7 @@ const schema = z.object({
   wallet: z.string(),
   email: z.string().email(),
   userReferralCode: z.string(),
+  transactionReferralCode: z.string(),
 });
 
 type PurchaseTrackerType = z.infer<typeof schema>;
@@ -24,6 +25,7 @@ export async function purchaseTracker({
   wallet,
   email,
   userReferralCode,
+  transactionReferralCode,
 }: PurchaseTrackerType) {
   // TODO: Add a way to change the x-api-key in the api service
   const request = await fetch(
@@ -43,6 +45,7 @@ export async function purchaseTracker({
         wallet,
         email,
         user_referral_code: userReferralCode,
+        transaction_referral_code: transactionReferralCode,
       }),
     }
   );
