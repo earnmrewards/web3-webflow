@@ -90,7 +90,7 @@ export function SuccessContainer() {
       if (referralCode.length === 0) return;
 
       window.open(
-        `https://x.com/intent/post?text=I%27m+officially+an+%24EARNM+%40SmartN0des+holder%21+%0A%0A%40EARNMrewards+has+8M%2B+connected+wallets+with+%248B%2B+in+connected+assets%2C+and+represents+5%25+of+all+transactions+on+POL%21+%0A%0AUse+my+referral+code+for+a+25%25+bonus%3A+${referralCode}+%0A%0Aearnm.com%2Fsmartnodes`,
+        `https://x.com/intent/post?text=I%27m+officially+an+%24EARNM+%40SmartN0des+holder%21+%0A%0A%40EARNMrewards+has+8M+connected+wallets+with+%248B%2B+in+connected+assets%2C+and+represents+5%25+of+all+transactions+on+POL%21+%0A%0AUse+my+referral+code+for+a+25%25+bonus%3A+${referralCode}+%0A%0Aearnm.com%2Fsmartnodes`,
         "_blank"
       );
     },
