@@ -60,7 +60,10 @@ export function useSmartNodesPartnerTransfer({
     const provider = new ethers.BrowserProvider((window as any).ethereum);
     const { chainId } = await provider.getNetwork();
 
-    return chainId === 421614n;
+    const validChainId =
+      import.meta.env.VITE_ENVIRONMENT === "production" ? 42161n : 421614n;
+
+    return chainId === validChainId;
   }
 
   async function transfer(event: Event) {
