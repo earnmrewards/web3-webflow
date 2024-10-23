@@ -3,12 +3,13 @@ import { api } from "@/services/api";
 interface Request {
   email: string;
   url: string;
+  partnerId?: string;
 }
 
-export async function emailSubmission({ email, url }: Request) {
+export async function emailSubmission({ email, url, partnerId }: Request) {
   try {
     const { status } = await api.post(
-      "/submit",
+      `/submit${partnerId ? `?partner=${partnerId}` : ""}`,
       {
         email,
         url,

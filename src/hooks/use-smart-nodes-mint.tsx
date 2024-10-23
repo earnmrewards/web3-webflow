@@ -18,6 +18,7 @@ import {
   SMART_NODES_TIERS_VALUE,
   STORAGE_KEY,
 } from "../components/smart-nodes/config";
+import { validateNetwork } from "@/utils/validate-network";
 
 const mintSchema = z.object({
   referralCode: z.string().optional(),
@@ -95,7 +96,12 @@ export function useSmartNodesMint({
     try {
       if (!user) throw new Error();
 
-      // TODO: Add a network check validator
+      const usingRightNetwork = await validateNetwork("arbitrum");
+      if (!usingRightNetwork) {
+        setError(`Oops! Looks like you're using a wrong network`);
+        setLoading(false);
+        return;
+      }
 
       const mintFeeWei = await calculateMintFee(amount);
       const { hash } = await sendUserOperationAsync({

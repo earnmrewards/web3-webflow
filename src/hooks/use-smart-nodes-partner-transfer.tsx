@@ -9,12 +9,12 @@ import { useStore } from "@/contexts/use-store";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { encryptData } from "@/utils/encrypt-data";
+import { validateNetwork } from "@/utils/validate-network";
 import {
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
-import { ethers } from "ethers";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -54,16 +54,6 @@ export function useSmartNodesPartnerTransfer({
     }
 
     return true;
-  }
-
-  async function validateNetwork() {
-    const provider = new ethers.BrowserProvider((window as any).ethereum);
-    const { chainId } = await provider.getNetwork();
-
-    const validChainId =
-      import.meta.env.VITE_ENVIRONMENT === "production" ? 42161n : 421614n;
-
-    return chainId === validChainId;
   }
 
   async function transfer(event: Event) {
@@ -116,7 +106,7 @@ export function useSmartNodesPartnerTransfer({
     }
 
     try {
-      const usingRightNetwork = await validateNetwork();
+      const usingRightNetwork = await validateNetwork("arbitrum");
       if (!usingRightNetwork) {
         setError(`Oops! Looks like you're using a wrong network`);
         setLoading(false);

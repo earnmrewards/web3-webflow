@@ -17,7 +17,7 @@ export function EmailContainer() {
 
   const user = useUser();
   const store = useStore();
-  const { data, loading } = usePartner();
+  const { data, loading, getPartnerId } = usePartner();
   const { searchParams } = useNavigate();
 
   const bonusPlan = Number(searchParams.get("bonusPlan")) || 1;
@@ -107,6 +107,7 @@ export function EmailContainer() {
     const response = await emailSubmission({
       email,
       url: window.location.href,
+      partnerId: getPartnerId() || "",
     });
     if (!response) {
       setError("Oops! You must provide a valid email");
@@ -114,7 +115,7 @@ export function EmailContainer() {
     }
 
     store.set(STORAGE_KEY, { email });
-  }, [email, store]);
+  }, [email, store, getPartnerId]);
 
   function addSubmitEvent() {
     const container = document.getElementById(EMAIL_CONTAINER_ID);
