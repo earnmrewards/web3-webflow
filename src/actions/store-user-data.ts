@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { InvalidPayloadError } from "./errors/invalid-payload-error";
 import { api } from "@/services/api";
+import { getUserReferralCode } from "./get-user-referral-code";
 
 const requestSchema = z.object({
   referralCode: z.string().optional(),
@@ -21,7 +22,15 @@ export async function storeUserData(userData: RequestType) {
   }
 
   try {
-    const { data: response } = await api.post("/smartnodes", data);
+    const referralCode = await getUserReferralCode(data.wallet, data.email);
+    if (!referralCode) {
+      throw new Error();
+    }
+
+    const { data: response } = await api.post("/smartnodes", {
+      ...data,
+      userReferralCode: referralCode,
+    });
 
     return response;
   } catch {
