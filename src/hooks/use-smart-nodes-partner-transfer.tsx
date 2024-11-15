@@ -56,6 +56,12 @@ export function useSmartNodesPartnerTransfer({
     return true;
   }
 
+  function preventCloseTab(event: BeforeUnloadEvent) {
+    event.preventDefault();
+    event.returnValue =
+      "Your transfer still in progress, are you sure you want to close?"; // Just for side browsers
+  }
+
   async function transfer(event: Event) {
     event.preventDefault();
     setLoading(true);
@@ -124,6 +130,8 @@ export function useSmartNodesPartnerTransfer({
 
       const weiValue = BigInt(Math.floor(totalInEth * 10 ** 18));
 
+      window.addEventListener("beforeunload", preventCloseTab);
+
       const { hash } = await sendUserOperationAsync({
         uo: {
           target: paymentsWallet as `0x${string}`,
@@ -146,6 +154,8 @@ export function useSmartNodesPartnerTransfer({
         userReferralCode,
         transactionReferralCode: referralCode,
       });
+
+      window.removeEventListener("beforeunload", preventCloseTab);
 
       const operationResult = encryptData({ hash, email });
       navigate({ query: new URLSearchParams({ operationResult }) });
