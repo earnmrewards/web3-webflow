@@ -1,6 +1,6 @@
+import { alchemy, arbitrum, arbitrumSepolia } from "@account-kit/infra";
 import { createConfig } from "@account-kit/react";
 import { QueryClient } from "@tanstack/react-query";
-import { alchemy, arbitrum, arbitrumSepolia } from "@account-kit/infra";
 
 // const uiConfig: AlchemyAccountsUIConfig = {
 //   illustrationStyle: "outline",
@@ -27,7 +27,7 @@ export const config = createConfig(
       import.meta.env.VITE_ENVIRONMENT === "production"
         ? arbitrum
         : arbitrumSepolia,
-    ssr: false,
+    ssr: true,
   },
   {
     auth: {
