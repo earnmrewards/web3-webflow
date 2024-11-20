@@ -30,8 +30,10 @@ export default defineConfig(({ mode }) => {
   const defaultFile = "index.html";
   const files = detectHtmlFiles();
   const htmlFile = files[mode] || defaultFile;
+  const baseURL = process.env.VITE_BASE_URL || "/";
 
   return {
+    base: baseURL,
     plugins: [react()],
     resolve: {
       alias: {
