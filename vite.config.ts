@@ -17,11 +17,18 @@ function detectHtmlFiles() {
   return modes;
 }
 
-const files = detectHtmlFiles();
+function buildFileName(mode: string, ext = "js") {
+  const isStaging = mode !== "production";
+
+  return `plugin-${isStaging ? "staging-" : ""}${
+    process.env.npm_package_version
+  }.${ext}`;
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const defaultFile = "index.html";
+  const files = detectHtmlFiles();
   const htmlFile = files[mode] || defaultFile;
 
   return {
@@ -34,8 +41,8 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
-          entryFileNames: "plugin.js",
-          assetFileNames: "plugin.css",
+          entryFileNames: () => buildFileName(mode),
+          assetFileNames: () => buildFileName(mode, "css"),
           manualChunks: undefined,
         },
       },

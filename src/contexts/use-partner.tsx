@@ -36,8 +36,7 @@ export function PartnerProvider({ children }: PartnerProviderProps) {
     const { pathname } = window.location;
     const [partnerId] = pathname.split("/").filter((path) => path.length > 0);
 
-    // return partnerId;
-    return "wilstage-smartnodes-sale";
+    return partnerId;
   }
 
   useEffect(() => {
