@@ -12,6 +12,7 @@ import { encryptData } from "@/utils/encrypt-data";
 import { validateNetwork } from "@/utils/validate-network";
 import {
   useAlchemyAccountContext,
+  useChain,
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
@@ -39,8 +40,11 @@ export function useSmartNodesPartnerTransfer({
 
   const { data, getPartnerId } = usePartner();
   const user = useUser();
+
   const store = useStore();
   const { navigate } = useNavigate();
+
+  const { chain } = useChain();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
 
@@ -123,7 +127,7 @@ export function useSmartNodesPartnerTransfer({
     }
 
     try {
-      const usingRightNetwork = await validateNetwork("arbitrum");
+      const usingRightNetwork = await validateNetwork("arbitrum", chain.id);
       if (!usingRightNetwork) {
         setError(`Oops! Looks like you're using a wrong network`);
         setLoading(false);
