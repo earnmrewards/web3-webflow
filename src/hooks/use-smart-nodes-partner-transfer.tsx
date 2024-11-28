@@ -11,11 +11,15 @@ import { isRejectedError } from "@/errors/is-rejected-error";
 import { encryptData } from "@/utils/encrypt-data";
 import { validateNetwork } from "@/utils/validate-network";
 import {
+  useAlchemyAccountContext,
+  useChain,
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
 import { useState } from "react";
+import { SwitchChainError } from "viem";
+import { useWalletClient } from "wagmi";
 import { z } from "zod";
 
 const transferSchema = z.object({
@@ -36,10 +40,21 @@ export function useSmartNodesPartnerTransfer({
 
   const { data, getPartnerId } = usePartner();
   const user = useUser();
+
   const store = useStore();
   const { navigate } = useNavigate();
+
+  const { chain } = useChain();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
+
+  // FIXME: Remove after the Alchemy Team fix the WalletConnect network issue
+  const {
+    config: {
+      _internal: { wagmiConfig },
+    },
+  } = useAlchemyAccountContext();
+  useWalletClient({ config: wagmiConfig as any });
 
   async function validateAmount() {
     const partnerId = getPartnerId();
@@ -112,7 +127,7 @@ export function useSmartNodesPartnerTransfer({
     }
 
     try {
-      const usingRightNetwork = await validateNetwork("arbitrum");
+      const usingRightNetwork = await validateNetwork("arbitrum", chain.id);
       if (!usingRightNetwork) {
         setError(`Oops! Looks like you're using a wrong network`);
         setLoading(false);
@@ -155,8 +170,6 @@ export function useSmartNodesPartnerTransfer({
         transactionReferralCode: referralCode,
       });
 
-      window.removeEventListener("beforeunload", preventCloseTab);
-
       const operationResult = encryptData({ hash, email });
       navigate({ query: new URLSearchParams({ operationResult }) });
       if (!status) {
@@ -174,6 +187,10 @@ export function useSmartNodesPartnerTransfer({
         );
       } else if (isRejectedError(error)) {
         setError("Oops! Looks like you rejected the transaction signature.");
+      } else if (error instanceof SwitchChainError) {
+        setError(
+          "Oops! It looks like you are not on the right network, please accept the network change in your wallet and reload the page"
+        );
       } else {
         setError(
           "Oops! Looks like an error occurred while trying to complete your purchase."
@@ -181,6 +198,7 @@ export function useSmartNodesPartnerTransfer({
       }
     } finally {
       setLoading(false);
+      window.removeEventListener("beforeunload", preventCloseTab);
     }
   }
 

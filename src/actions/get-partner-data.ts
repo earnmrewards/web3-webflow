@@ -38,21 +38,4 @@ export async function getPartnerData(
     paymentsWallet: response.payments_wallet,
     referralCode: response.referral_code,
   } as ResponseType;
-
-  // return new Promise((resolve) => {
-  //   setTimeout(() => {
-  //     const data: ResponseType = {
-  //       referralCode: "CODE_123",
-  //       name: "Test Partner",
-  //       maxSmartNodes: 100,
-  //       availableSmartNodes: 10,
-  //       paymentsWallet: "0x5f3122bf7602986e68581a03395E1FcE42536a2D",
-  //       currentPrice: 10,
-  //     };
-
-  //     partnerId;
-
-  //     resolve(data);
-  //   }, 1500);
-  // });
 }

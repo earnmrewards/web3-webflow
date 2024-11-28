@@ -1,16 +1,14 @@
-import { ethers } from "ethers";
-
 const networkId = {
   arbitrum: {
-    mainnet: 42161n,
-    testnet: 421614n,
+    mainnet: 42161,
+    testnet: 421614,
   },
 };
 
-export async function validateNetwork(network: keyof typeof networkId) {
-  const provider = new ethers.BrowserProvider((window as any).ethereum);
-  const { chainId } = await provider.getNetwork();
-
+export async function validateNetwork(
+  network: keyof typeof networkId,
+  chainId: number
+) {
   const { mainnet, testnet } = networkId[network];
   const validChainId =
     import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;

@@ -1,4 +1,5 @@
 import {
+  useChain,
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
@@ -39,6 +40,8 @@ export function useSmartNodesMint({
   const user = useUser();
   const store = useStore();
   const { navigate } = useNavigate();
+
+  const { chain } = useChain();
   const { client } = useSmartAccountClient({ type: "LightAccount" });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
 
@@ -96,7 +99,7 @@ export function useSmartNodesMint({
     try {
       if (!user) throw new Error();
 
-      const usingRightNetwork = await validateNetwork("arbitrum");
+      const usingRightNetwork = await validateNetwork("arbitrum", chain.id);
       if (!usingRightNetwork) {
         setError(`Oops! Looks like you're using a wrong network`);
         setLoading(false);
