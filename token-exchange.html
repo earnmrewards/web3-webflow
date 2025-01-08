@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alchemy Web3 Embed System for Webflow</title>
+  </head>
+  <body>
+    <div id="root" feature="token-exchange"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div
+      class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
+    >
+      <!-- Log In -->
+      <div
+        id="web3-log-in-container"
+        class="block space-y-2 p-4 border bg-zinc-50 rounded text-center"
+      >
+        Log In Container
+        <div class="mt-2 flex gap-2">
+          <button
+            class="px-2 py-1 rounded bg-white shadow border"
+            id="web3-auth-modal-button"
+          >
+            Open Auth Modal
+          </button>
+          <p
+            class="px-2 py-1 rounded bg-white shadow border"
+            id="web3-logout-button"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="web3-exchange-container"
+      class="block space-y-2 p-4 border bg-zinc-50 rounded"
+      style="display: none"
+    >
+      <div id="web3-token-selector">
+        <button>EarnM</button>
+        <button>StormX</button>
+      </div>
+
+      <div>
+        <input id="web3-amount" />
+        <input id="web3-network" />
+      </div>
+
+      <button id="web3-exchange-button">Exchange</button>
+    </div>
+  </body>
+</html>
