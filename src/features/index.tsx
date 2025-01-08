@@ -1,9 +1,9 @@
 import { validateFeature } from "@/utils/validate-feature";
-import { PartnerDashboard } from "./partner-dashboard";
-import { PartnerSales } from "./partner-sales";
-import { Sales } from "./sales";
+import { Sales } from "./smart-nodes/sales";
+import { PartnerDashboard } from "./smart-nodes/partner-dashboard";
+import { PartnerSales } from "./smart-nodes/partner-sales";
 
-export function SmartNodesComponents() {
+export function FeatureComponents() {
   const features = [Sales, PartnerDashboard, PartnerSales];
   const availableComponents: typeof features = [];
 

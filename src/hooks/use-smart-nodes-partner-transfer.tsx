@@ -2,7 +2,7 @@ import { getConversionRate } from "@/actions/get-conversion-rate";
 import { getPartnerData } from "@/actions/get-partner-data";
 import { getUserReferralCode } from "@/actions/get-user-referral-code";
 import { purchaseTracker } from "@/actions/purchase-tracker";
-import { STORAGE_KEY } from "@/components/smart-nodes/config";
+import { STORAGE_KEY } from "@/features/smart-nodes/config";
 import { useNavigate } from "@/contexts/use-navigate";
 import { usePartner } from "@/contexts/use-partner";
 import { useStore } from "@/contexts/use-store";
