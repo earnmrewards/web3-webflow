@@ -18,39 +18,52 @@
         class="block space-y-2 p-4 border bg-zinc-50 rounded text-center"
       >
         Log In Container
-        <div class="mt-2 flex gap-2">
-          <button
-            class="px-2 py-1 rounded bg-white shadow border"
-            id="web3-auth-modal-button"
-          >
-            Open Auth Modal
-          </button>
-          <p
-            class="px-2 py-1 rounded bg-white shadow border"
-            id="web3-logout-button"
-          >
-            Logout
-          </button>
+        <button
+          class="mt-2 px-2 py-1 rounded bg-white shadow border"
+          id="web3-auth-modal-button"
+        >
+          Open Auth Modal
+        </button>
+      </div>
+
+      <div
+        id="web3-exchange-container"
+        class="block space-y-4 p-4 border bg-zinc-50 rounded"
+        style="display: none"
+      >
+        <div
+          id="web3-token-selector"
+          class="w-full flex gap-2 items-center justify-center"
+        >
+          <button class="px-2 rounded transition-colors">EarnM</button>
+          <button class="px-2 rounded transition-colors">StormX</button>
         </div>
-      </div>
-    </div>
 
-    <div
-      id="web3-exchange-container"
-      class="block space-y-2 p-4 border bg-zinc-50 rounded"
-      style="display: none"
-    >
-      <div id="web3-token-selector">
-        <button>EarnM</button>
-        <button>StormX</button>
-      </div>
+        <div>
+          <input
+            placeholder="10"
+            id="web3-amount"
+            class="text-center"
+            type="number"
+          />
 
-      <div>
-        <input id="web3-amount" />
-        <input id="web3-network" />
-      </div>
+          <select name="networks" id="web3-network-selector" disabled>
+            <option value="polygon">POL</option>
+            <option value="arbitrum">ARB</option>
+            <option value="base">BASE</option>
+          </select>
+        </div>
 
-      <button id="web3-exchange-button">Exchange</button>
+        <button id="web3-exchange-button" class="w-full bg-gray-100 rounded">
+          Exchange
+        </button>
+      </div>
+      <button
+        class="px-2 py-1 rounded bg-white shadow border"
+        id="web3-logout-button"
+      >
+        Logout
+      </button>
     </div>
   </body>
 </html>

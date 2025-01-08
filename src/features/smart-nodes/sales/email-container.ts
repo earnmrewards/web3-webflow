@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { EMAIL_CONTAINER_ID, ERROR_COMPONENT_ID, STORAGE_KEY } from "../config";
 import { useStore } from "@/contexts/use-store";
 import { emailSubmission } from "@/actions/email-submission";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 export function EmailContainer() {
   const [email, setEmail] = useState("");
@@ -20,10 +21,6 @@ export function EmailContainer() {
     container.style.display = shouldShow ? "block" : "none";
   }
   useEffect(changeContainerVisibility, [user, store]);
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
 
   const handleInput = useCallback((event: Event) => {
     const target = event.target as HTMLInputElement;

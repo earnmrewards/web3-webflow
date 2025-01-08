@@ -10,6 +10,7 @@ import { useStore } from "@/contexts/use-store";
 import { emailSubmission } from "@/actions/email-submission";
 import { usePartner } from "@/contexts/use-partner";
 import { useNavigate } from "@/contexts/use-navigate";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 export function EmailContainer() {
   const [email, setEmail] = useState("");
@@ -72,10 +73,6 @@ export function EmailContainer() {
     }
   }
   useEffect(addOptionsButtonEvent, [bonusPlan]);
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
 
   const handleInput = useCallback((event: Event) => {
     const target = event.target as HTMLInputElement;

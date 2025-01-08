@@ -4,6 +4,7 @@ import { useUser } from "@account-kit/react";
 import { BASE_VALUES, STORAGE_KEY, YELLOW_COLOR } from "../config";
 import { useNavigate } from "../../../contexts/use-navigate";
 import { useStore } from "../../../contexts/use-store";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
@@ -104,10 +105,6 @@ export function ThreeWayContainer() {
     };
   }
   useEffect(addInputEvent, []);
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
 
   function blockSubmitInputEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);

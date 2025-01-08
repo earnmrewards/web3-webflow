@@ -22,6 +22,7 @@ import {
 import { useUser } from "@account-kit/react";
 import { useNavigate } from "@/contexts/use-navigate";
 import { useStore } from "@/contexts/use-store";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
@@ -140,10 +141,6 @@ export function OrderContainer() {
     const target = event.target as HTMLInputElement;
 
     setReferralCode(target.value);
-  }
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
   }
 
   function addInputEvent() {

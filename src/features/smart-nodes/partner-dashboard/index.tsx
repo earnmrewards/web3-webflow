@@ -11,6 +11,7 @@ import {
 } from "./config";
 import { getDashboardData } from "../../../actions/get-dashboard-data";
 import { SMART_NODES_PARTNER_DASHBOARD_ID } from "../config";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 export function PartnerDashboard() {
   const [referralCode, setReferralCode] = useState("");
@@ -19,10 +20,6 @@ export function PartnerDashboard() {
   const [smartNodes, setSmartNodes] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-
-  function blockNativeTypeEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
 
   const handleReferralCode = useCallback((event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -60,7 +57,7 @@ export function PartnerDashboard() {
     const codeInput = inputs[0];
     const submitInput = inputs[1];
 
-    codeInput.addEventListener("keypress", blockNativeTypeEvent);
+    codeInput.addEventListener("keypress", blockNativeSubmitEvent);
     codeInput.addEventListener("input", handleReferralCode);
     submitInput.addEventListener("click", submitCodeEvent);
 
@@ -69,7 +66,7 @@ export function PartnerDashboard() {
       : FORM_INITIAL_LABEL_VALUE;
 
     return () => {
-      codeInput.removeEventListener("keypress", blockNativeTypeEvent);
+      codeInput.removeEventListener("keypress", blockNativeSubmitEvent);
       codeInput.removeEventListener("input", handleReferralCode);
       submitInput.removeEventListener("click", submitCodeEvent);
     };

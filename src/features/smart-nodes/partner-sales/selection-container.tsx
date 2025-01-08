@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "../../../contexts/use-navigate";
 import { useStore } from "../../../contexts/use-store";
 import { usePartner } from "@/contexts/use-partner";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";
@@ -180,10 +181,6 @@ export function SelectionContainer() {
     };
   }
   useEffect(addInputEvent, [data]);
-
-  function blockNativeSubmitEvent(event: KeyboardEvent) {
-    if (event.key === "Enter") event.preventDefault();
-  }
 
   function blockSubmitInputEvent() {
     const container = document.getElementById(SELECTION_CONTAINER_ID);
