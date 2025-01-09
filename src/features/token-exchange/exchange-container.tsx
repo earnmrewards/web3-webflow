@@ -7,12 +7,15 @@ import {
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
+import { useTokenExchange } from "@/hooks/use-token-exchange";
 
 export function ExchangeContainer() {
   const user = useUser();
   const [selectedToken, setSelectedToken] = useState(0);
   const [selectedNetwork, setSelectedNetwork] = useState("polygon");
   const [amount, setAmount] = useState(0);
+
+  const { trigger } = useTokenExchange();
 
   function containerVisibility() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
@@ -91,7 +94,8 @@ export function ExchangeContainer() {
     const network = selectedToken === 0 ? selectedNetwork : "ethereum";
     const token = selectedToken === 0 ? "earnm" : "stormx";
     console.log({ network, token, amount });
-  }, [selectedNetwork, selectedToken, amount]);
+    trigger();
+  }, [selectedNetwork, selectedToken, amount, trigger]);
 
   function handleExchange() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
