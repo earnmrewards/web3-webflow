@@ -13,7 +13,6 @@ export const SMART_NODES_PARTNER_DASHBOARD_ID = "smart-nodes-partner-dashboard";
 export const SMART_NODES_PARTNER_SALES_ID = "smart-nodes-partner-sales";
 
 // Generic Components
-export const ERROR_COMPONENT_ID = "web3-error-text";
 export const LOADING_COMPONENT_ID = "web3-loading-container";
 
 // Email Container

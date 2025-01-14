@@ -1,11 +1,12 @@
 import { useStore } from "@/contexts/use-store";
 import { useUser } from "@account-kit/react";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { EMAIL_CONTAINER_ID, ERROR_COMPONENT_ID, STORAGE_KEY } from "../config";
+import { EMAIL_CONTAINER_ID, STORAGE_KEY } from "../config";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { EmailContainer } from "./email-container";
 import { emailSubmission } from "@/actions/email-submission";
 import { act } from "react";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),

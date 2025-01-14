@@ -8,14 +8,21 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 import { useTokenExchange } from "@/hooks/use-token-exchange";
+import { NetworkType } from "@/types/network";
+import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function ExchangeContainer() {
   const user = useUser();
   const [selectedToken, setSelectedToken] = useState(0);
-  const [selectedNetwork, setSelectedNetwork] = useState("polygon");
+  const [selectedNetwork, setSelectedNetwork] =
+    useState<NetworkType>("polygon");
   const [amount, setAmount] = useState(0);
 
-  const { trigger } = useTokenExchange();
+  const { trigger, error } = useTokenExchange({
+    network: selectedNetwork,
+    token: selectedToken === 0 ? "earnm" : "stormx",
+    amount,
+  });
 
   function containerVisibility() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
@@ -68,7 +75,7 @@ export function ExchangeContainer() {
   const updateNetwork = useCallback((event: Event) => {
     const target = event.target as HTMLSelectElement;
 
-    setSelectedNetwork(target.value);
+    setSelectedNetwork(target.value as NetworkType);
   }, []);
 
   function handleSelectorInteraction() {
@@ -90,13 +97,6 @@ export function ExchangeContainer() {
   }
   useEffect(handleSelectorInteraction, [selectedToken, updateNetwork]);
 
-  const exchangeToken = useCallback(() => {
-    const network = selectedToken === 0 ? selectedNetwork : "ethereum";
-    const token = selectedToken === 0 ? "earnm" : "stormx";
-    console.log({ network, token, amount });
-    trigger();
-  }, [selectedNetwork, selectedToken, amount, trigger]);
-
   function handleExchange() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
@@ -104,13 +104,13 @@ export function ExchangeContainer() {
     const button = container.querySelector(`#${EXCHANGE_BUTTON_COMPONENT_ID}`);
     if (!button) return;
 
-    button.addEventListener("click", exchangeToken);
+    button.addEventListener("click", trigger);
 
     return () => {
-      button.removeEventListener("click", exchangeToken);
+      button.removeEventListener("click", trigger);
     };
   }
-  useEffect(handleExchange, [exchangeToken]);
+  useEffect(handleExchange, [trigger]);
 
   function handleInputEvent(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -136,6 +136,17 @@ export function ExchangeContainer() {
     };
   }
   useEffect(addInputEvent, []);
+
+  function showErrorText() {
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      document.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    if (textLabels.length === 0) return;
+
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
+  }
+  useEffect(showErrorText, [error]);
 
   return null;
 }

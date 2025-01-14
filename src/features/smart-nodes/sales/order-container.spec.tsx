@@ -8,7 +8,6 @@ import {
   BACK_BUTTON_ID,
   BONUS_FINAL_LABEL_ID,
   CHECKBOX_BUTTON_ID,
-  ERROR_COMPONENT_ID,
   LOADING_COMPONENT_ID,
   ORDER_CONTAINER_ID,
   ORDER_REVIEW_BUTTON_ID,
@@ -18,6 +17,7 @@ import {
 } from "../config";
 import { useSmartNodesMint } from "../../../hooks/use-smart-nodes-mint";
 import { useStore } from "@/contexts/use-store";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 vi.mock("@account-kit/react", () => ({
   useUser: vi.fn(),

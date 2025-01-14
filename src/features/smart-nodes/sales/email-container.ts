@@ -1,9 +1,10 @@
 import { useUser } from "@account-kit/react";
 import { useCallback, useEffect, useState } from "react";
-import { EMAIL_CONTAINER_ID, ERROR_COMPONENT_ID, STORAGE_KEY } from "../config";
+import { EMAIL_CONTAINER_ID, STORAGE_KEY } from "../config";
 import { useStore } from "@/contexts/use-store";
 import { emailSubmission } from "@/actions/email-submission";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 export function EmailContainer() {
   const [email, setEmail] = useState("");

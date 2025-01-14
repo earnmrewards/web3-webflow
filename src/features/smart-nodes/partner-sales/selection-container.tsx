@@ -4,7 +4,6 @@ import { useUser } from "@account-kit/react";
 import {
   BASE_VALUES,
   BONUS_PLAN_VALUES,
-  ERROR_COMPONENT_ID,
   STORAGE_KEY,
   YELLOW_COLOR,
 } from "../config";
@@ -12,6 +11,7 @@ import { useNavigate } from "../../../contexts/use-navigate";
 import { useStore } from "../../../contexts/use-store";
 import { usePartner } from "@/contexts/use-partner";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 const SELECTION_CONTAINER_ID = "web3-smart-nodes-selection";
 const SMART_NODES_VALUE_ID = "web3-smart-nodes-amount";

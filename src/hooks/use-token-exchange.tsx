@@ -1,24 +1,114 @@
+import { abi, CONTRACT_ADDRESS } from "@/config/contracts/token-exchange";
+import { genericErc20 } from "@/config/contracts/token-exchange/generic-erc20";
+import { Storage, useStore } from "@/contexts/use-store";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
+import { isInternalError } from "@/errors/is-internal-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
-import { polygonAmoy } from "@account-kit/infra";
-import { useChain } from "@account-kit/react";
-import { useState } from "react";
+import { TOKEN_EXCHANGE_STORAGE_KEY } from "@/features/token-exchange/config";
+import { networkDef } from "@/types/network";
+import {
+  useBundlerClient,
+  useChain,
+  useSendUserOperation,
+  useSmartAccountClient,
+} from "@account-kit/react";
+import { etherToWei } from "essential-eth";
+import { useCallback, useEffect, useState } from "react";
+import { encodeFunctionData } from "viem";
+import { z } from "zod";
 
-export function useTokenExchange() {
+const exchangeSchema = z.object({
+  token: z.enum(["earnm", "stormx"]),
+  amount: z.number().positive(),
+  network: z.enum(Object.keys(networkDef) as [keyof typeof networkDef]),
+});
+
+type ExchangeType = z.infer<typeof exchangeSchema>;
+
+export function useTokenExchange({ token, amount, network }: ExchangeType) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { setChain } = useChain();
+  const [ongoing, setOngoing] = useState(false);
 
-  async function trigger() {
-    setLoading(true);
+  const store = useStore();
+
+  const { setChain } = useChain();
+  const { client } = useSmartAccountClient({
+    type: "LightAccount",
+  });
+  const { sendUserOperationAsync } = useSendUserOperation({ client });
+  const { waitForTransactionReceipt, chain } = useBundlerClient();
+
+  const getSelectedChain = useCallback(() => {
+    const { mainnet, testnet } =
+      networkDef[token === "stormx" ? "ethereum" : network];
+
+    return import.meta.env.VITE_ENVIRONMENT === "production"
+      ? mainnet
+      : testnet;
+  }, [network, token]);
+
+  function getApproveHash() {
+    const storage = store.get<string>(
+      TOKEN_EXCHANGE_STORAGE_KEY,
+      Storage.LOCAL
+    );
+    if (!storage) return;
+    const { approveHash, amount: storedAmount } = storage;
+
+    return !!approveHash && storedAmount;
+  }
+
+  const triggerExchange = useCallback(async () => {
+    if (ongoing) return;
+    setOngoing(true);
 
     try {
-      setChain({ chain: polygonAmoy });
+      const amountInWei = etherToWei(amount);
+      if (!getApproveHash()) {
+        const { hash } = await sendUserOperationAsync({
+          uo: {
+            target: import.meta.env
+              .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
+            data: encodeFunctionData({
+              abi: genericErc20,
+              functionName: "approve",
+              args: [CONTRACT_ADDRESS, amountInWei],
+            }),
+          },
+        });
 
-      // rest of the process
+        store.set(
+          TOKEN_EXCHANGE_STORAGE_KEY,
+          { approveHash: hash, amount },
+          Storage.LOCAL
+        );
+        await waitForTransactionReceipt({ hash });
+        console.log({ hash });
+      }
+
+      const { hash: convertHash } = await sendUserOperationAsync({
+        uo: {
+          target: CONTRACT_ADDRESS,
+          data: encodeFunctionData({
+            abi,
+            functionName: "convert",
+            args: [
+              import.meta.env
+                .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
+              BigInt(amountInWei.toString()),
+            ],
+          }),
+        },
+      });
+
+      console.log({ convertHash });
     } catch (error) {
-      if (isInsufficientFundsError(error)) {
+      console.log(error);
+      if (isInternalError(error)) {
+        setError("Oops! Looks like an internal error happens.");
+      } else if (isInsufficientFundsError(error)) {
         setError(
           "Oops! You do not have sufficient funds to complete your purchase."
         );
@@ -30,8 +120,33 @@ export function useTokenExchange() {
         );
       }
     } finally {
+      setOngoing(false);
       setLoading(false);
+      store.del(TOKEN_EXCHANGE_STORAGE_KEY);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, waitForTransactionReceipt, ongoing, store, getApproveHash]);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const selectedChain = getSelectedChain();
+    if (selectedChain.id !== chain.id) {
+      return;
+    }
+
+    triggerExchange();
+  }, [chain, loading, getSelectedChain, triggerExchange]);
+
+  function trigger() {
+    const { success } = exchangeSchema.safeParse({ token, amount, network });
+    if (!success) {
+      setError("Oops! Looks like you filled amount with invalid value.");
+      return;
+    }
+
+    setLoading(true);
+    setChain({ chain: getSelectedChain() });
   }
 
   return { trigger, loading, error };

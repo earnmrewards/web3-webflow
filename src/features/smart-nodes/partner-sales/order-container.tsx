@@ -13,7 +13,6 @@ import {
   BASE_VALUES,
   BONUS_FINAL_LABEL_ID,
   CHECKBOX_BUTTON_ID,
-  ERROR_COMPONENT_ID,
   LOADING_COMPONENT_ID,
   ORDER_REVIEW_BUTTON_ID,
   PHONE_FINAL_LABEL_ID,
@@ -23,6 +22,7 @@ import { useUser } from "@account-kit/react";
 import { useNavigate } from "@/contexts/use-navigate";
 import { useStore } from "@/contexts/use-store";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 export function OrderContainer() {
   const [referralCode, setReferralCode] = useState("");
