@@ -57,7 +57,7 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     if (!storage) return;
     const { approveHash, amount: storedAmount } = storage;
 
-    return !!approveHash && storedAmount;
+    return !!approveHash && Number(storedAmount) === amount;
   }
 
   const triggerExchange = useCallback(async () => {
@@ -65,12 +65,19 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     setOngoing(true);
 
     try {
+      const tokenContractAddress = (
+        token === "stormx"
+          ? import.meta.env.VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS
+          : import.meta.env.VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS
+      ) as `0x${string}`;
+
       const amountInWei = etherToWei(amount);
+
+      // TODO: Upgrade to allowance function validator
       if (!getApproveHash()) {
         const { hash } = await sendUserOperationAsync({
           uo: {
-            target: import.meta.env
-              .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
+            target: tokenContractAddress,
             data: encodeFunctionData({
               abi: genericErc20,
               functionName: "approve",
@@ -88,17 +95,19 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
         console.log({ hash });
       }
 
+      console.log({
+        target: CONTRACT_ADDRESS,
+        tokenContract: tokenContractAddress,
+        amountInWei: BigInt(amountInWei.toString()),
+      });
+
       const { hash: convertHash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
             functionName: "convert",
-            args: [
-              import.meta.env
-                .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
-              BigInt(amountInWei.toString()),
-            ],
+            args: [tokenContractAddress, BigInt(amountInWei.toString())],
           }),
         },
       });

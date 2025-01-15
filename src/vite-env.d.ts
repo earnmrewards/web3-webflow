@@ -12,6 +12,7 @@ interface ImportMetaEnv {
   readonly VITE_WALLET_CONNECT_PROJECT_ID: string;
   readonly VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS: string;
   readonly VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS: string;
+  readonly VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS: string;
 }
 
 interface ImportMeta {
