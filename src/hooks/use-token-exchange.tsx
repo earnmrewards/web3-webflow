@@ -1,10 +1,8 @@
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/token-exchange";
 import { genericErc20 } from "@/config/contracts/token-exchange/generic-erc20";
-import { Storage, useStore } from "@/contexts/use-store";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isInternalError } from "@/errors/is-internal-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
-import { TOKEN_EXCHANGE_STORAGE_KEY } from "@/features/token-exchange/config";
 import { networkDef } from "@/types/network";
 import {
   useBundlerClient,
@@ -12,7 +10,7 @@ import {
   useSendUserOperation,
   useSmartAccountClient,
 } from "@account-kit/react";
-import { etherToWei } from "essential-eth";
+import { etherToWei, TinyBig } from "essential-eth";
 import { useCallback, useEffect, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { z } from "zod";
@@ -31,14 +29,12 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
 
   const [ongoing, setOngoing] = useState(false);
 
-  const store = useStore();
-
   const { setChain } = useChain();
-  const { client } = useSmartAccountClient({
+  const { client, address } = useSmartAccountClient({
     type: "LightAccount",
   });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
-  const { waitForTransactionReceipt, chain } = useBundlerClient();
+  const { waitForTransactionReceipt, chain, readContract } = useBundlerClient();
 
   const getSelectedChain = useCallback(() => {
     const { mainnet, testnet } =
@@ -49,20 +45,44 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
       : testnet;
   }, [network, token]);
 
-  function getApproveHash() {
-    const storage = store.get<string>(
-      TOKEN_EXCHANGE_STORAGE_KEY,
-      Storage.LOCAL
-    );
-    if (!storage) return;
-    const { approveHash, amount: storedAmount } = storage;
+  async function validateBalance(tokenContract: `0x${string}`) {
+    if (!address) return false;
 
-    return !!approveHash && Number(storedAmount) === amount;
+    const balance = await readContract({
+      address: tokenContract,
+      abi: genericErc20,
+      functionName: "balanceOf",
+      args: [address],
+    });
+    const balanceWithPrecision = Number(balance) / 10 ** 18;
+    if (balanceWithPrecision === 0) return false;
+
+    return balanceWithPrecision > amount;
+  }
+
+  async function validateAllowance(
+    tokenContract: `0x${string}`,
+    amountInWei: TinyBig
+  ) {
+    const allowance = await readContract({
+      address: tokenContract,
+      abi: genericErc20,
+      functionName: "allowance",
+      args: [
+        address,
+        import.meta.env.VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
+      ],
+    });
+    const convertedAllowance = Number(allowance);
+    if (convertedAllowance === 0) return false;
+
+    return amountInWei.eq(convertedAllowance);
   }
 
   const triggerExchange = useCallback(async () => {
     if (ongoing) return;
     setOngoing(true);
+    setError("");
 
     try {
       const tokenContractAddress = (
@@ -71,10 +91,18 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
           : import.meta.env.VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS
       ) as `0x${string}`;
 
+      const hasValidBalance = await validateBalance(tokenContractAddress);
+      if (!hasValidBalance) {
+        throw new Error("invalidBalance");
+      }
+
       const amountInWei = etherToWei(amount);
 
-      // TODO: Upgrade to allowance function validator
-      if (!getApproveHash()) {
+      const hasValidAllowance = await validateAllowance(
+        tokenContractAddress,
+        amountInWei
+      );
+      if (!hasValidAllowance) {
         const { hash } = await sendUserOperationAsync({
           uo: {
             target: tokenContractAddress,
@@ -86,11 +114,6 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
           },
         });
 
-        store.set(
-          TOKEN_EXCHANGE_STORAGE_KEY,
-          { approveHash: hash, amount },
-          Storage.LOCAL
-        );
         await waitForTransactionReceipt({ hash });
         console.log({ hash });
       }
@@ -115,7 +138,11 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
       console.log({ convertHash });
     } catch (error) {
       console.log(error);
-      if (isInternalError(error)) {
+      if (error instanceof Error && error.message.includes("invalidBalance")) {
+        setError(
+          `Oops! Looks like you don't have enough balance to make this exchange.`
+        );
+      } else if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
         setError(
@@ -131,10 +158,9 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     } finally {
       setOngoing(false);
       setLoading(false);
-      store.del(TOKEN_EXCHANGE_STORAGE_KEY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, waitForTransactionReceipt, ongoing, store, getApproveHash]);
+  }, [amount, waitForTransactionReceipt, ongoing]);
 
   useEffect(() => {
     if (!loading) return;
