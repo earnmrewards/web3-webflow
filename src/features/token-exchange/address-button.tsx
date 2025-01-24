@@ -1,20 +1,20 @@
 import { useLogout, useUser } from "@account-kit/react";
-import { AUTH_BUTTON_COMPONENT_ID } from "./config";
+import { ADDRESS_BUTTON_COMPONENT_ID } from "./config";
 import { shortenAddress } from "@/utils/shorten-address";
 import { useCallback, useEffect } from "react";
 
-export function AuthButton() {
+export function AddressButton() {
   const user = useUser();
   const { logout } = useLogout();
 
   function changeText() {
     const anchor = document.getElementById(
-      AUTH_BUTTON_COMPONENT_ID
+      ADDRESS_BUTTON_COMPONENT_ID
     ) as HTMLAnchorElement;
     if (!anchor) return;
 
     anchor.innerHTML = user
-      ? shortenAddress(user.address)
+      ? `<span class="text-span-70">${shortenAddress(user.address)}</span>`
       : `Buy <span class="text-span-70">$EARNM</span>`;
 
     if (user) {
@@ -35,8 +35,8 @@ export function AuthButton() {
 
   function logoutUser() {
     const button = document.getElementById(
-      AUTH_BUTTON_COMPONENT_ID
-    ) as HTMLButtonElement;
+      ADDRESS_BUTTON_COMPONENT_ID
+    ) as HTMLAnchorElement;
     if (!button) return;
 
     button.addEventListener("click", handleClick);

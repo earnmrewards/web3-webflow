@@ -13,4 +13,4 @@ export const EARNM_V2_BALANCE_LABEL_ID = "web3-earnm-v2-balance";
 export const MAX_AMOUNT_BUTTON_COMPONENT_ID = "web3-max-amount-button";
 export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
 
-export const AUTH_BUTTON_COMPONENT_ID = "web3-auth-button";
+export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";

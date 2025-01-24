@@ -178,6 +178,7 @@ export function ExchangeContainer() {
 
     const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
 
+    input.disabled = true;
     input.value = String((amount * conversionRate).toFixed(2));
   }
   useEffect(updateConversionValue, [amount, selectedToken]);

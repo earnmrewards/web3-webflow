@@ -1,4 +1,4 @@
-import { AuthButton } from "./auth-button";
+import { AddressButton } from "./address-button";
 import { BalanceContainer } from "./balance-container";
 import { TOKEN_EXCHANGE_FEATURE_ID } from "./config";
 import { ExchangeContainer } from "./exchange-container";
@@ -10,7 +10,7 @@ export function TokenExchange() {
       <LogInContainer />
       <ExchangeContainer />
       <BalanceContainer />
-      <AuthButton />
+      <AddressButton />
     </>
   );
 }
