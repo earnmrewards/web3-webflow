@@ -171,15 +171,14 @@ export function ExchangeContainer() {
   useEffect(showErrorText, [error]);
 
   function updateConversionValue() {
-    const input = document.getElementById(
-      AMOUNT_TO_GET_LABEL_ID
-    ) as HTMLInputElement;
-    if (!input) return;
+    const label = document.getElementById(AMOUNT_TO_GET_LABEL_ID);
+    if (!label) return;
 
     const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
-
-    input.disabled = true;
-    input.value = String((amount * conversionRate).toFixed(2));
+    const value = (amount * conversionRate).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    });
+    label.innerText = value;
   }
   useEffect(updateConversionValue, [amount, selectedToken]);
 
