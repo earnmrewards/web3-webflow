@@ -8,10 +8,22 @@ export function AuthButton() {
   const { logout } = useLogout();
 
   function changeText() {
-    const button = document.getElementById(AUTH_BUTTON_COMPONENT_ID);
-    if (!button) return;
+    const anchor = document.getElementById(
+      AUTH_BUTTON_COMPONENT_ID
+    ) as HTMLAnchorElement;
+    if (!anchor) return;
 
-    button.innerText = user ? shortenAddress(user.address) : "Buy $EARNM";
+    anchor.innerHTML = user
+      ? shortenAddress(user.address)
+      : `Buy <span class="text-span-70">$EARNM</span>`;
+
+    if (user) {
+      anchor.removeAttribute("href");
+      anchor.removeAttribute("target");
+    } else {
+      anchor.href = "https://www.earnm.com/imo";
+      anchor.target = "_blank";
+    }
   }
   useEffect(changeText, [user]);
 
