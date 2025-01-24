@@ -1,4 +1,4 @@
-import { useUser } from "@account-kit/react";
+import { useChain, useUser } from "@account-kit/react";
 import {
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
@@ -8,7 +8,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 import { useTokenExchange } from "@/hooks/use-token-exchange";
-import { NetworkType } from "@/types/network";
+import { networkDef, NetworkType } from "@/types/network";
 import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function ExchangeContainer() {
@@ -17,6 +17,8 @@ export function ExchangeContainer() {
   const [selectedNetwork, setSelectedNetwork] =
     useState<NetworkType>("polygon");
   const [amount, setAmount] = useState(0);
+
+  const { setChain } = useChain();
 
   const { trigger, error } = useTokenExchange({
     network: selectedNetwork,
@@ -72,11 +74,20 @@ export function ExchangeContainer() {
   }
   useEffect(updateButtonColor, [selectedToken]);
 
-  const updateNetwork = useCallback((event: Event) => {
-    const target = event.target as HTMLSelectElement;
+  const updateNetwork = useCallback(
+    (event: Event) => {
+      const target = event.target as HTMLSelectElement;
 
-    setSelectedNetwork(target.value as NetworkType);
-  }, []);
+      setSelectedNetwork(target.value as NetworkType);
+
+      const { mainnet, testnet } = networkDef[target.value as NetworkType];
+      const chain =
+        import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
+
+      setChain({ chain });
+    },
+    [setChain]
+  );
 
   function handleSelectorInteraction() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
