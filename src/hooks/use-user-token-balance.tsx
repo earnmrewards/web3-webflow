@@ -6,8 +6,7 @@ const tokenAddresses = {
   earnm: import.meta.env
     .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
   stormx: import.meta.env.VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS as `0x${string}`,
-  earnmv2: import.meta.env
-    .VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
+  earnmv2: import.meta.env.VITE_NEW_EARNM_TOKEN_ADDRESS,
 };
 
 export function useUserTokenBalance(token: keyof typeof tokenAddresses) {

@@ -13,6 +13,7 @@ interface ImportMetaEnv {
   readonly VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS: string;
   readonly VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS: string;
   readonly VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS: string;
+  readonly VITE_NEW_EARNM_TOKEN_ADDRESS: `0x${string}`;
 }
 
 interface ImportMeta {
