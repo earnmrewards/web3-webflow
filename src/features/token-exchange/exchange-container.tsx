@@ -1,5 +1,6 @@
 import { useChain, useUser } from "@account-kit/react";
 import {
+  AMOUNT_TO_GET_LABEL_ID,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
@@ -34,9 +35,19 @@ export function ExchangeContainer() {
   }
   useEffect(containerVisibility, [user]);
 
-  function updateToken(index: number) {
-    setSelectedToken(index);
-  }
+  const updateToken = useCallback(
+    (index: number) => {
+      setSelectedToken(index);
+
+      const { mainnet, testnet } =
+        networkDef[index === 0 ? selectedNetwork : "ethereum"];
+      const chain =
+        import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
+
+      setChain({ chain });
+    },
+    [setChain, selectedNetwork]
+  );
 
   function handleSelectedToken() {
     const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
@@ -55,7 +66,7 @@ export function ExchangeContainer() {
       }
     };
   }
-  useEffect(handleSelectedToken, []);
+  useEffect(handleSelectedToken, [updateToken]);
 
   function updateButtonColor() {
     const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
@@ -158,6 +169,18 @@ export function ExchangeContainer() {
     }
   }
   useEffect(showErrorText, [error]);
+
+  function updateConversionValue() {
+    const input = document.getElementById(
+      AMOUNT_TO_GET_LABEL_ID
+    ) as HTMLInputElement;
+    if (!input) return;
+
+    const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
+
+    input.value = String((amount * conversionRate).toFixed(2));
+  }
+  useEffect(updateConversionValue, [amount, selectedToken]);
 
   return null;
 }
