@@ -28,6 +28,7 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
   const [error, setError] = useState("");
 
   const [ongoing, setOngoing] = useState(false);
+  const [finished, setFinished] = useState(false);
 
   const { setChain } = useChain();
   const { client, address } = useSmartAccountClient({
@@ -135,6 +136,8 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
         },
       });
 
+      setFinished(true);
+
       console.log({ convertHash });
     } catch (error) {
       console.log(error);
@@ -184,5 +187,5 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     setChain({ chain: getSelectedChain() });
   }
 
-  return { trigger, loading, error };
+  return { trigger, loading, error, finished };
 }

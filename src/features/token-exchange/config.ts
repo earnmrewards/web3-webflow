@@ -14,3 +14,6 @@ export const MAX_AMOUNT_BUTTON_COMPONENT_ID = "web3-max-amount-button";
 export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
 
 export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
+
+export const LOADER_CONTAINER_ID = "web3-loader-container";
+export const SWAP_SUCCESS_CONTAINER_ID = "web3-swap-success-container";

@@ -3,7 +3,9 @@ import {
   AMOUNT_TO_GET_LABEL_ID,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
+  LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
+  SWAP_SUCCESS_CONTAINER_ID,
   TOKEN_SELECTION_CONTAINER_ID,
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
@@ -21,7 +23,7 @@ export function ExchangeContainer() {
 
   const { setChain } = useChain();
 
-  const { trigger, error } = useTokenExchange({
+  const { trigger, error, finished, loading } = useTokenExchange({
     network: selectedNetwork,
     token: selectedToken === 0 ? "earnm" : "stormx",
     amount,
@@ -181,6 +183,35 @@ export function ExchangeContainer() {
     label.innerText = value;
   }
   useEffect(updateConversionValue, [amount, selectedToken]);
+
+  function updateLoaderComponentVisibility() {
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const loader = container.querySelector(
+      `#${LOADER_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!loader) return;
+
+    const shouldShow =
+      finished || (!finished && loading) || (finished && loading);
+
+    loader.style.display = shouldShow ? "block" : "none";
+  }
+  useEffect(updateLoaderComponentVisibility, [finished, loading]);
+
+  function updateSwapModalVisibility() {
+    const container = document.getElementById(LOADER_CONTAINER_ID);
+    if (!container) return;
+
+    const modal = container.querySelector(
+      `#${SWAP_SUCCESS_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!modal) return;
+
+    modal.style.display = finished ? "block" : "none";
+  }
+  useEffect(updateSwapModalVisibility, [finished]);
 
   return null;
 }
