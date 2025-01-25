@@ -196,7 +196,7 @@ export function ExchangeContainer() {
     const shouldShow =
       finished || (!finished && loading) || (finished && loading);
 
-    loader.style.display = shouldShow ? "block" : "none";
+    loader.style.display = shouldShow ? "flex" : "none";
   }
   useEffect(updateLoaderComponentVisibility, [finished, loading]);
 
