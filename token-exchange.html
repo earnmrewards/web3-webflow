@@ -12,25 +12,11 @@
     <div
       class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
     >
-      <a id="web3-auth-button">Buy</a>
-      <!-- Log In -->
-      <div
-        id="web3-log-in-container"
-        class="block space-y-2 p-4 border bg-zinc-50 rounded text-center"
-      >
-        Log In Container
-        <button
-          class="mt-2 px-2 py-1 rounded bg-white shadow border"
-          id="web3-auth-modal-button"
-        >
-          Open Auth Modal
-        </button>
-      </div>
+      <a id="web3-address-button">Buy</a>
 
       <div
         id="web3-exchange-container"
         class="block space-y-4 p-4 border bg-zinc-50 rounded"
-        style="display: none"
       >
         <div class="flex justify-between">
           <div class="flex flex-col">
@@ -91,7 +77,6 @@
       </div>
 
       <span id="web3-error-text" class="text-center"></span>
-      <span id="web3-user-address"></span>
       <button
         class="px-2 py-1 rounded bg-white shadow border"
         id="web3-logout-button"
