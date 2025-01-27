@@ -14,7 +14,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 import { useTokenExchange } from "@/hooks/use-token-exchange";
-import { networkDef, NetworkType } from "@/types/network";
+import { getNetwork, NetworkType } from "@/types/network";
 import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function ExchangeContainer() {
@@ -61,11 +61,9 @@ export function ExchangeContainer() {
       const target = event.target as HTMLSelectElement;
       setSelectedToken(target.value === "earnm" ? 0 : 1);
 
-      const { mainnet, testnet } =
-        networkDef[target.value === "earnm" ? selectedNetwork : "ethereum"];
-      const chain =
-        import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
-
+      const chain = getNetwork(
+        target.value === "earnm" ? selectedNetwork : "ethereum"
+      );
       setChain({ chain });
     },
     [selectedNetwork, setChain]
@@ -92,13 +90,11 @@ export function ExchangeContainer() {
   const updateNetwork = useCallback(
     (event: Event) => {
       const target = event.target as HTMLSelectElement;
+      const value = target.value as NetworkType;
 
-      setSelectedNetwork(target.value as NetworkType);
+      setSelectedNetwork(value);
 
-      const { mainnet, testnet } = networkDef[target.value as NetworkType];
-      const chain =
-        import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
-
+      const chain = getNetwork(value);
       setChain({ chain });
     },
     [setChain]

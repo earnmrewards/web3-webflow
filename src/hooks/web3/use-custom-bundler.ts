@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { createBundlerClient } from "@aa-sdk/core";
 import { alchemy } from "@account-kit/infra";
-import { networkDef } from "@/types/network";
+import { networkDef, NetworkType } from "@/types/network";
 
 interface CustomBundlerProps {
-  chain: keyof typeof networkDef;
+  chain: NetworkType;
 }
 
 export function useCustomBundler({ chain }: CustomBundlerProps) {

@@ -3,7 +3,7 @@ import { genericErc20 } from "@/config/contracts/token-exchange/generic-erc20";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isInternalError } from "@/errors/is-internal-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
-import { networkDef } from "@/types/network";
+import { getNetwork, networkDef, NetworkType } from "@/types/network";
 import {
   useChain,
   useSendUserOperation,
@@ -18,7 +18,7 @@ import { useCustomBundler } from "./web3/use-custom-bundler";
 const exchangeSchema = z.object({
   token: z.enum(["earnm", "stormx"]),
   amount: z.number().positive(),
-  network: z.enum(Object.keys(networkDef) as [keyof typeof networkDef]),
+  network: z.enum(Object.keys(networkDef) as [NetworkType]),
 });
 
 type ExchangeType = z.infer<typeof exchangeSchema>;
@@ -39,20 +39,19 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     chain: network,
   });
 
-  const getSelectedChain = useCallback(() => {
-    const { mainnet, testnet } =
-      networkDef[token === "stormx" ? "ethereum" : network];
+  function getOldTokenContractAddress() {
+    if (token === "stormx") return import.meta.env.VITE_STORMX_ADDRESS;
 
-    return import.meta.env.VITE_ENVIRONMENT === "production"
-      ? mainnet
-      : testnet;
-  }, [network, token]);
+    return network === "polygon"
+      ? import.meta.env.VITE_EARNM_OLD_POL_ADDRESS
+      : import.meta.env.VITE_EARNM_OLD_ETH_ADDRESS;
+  }
 
-  async function validateBalance(tokenContract: `0x${string}`) {
+  async function validateBalance() {
     if (!address) return false;
 
     const balance = await readContract({
-      address: tokenContract,
+      address: getOldTokenContractAddress(),
       abi: genericErc20,
       functionName: "balanceOf",
       args: [address],
@@ -63,18 +62,12 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     return balanceWithPrecision > amount;
   }
 
-  async function validateAllowance(
-    tokenContract: `0x${string}`,
-    amountInWei: TinyBig
-  ) {
+  async function validateAllowance(amountInWei: TinyBig) {
     const allowance = await readContract({
-      address: tokenContract,
+      address: getOldTokenContractAddress(),
       abi: genericErc20,
       functionName: "allowance",
-      args: [
-        address,
-        import.meta.env.VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
-      ],
+      args: [address, import.meta.env.VITE_TOKEN_EXCHANGE_CONTRACT_ADDRESS],
     });
     const convertedAllowance = Number(allowance);
     if (convertedAllowance === 0) return false;
@@ -88,27 +81,18 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     setError("");
 
     try {
-      const tokenContractAddress = (
-        token === "stormx"
-          ? import.meta.env.VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS
-          : import.meta.env.VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS
-      ) as `0x${string}`;
-
-      const hasValidBalance = await validateBalance(tokenContractAddress);
+      const hasValidBalance = await validateBalance();
       if (!hasValidBalance) {
         throw new Error("invalidBalance");
       }
 
       const amountInWei = etherToWei(amount);
 
-      const hasValidAllowance = await validateAllowance(
-        tokenContractAddress,
-        amountInWei
-      );
+      const hasValidAllowance = await validateAllowance(amountInWei);
       if (!hasValidAllowance) {
         const { hash } = await sendUserOperationAsync({
           uo: {
-            target: tokenContractAddress,
+            target: getOldTokenContractAddress(),
             data: encodeFunctionData({
               abi: genericErc20,
               functionName: "approve",
@@ -126,7 +110,10 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
           data: encodeFunctionData({
             abi,
             functionName: "convert",
-            args: [tokenContractAddress, BigInt(amountInWei.toString())],
+            args: [
+              getOldTokenContractAddress(),
+              BigInt(amountInWei.toString()),
+            ],
           }),
         },
       });
@@ -160,13 +147,13 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
   useEffect(() => {
     if (!loading) return;
 
-    const selectedChain = getSelectedChain();
+    const selectedChain = getNetwork(token === "stormx" ? "ethereum" : network);
     if (selectedChain.id !== chain.id) {
       return;
     }
 
     triggerExchange();
-  }, [chain, loading, getSelectedChain, triggerExchange]);
+  }, [chain, loading, network, token, triggerExchange]);
 
   function trigger() {
     const { success } = exchangeSchema.safeParse({ token, amount, network });
@@ -176,7 +163,8 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     }
 
     setLoading(true);
-    setChain({ chain: getSelectedChain() });
+    const selectedChain = getNetwork(token === "stormx" ? "ethereum" : network);
+    setChain({ chain: selectedChain });
   }
 
   return { trigger, loading, error, finished };

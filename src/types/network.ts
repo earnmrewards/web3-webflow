@@ -29,3 +29,9 @@ export const networkDef = {
 };
 
 export type NetworkType = keyof typeof networkDef;
+
+export function getNetwork(network: NetworkType) {
+  const { mainnet, testnet } = networkDef[network];
+
+  return import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
+}

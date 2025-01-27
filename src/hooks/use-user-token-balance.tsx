@@ -2,19 +2,15 @@ import { genericErc20 } from "@/config/contracts/token-exchange/generic-erc20";
 import { useUser } from "@account-kit/react";
 import { useQuery } from "@tanstack/react-query";
 import { useCustomBundler } from "./web3/use-custom-bundler";
-import { networkDef } from "@/types/network";
+import { NetworkType } from "@/types/network";
 
 const tokenAddresses = {
-  earnm: import.meta.env
-    .VITE_OLD_TOKEN_EXCHANGE_CONTRACT_ADDRESS as `0x${string}`,
-  stormx: import.meta.env.VITE_OLD_TOKEN_STMX_CONTRACT_ADDRESS as `0x${string}`,
-  earnmv2: import.meta.env.VITE_NEW_EARNM_TOKEN_ADDRESS,
+  earnm: import.meta.env.VITE_EARNM_OLD_POL_ADDRESS,
+  stormx: import.meta.env.VITE_STORMX_ADDRESS,
+  earnmv2: import.meta.env.VITE_EARNM_NEW_POL_ADDRESS,
 };
 
-const tokenNetwork: Record<
-  keyof typeof tokenAddresses,
-  keyof typeof networkDef
-> = {
+const tokenNetwork: Record<keyof typeof tokenAddresses, NetworkType> = {
   earnm: "polygon",
   stormx: "ethereum",
   earnmv2: "polygon",
@@ -49,6 +45,6 @@ export function useUserTokenBalance(token: keyof typeof tokenAddresses) {
     queryFn: getBalance,
     initialData: 0,
 
-    enabled: !!user && !!token,
+    enabled: !!user,
   });
 }
