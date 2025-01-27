@@ -1,4 +1,4 @@
-import { useChain, useUser } from "@account-kit/react";
+import { useAuthModal, useChain, useUser } from "@account-kit/react";
 import {
   AMOUNT_TO_GET_LABEL_ID,
   EXCHANGE_BUTTON_COMPONENT_ID,
@@ -16,6 +16,8 @@ import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function ExchangeContainer() {
   const user = useUser();
+  const { openAuthModal } = useAuthModal();
+
   const [selectedToken, setSelectedToken] = useState(0);
   const [selectedNetwork, setSelectedNetwork] =
     useState<NetworkType>("polygon");
@@ -28,14 +30,6 @@ export function ExchangeContainer() {
     token: selectedToken === 0 ? "earnm" : "stormx",
     amount,
   });
-
-  function containerVisibility() {
-    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
-    if (!container) return;
-
-    container.style.display = user ? "block" : "none";
-  }
-  useEffect(containerVisibility, [user]);
 
   const updateToken = useCallback(
     (index: number) => {
@@ -51,6 +45,7 @@ export function ExchangeContainer() {
     [setChain, selectedNetwork]
   );
 
+  // TODO: Change to select component
   function handleSelectedToken() {
     const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
     if (!container) return;
@@ -69,23 +64,6 @@ export function ExchangeContainer() {
     };
   }
   useEffect(handleSelectedToken, [updateToken]);
-
-  function updateButtonColor() {
-    const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
-    if (!container) return;
-
-    const buttons = container.querySelectorAll("button");
-    if (buttons.length !== 2) return;
-
-    for (const [index, button] of buttons.entries()) {
-      if (index === selectedToken) {
-        button.classList.add("bg-gray-300");
-      } else {
-        button.classList.remove("bg-gray-300");
-      }
-    }
-  }
-  useEffect(updateButtonColor, [selectedToken]);
 
   const updateNetwork = useCallback(
     (event: Event) => {
@@ -111,6 +89,11 @@ export function ExchangeContainer() {
     ) as HTMLSelectElement;
     if (!selector) return;
 
+    if (!user) {
+      selector.disabled = true;
+      return;
+    }
+
     selector.disabled = selectedToken === 1;
 
     selector.addEventListener("change", updateNetwork);
@@ -119,22 +102,25 @@ export function ExchangeContainer() {
       selector.removeEventListener("change", updateNetwork);
     };
   }
-  useEffect(handleSelectorInteraction, [selectedToken, updateNetwork]);
+  useEffect(handleSelectorInteraction, [selectedToken, updateNetwork, user]);
 
   function handleExchange() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    const button = container.querySelector(`#${EXCHANGE_BUTTON_COMPONENT_ID}`);
+    const button = container.querySelector(
+      `#${EXCHANGE_BUTTON_COMPONENT_ID}`
+    ) as HTMLButtonElement;
     if (!button) return;
 
-    button.addEventListener("click", trigger);
+    button.innerText = user ? "Swap Now" : "Connect Wallet";
 
+    button.addEventListener("click", user ? trigger : openAuthModal);
     return () => {
-      button.removeEventListener("click", trigger);
+      button.removeEventListener("click", user ? trigger : openAuthModal);
     };
   }
-  useEffect(handleExchange, [trigger]);
+  useEffect(handleExchange, [trigger, user, openAuthModal]);
 
   function handleInputEvent(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -151,6 +137,8 @@ export function ExchangeContainer() {
     const input = container.querySelector("input");
     if (!input) return;
 
+    input.disabled = !!user;
+
     input.addEventListener("keypress", blockNativeSubmitEvent);
     input.addEventListener("input", handleInputEvent);
 
@@ -159,7 +147,7 @@ export function ExchangeContainer() {
       input.removeEventListener("input", handleInputEvent);
     };
   }
-  useEffect(addInputEvent, []);
+  useEffect(addInputEvent, [user]);
 
   function showErrorText() {
     const textLabels: NodeListOf<HTMLParagraphElement> =
