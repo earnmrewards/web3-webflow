@@ -60,6 +60,9 @@ export function ExchangeContainer() {
     (event: Event) => {
       const target = event.target as HTMLSelectElement;
       setSelectedToken(target.value === "earnm" ? 0 : 1);
+      if (target.value === "stormx") {
+        setSelectedNetwork("ethereum");
+      }
 
       const chain = getNetwork(
         target.value === "earnm" ? selectedNetwork : "ethereum"

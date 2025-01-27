@@ -39,13 +39,13 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     chain: network,
   });
 
-  function getOldTokenContractAddress() {
+  const getOldTokenContractAddress = useCallback(() => {
     if (token === "stormx") return import.meta.env.VITE_STORMX_ADDRESS;
 
     return network === "polygon"
       ? import.meta.env.VITE_EARNM_OLD_POL_ADDRESS
       : import.meta.env.VITE_EARNM_OLD_ETH_ADDRESS;
-  }
+  }, [token, network]);
 
   async function validateBalance() {
     if (!address) return false;
@@ -142,7 +142,7 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, waitForTransactionReceipt, ongoing]);
+  }, [amount, waitForTransactionReceipt, ongoing, getOldTokenContractAddress]);
 
   useEffect(() => {
     if (!loading) return;
