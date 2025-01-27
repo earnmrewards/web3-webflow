@@ -5,7 +5,6 @@ import { isInternalError } from "@/errors/is-internal-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { networkDef } from "@/types/network";
 import {
-  useBundlerClient,
   useChain,
   useSendUserOperation,
   useSmartAccountClient,
@@ -14,6 +13,7 @@ import { etherToWei, TinyBig } from "essential-eth";
 import { useCallback, useEffect, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { z } from "zod";
+import { useCustomBundler } from "./web3/use-custom-bundler";
 
 const exchangeSchema = z.object({
   token: z.enum(["earnm", "stormx"]),
@@ -35,7 +35,9 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
     type: "LightAccount",
   });
   const { sendUserOperationAsync } = useSendUserOperation({ client });
-  const { waitForTransactionReceipt, chain, readContract } = useBundlerClient();
+  const { waitForTransactionReceipt, chain, readContract } = useCustomBundler({
+    chain: network,
+  });
 
   const getSelectedChain = useCallback(() => {
     const { mainnet, testnet } =
@@ -116,16 +118,9 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
         });
 
         await waitForTransactionReceipt({ hash });
-        console.log({ hash });
       }
 
-      console.log({
-        target: CONTRACT_ADDRESS,
-        tokenContract: tokenContractAddress,
-        amountInWei: BigInt(amountInWei.toString()),
-      });
-
-      const { hash: convertHash } = await sendUserOperationAsync({
+      await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -137,10 +132,7 @@ export function useTokenExchange({ token, amount, network }: ExchangeType) {
       });
 
       setFinished(true);
-
-      console.log({ convertHash });
     } catch (error) {
-      console.log(error);
       if (error instanceof Error && error.message.includes("invalidBalance")) {
         setError(
           `Oops! Looks like you don't have enough balance to make this exchange.`

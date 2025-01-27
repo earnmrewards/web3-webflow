@@ -1,11 +1,14 @@
 import { useAuthModal, useChain, useUser } from "@account-kit/react";
 import {
   AMOUNT_TO_GET_LABEL_ID,
+  EARNM_TOKEN_IMAGE_CDN_URL,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
   LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
+  STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
+  TOKEN_IMAGE_ID,
   TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
@@ -20,7 +23,7 @@ export function ExchangeContainer() {
 
   const [selectedToken, setSelectedToken] = useState(0);
   const [selectedNetwork, setSelectedNetwork] =
-    useState<NetworkType>("polygon");
+    useState<NetworkType>("arbitrum");
   const [amount, setAmount] = useState(0);
 
   const { setChain } = useChain();
@@ -31,10 +34,24 @@ export function ExchangeContainer() {
     amount,
   });
 
+  function updateTokenImage(token: string) {
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const image = container.querySelector(
+      `#${TOKEN_IMAGE_ID}`
+    ) as HTMLImageElement;
+    if (!image) return;
+
+    image.src =
+      token === "earnm" ? EARNM_TOKEN_IMAGE_CDN_URL : STMX_TOKEN_IMAGE_CDN_URL;
+  }
+
   const updateToken = useCallback(
     (event: Event) => {
       const target = event.target as HTMLSelectElement;
       setSelectedToken(target.value === "earnm" ? 0 : 1);
+      updateTokenImage(target.value);
 
       const { mainnet, testnet } =
         networkDef[target.value === "earnm" ? selectedNetwork : "ethereum"];
