@@ -8,7 +8,7 @@ import {
   NETWORK_SELECTOR_COMPONENT_ID,
   STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
-  TOKEN_IMAGE_ID,
+  TOKEN_IMAGE_CONTAINER_ID,
   TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
@@ -34,24 +34,32 @@ export function ExchangeContainer() {
     amount,
   });
 
-  function updateTokenImage(token: string) {
+  function updateTokenImage() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    const image = container.querySelector(
-      `#${TOKEN_IMAGE_ID}`
-    ) as HTMLImageElement;
+    const imageContainer = container.querySelector(
+      `#${TOKEN_IMAGE_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!imageContainer) return;
+
+    imageContainer.style.backgroundColor = user ? "white" : "#eee";
+    imageContainer.style.opacity = user ? "1" : "0.7";
+
+    const image = imageContainer.querySelector("img");
     if (!image) return;
 
     image.src =
-      token === "earnm" ? EARNM_TOKEN_IMAGE_CDN_URL : STMX_TOKEN_IMAGE_CDN_URL;
+      selectedToken === 0
+        ? EARNM_TOKEN_IMAGE_CDN_URL
+        : STMX_TOKEN_IMAGE_CDN_URL;
   }
+  useEffect(updateTokenImage, [user, selectedToken]);
 
   const updateToken = useCallback(
     (event: Event) => {
       const target = event.target as HTMLSelectElement;
       setSelectedToken(target.value === "earnm" ? 0 : 1);
-      updateTokenImage(target.value);
 
       const { mainnet, testnet } =
         networkDef[target.value === "earnm" ? selectedNetwork : "ethereum"];

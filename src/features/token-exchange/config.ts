@@ -10,7 +10,7 @@ export const STMX_BALANCE_LABEL_ID = "web3-stmx-balance";
 export const EARNM_V1_BALANCE_LABEL_ID = "web3-earnm-v1-balance";
 export const EARNM_V2_BALANCE_LABEL_ID = "web3-earnm-v2-balance";
 
-export const TOKEN_IMAGE_ID = "web3-token-image";
+export const TOKEN_IMAGE_CONTAINER_ID = "web3-token-image-container";
 
 export const MAX_AMOUNT_BUTTON_COMPONENT_ID = "web3-max-amount-button";
 export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
