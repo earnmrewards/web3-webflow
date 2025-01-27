@@ -1,5 +1,5 @@
 import { useLogout, useUser } from "@account-kit/react";
-import { ADDRESS_BUTTON_COMPONENT_ID, EXCHANGE_CONTAINER_ID } from "./config";
+import { ADDRESS_BUTTON_COMPONENT_ID } from "./config";
 import { shortenAddress } from "@/utils/shorten-address";
 import { useCallback, useEffect } from "react";
 
@@ -14,10 +14,7 @@ export function AddressButton() {
   }, [user, logout]);
 
   function changeText() {
-    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
-    if (!container) return;
-
-    const anchors: NodeListOf<HTMLAnchorElement> = container.querySelectorAll(
+    const anchors: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(
       `#${ADDRESS_BUTTON_COMPONENT_ID}`
     );
     for (const anchor of anchors) {
