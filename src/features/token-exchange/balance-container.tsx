@@ -32,8 +32,13 @@ export function BalanceContainer() {
         return;
       }
 
+      if (!balance) {
+        label.innerText = "---";
+        return;
+      }
+
       label.innerText = String(
-        balance?.toLocaleString(undefined, { maximumFractionDigits: 2 }) ?? 0
+        balance.toLocaleString(undefined, { maximumFractionDigits: 2 }) ?? 0
       );
     });
   }, [

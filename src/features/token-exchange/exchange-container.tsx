@@ -6,7 +6,7 @@ import {
   LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
   SWAP_SUCCESS_CONTAINER_ID,
-  TOKEN_SELECTION_CONTAINER_ID,
+  TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
@@ -32,38 +32,37 @@ export function ExchangeContainer() {
   });
 
   const updateToken = useCallback(
-    (index: number) => {
-      setSelectedToken(index);
+    (event: Event) => {
+      const target = event.target as HTMLSelectElement;
+      setSelectedToken(target.value === "earnm" ? 0 : 1);
 
       const { mainnet, testnet } =
-        networkDef[index === 0 ? selectedNetwork : "ethereum"];
+        networkDef[target.value === "earnm" ? selectedNetwork : "ethereum"];
       const chain =
         import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
 
       setChain({ chain });
     },
-    [setChain, selectedNetwork]
+    [selectedNetwork, setChain]
   );
 
-  // TODO: Change to select component
   function handleSelectedToken() {
-    const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    const buttons = container.querySelectorAll("button");
-    if (buttons.length !== 2) return;
+    const selector = container.querySelector(
+      `#${TOKEN_SELECTOR_COMPONENT_ID}`
+    ) as HTMLSelectElement;
+    if (!selector) return;
 
-    for (const [index, button] of buttons.entries()) {
-      button.addEventListener("click", () => updateToken(index));
-    }
+    selector.disabled = user ? false : true;
+    selector.addEventListener("change", updateToken);
 
     return () => {
-      for (const [index, button] of buttons.entries()) {
-        button.removeEventListener("click", () => updateToken(index));
-      }
+      selector.removeEventListener("change", updateToken);
     };
   }
-  useEffect(handleSelectedToken, [updateToken]);
+  useEffect(handleSelectedToken, [updateToken, user]);
 
   const updateNetwork = useCallback(
     (event: Event) => {
