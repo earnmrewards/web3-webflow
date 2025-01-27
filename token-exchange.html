@@ -12,47 +12,69 @@
     <div
       class="h-screen w-screen flex flex-col gap-2 items-center justify-center bg-zinc-100"
     >
-      <!-- Log In -->
-      <div
-        id="web3-log-in-container"
-        class="block space-y-2 p-4 border bg-zinc-50 rounded text-center"
-      >
-        Log In Container
-        <button
-          class="mt-2 px-2 py-1 rounded bg-white shadow border"
-          id="web3-auth-modal-button"
-        >
-          Open Auth Modal
-        </button>
-      </div>
+      <a id="web3-address-button">Buy</a>
 
       <div
         id="web3-exchange-container"
         class="block space-y-4 p-4 border bg-zinc-50 rounded"
-        style="display: none"
       >
-        <div
+        <div class="flex justify-between">
+          <div class="flex flex-col">
+            <span class="text-sm">$STMX</span>
+            <span id="web3-stmx-balance">---</span>
+          </div>
+
+          <div class="flex flex-col">
+            <span class="text-sm">$EARNM v1</span>
+            <span id="web3-earnm-v1-balance">---</span>
+          </div>
+
+          <div class="flex flex-col">
+            <span class="text-sm">$EARNM v2</span>
+            <span id="web3-earnm-v2-balance">---</span>
+          </div>
+        </div>
+
+        <!-- <div
           id="web3-token-selector"
           class="w-full flex gap-2 items-center justify-center"
         >
           <button class="px-2 rounded transition-colors">EarnM</button>
           <button class="px-2 rounded transition-colors">StormX</button>
-        </div>
+        </div> -->
+
+        <select name="networks" id="web3-token-selector" class="border rounded">
+          <option value="earnm">$EARNM</option>
+          <option value="stormx">$STMX</option>
+        </select>
 
         <div>
           <input
             placeholder="10"
             id="web3-amount"
-            class="text-center"
+            class="text-center rounded border"
             type="number"
           />
 
-          <select name="networks" id="web3-network-selector" disabled>
-            <option value="polygon">POL</option>
+          <select
+            name="networks"
+            id="web3-network-selector"
+            disabled
+            class="border rounded"
+          >
             <option value="arbitrum">ARB</option>
+            <option value="polygon">POL</option>
             <option value="base">BASE</option>
+            <option value="ethereum">ETH</option>
           </select>
         </div>
+
+        <input
+          id="web3-amount-to-get"
+          disabled
+          value="0"
+          class="text-center text-gray-500 w-full border rounded"
+        />
 
         <button id="web3-exchange-button" class="w-full bg-gray-100 rounded">
           Exchange

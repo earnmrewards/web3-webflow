@@ -1,82 +1,107 @@
-import { useUser } from "@account-kit/react";
+import { useAuthModal, useChain, useUser } from "@account-kit/react";
 import {
+  AMOUNT_TO_GET_LABEL_ID,
+  EARNM_TOKEN_IMAGE_CDN_URL,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
+  LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
-  TOKEN_SELECTION_CONTAINER_ID,
+  STMX_TOKEN_IMAGE_CDN_URL,
+  SWAP_SUCCESS_CONTAINER_ID,
+  TOKEN_IMAGE_CONTAINER_ID,
+  TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
 import { useCallback, useEffect, useState } from "react";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 import { useTokenExchange } from "@/hooks/use-token-exchange";
-import { NetworkType } from "@/types/network";
+import { getNetwork, NetworkType } from "@/types/network";
 import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function ExchangeContainer() {
   const user = useUser();
+  const { openAuthModal } = useAuthModal();
+
   const [selectedToken, setSelectedToken] = useState(0);
   const [selectedNetwork, setSelectedNetwork] =
-    useState<NetworkType>("polygon");
+    useState<NetworkType>("arbitrum");
   const [amount, setAmount] = useState(0);
 
-  const { trigger, error } = useTokenExchange({
+  const { setChain } = useChain();
+
+  const { trigger, error, finished, loading } = useTokenExchange({
     network: selectedNetwork,
     token: selectedToken === 0 ? "earnm" : "stormx",
     amount,
   });
 
-  function containerVisibility() {
+  function updateTokenImage() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    container.style.display = user ? "block" : "none";
-  }
-  useEffect(containerVisibility, [user]);
+    const imageContainer = container.querySelector(
+      `#${TOKEN_IMAGE_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!imageContainer) return;
 
-  function updateToken(index: number) {
-    setSelectedToken(index);
+    imageContainer.style.backgroundColor = user ? "white" : "#eee";
+    imageContainer.style.opacity = user ? "1" : "0.7";
+
+    const image = imageContainer.querySelector("img");
+    if (!image) return;
+
+    image.src =
+      selectedToken === 0
+        ? EARNM_TOKEN_IMAGE_CDN_URL
+        : STMX_TOKEN_IMAGE_CDN_URL;
   }
+  useEffect(updateTokenImage, [user, selectedToken]);
+
+  const updateToken = useCallback(
+    (event: Event) => {
+      const target = event.target as HTMLSelectElement;
+      setSelectedToken(target.value === "earnm" ? 0 : 1);
+      if (target.value === "stormx") {
+        setSelectedNetwork("ethereum");
+      }
+
+      const chain = getNetwork(
+        target.value === "earnm" ? selectedNetwork : "ethereum"
+      );
+      setChain({ chain });
+    },
+    [selectedNetwork, setChain]
+  );
 
   function handleSelectedToken() {
-    const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    const buttons = container.querySelectorAll("button");
-    if (buttons.length !== 2) return;
+    const selector = container.querySelector(
+      `#${TOKEN_SELECTOR_COMPONENT_ID}`
+    ) as HTMLSelectElement;
+    if (!selector) return;
 
-    for (const [index, button] of buttons.entries()) {
-      button.addEventListener("click", () => updateToken(index));
-    }
+    selector.disabled = user ? false : true;
+    selector.addEventListener("change", updateToken);
 
     return () => {
-      for (const [index, button] of buttons.entries()) {
-        button.removeEventListener("click", () => updateToken(index));
-      }
+      selector.removeEventListener("change", updateToken);
     };
   }
-  useEffect(handleSelectedToken, []);
+  useEffect(handleSelectedToken, [updateToken, user]);
 
-  function updateButtonColor() {
-    const container = document.getElementById(TOKEN_SELECTION_CONTAINER_ID);
-    if (!container) return;
+  const updateNetwork = useCallback(
+    (event: Event) => {
+      const target = event.target as HTMLSelectElement;
+      const value = target.value as NetworkType;
 
-    const buttons = container.querySelectorAll("button");
-    if (buttons.length !== 2) return;
+      setSelectedNetwork(value);
 
-    for (const [index, button] of buttons.entries()) {
-      if (index === selectedToken) {
-        button.classList.add("bg-gray-300");
-      } else {
-        button.classList.remove("bg-gray-300");
-      }
-    }
-  }
-  useEffect(updateButtonColor, [selectedToken]);
-
-  const updateNetwork = useCallback((event: Event) => {
-    const target = event.target as HTMLSelectElement;
-
-    setSelectedNetwork(target.value as NetworkType);
-  }, []);
+      const chain = getNetwork(value);
+      setChain({ chain });
+    },
+    [setChain]
+  );
 
   function handleSelectorInteraction() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
@@ -87,6 +112,11 @@ export function ExchangeContainer() {
     ) as HTMLSelectElement;
     if (!selector) return;
 
+    if (!user) {
+      selector.disabled = true;
+      return;
+    }
+
     selector.disabled = selectedToken === 1;
 
     selector.addEventListener("change", updateNetwork);
@@ -95,22 +125,25 @@ export function ExchangeContainer() {
       selector.removeEventListener("change", updateNetwork);
     };
   }
-  useEffect(handleSelectorInteraction, [selectedToken, updateNetwork]);
+  useEffect(handleSelectorInteraction, [selectedToken, updateNetwork, user]);
 
   function handleExchange() {
     const container = document.getElementById(EXCHANGE_CONTAINER_ID);
     if (!container) return;
 
-    const button = container.querySelector(`#${EXCHANGE_BUTTON_COMPONENT_ID}`);
+    const button = container.querySelector(
+      `#${EXCHANGE_BUTTON_COMPONENT_ID}`
+    ) as HTMLButtonElement;
     if (!button) return;
 
-    button.addEventListener("click", trigger);
+    button.innerText = user ? "Swap Now" : "Connect Wallet";
 
+    button.addEventListener("click", user ? trigger : openAuthModal);
     return () => {
-      button.removeEventListener("click", trigger);
+      button.removeEventListener("click", user ? trigger : openAuthModal);
     };
   }
-  useEffect(handleExchange, [trigger]);
+  useEffect(handleExchange, [trigger, user, openAuthModal]);
 
   function handleInputEvent(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -127,6 +160,8 @@ export function ExchangeContainer() {
     const input = container.querySelector("input");
     if (!input) return;
 
+    input.disabled = user ? false : true;
+
     input.addEventListener("keypress", blockNativeSubmitEvent);
     input.addEventListener("input", handleInputEvent);
 
@@ -135,7 +170,7 @@ export function ExchangeContainer() {
       input.removeEventListener("input", handleInputEvent);
     };
   }
-  useEffect(addInputEvent, []);
+  useEffect(addInputEvent, [user]);
 
   function showErrorText() {
     const textLabels: NodeListOf<HTMLParagraphElement> =
@@ -147,6 +182,47 @@ export function ExchangeContainer() {
     }
   }
   useEffect(showErrorText, [error]);
+
+  function updateConversionValue() {
+    const label = document.getElementById(AMOUNT_TO_GET_LABEL_ID);
+    if (!label) return;
+
+    const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
+    const value = (amount * conversionRate).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    });
+    label.innerText = value;
+  }
+  useEffect(updateConversionValue, [amount, selectedToken]);
+
+  function updateLoaderComponentVisibility() {
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const loader = container.querySelector(
+      `#${LOADER_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!loader) return;
+
+    const shouldShow =
+      finished || (!finished && loading) || (finished && loading);
+
+    loader.style.display = shouldShow ? "flex" : "none";
+  }
+  useEffect(updateLoaderComponentVisibility, [finished, loading]);
+
+  function updateSwapModalVisibility() {
+    const container = document.getElementById(LOADER_CONTAINER_ID);
+    if (!container) return;
+
+    const modal = container.querySelector(
+      `#${SWAP_SUCCESS_CONTAINER_ID}`
+    ) as HTMLDivElement;
+    if (!modal) return;
+
+    modal.style.display = finished ? "block" : "none";
+  }
+  useEffect(updateSwapModalVisibility, [finished]);
 
   return null;
 }

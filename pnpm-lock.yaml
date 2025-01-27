@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@aa-sdk/core':
+    specifier: ^4.9.0
+    version: 4.9.0(typescript@5.2.2)(viem@2.20.0)
   '@account-kit/core':
     specifier: 4.5.0
     version: 4.5.0(@babel/core@7.24.9)(@babel/preset-env@7.25.0)(@types/react@18.3.3)(react@18.3.1)(typescript@5.2.2)(viem@2.20.0)(wagmi@2.12.33)
@@ -67,6 +70,9 @@ devDependencies:
   autoprefixer:
     specifier: ^10.4.19
     version: 10.4.19(postcss@8.4.40)
+  core:
+    specifier: link:@types/@aa-sdk/core
+    version: link:@types/@aa-sdk/core
   eslint:
     specifier: ^8.57.0
     version: 8.57.0
@@ -97,8 +103,8 @@ devDependencies:
 
 packages:
 
-  /@aa-sdk/core@4.5.0(typescript@5.2.2)(viem@2.20.0):
-    resolution: {integrity: sha512-hnpzUiQ317IJj90DL0MYiPXCrVfgxPhNIL8vMYxV9PNIMcx68yPuwv+F5z4yFCqV7WQ1+2pP/aYR4/AzxgOyZQ==}
+  /@aa-sdk/core@4.9.0(typescript@5.2.2)(viem@2.20.0):
+    resolution: {integrity: sha512-jtB6Xho1oZl7xiQvCQxSwNe2fs8KWSOSNaKuMZaBweh/EStw1+iypTxVVjeh5VpkeGUnt6WMa5PCXtUuteUIPQ==}
     peerDependencies:
       viem: ^2.20.0
     dependencies:
@@ -147,7 +153,7 @@ packages:
     peerDependencies:
       viem: ^2.20.0
     dependencies:
-      '@aa-sdk/core': 4.5.0(typescript@5.2.2)(viem@2.20.0)
+      '@aa-sdk/core': 4.9.0(typescript@5.2.2)(viem@2.20.0)
       '@account-kit/logging': 4.5.0
       eventemitter3: 5.0.1
       viem: 2.20.0(typescript@5.2.2)(zod@3.23.8)
@@ -236,7 +242,7 @@ packages:
     peerDependencies:
       viem: ^2.20.0
     dependencies:
-      '@aa-sdk/core': 4.5.0(typescript@5.2.2)(viem@2.20.0)
+      '@aa-sdk/core': 4.9.0(typescript@5.2.2)(viem@2.20.0)
       '@account-kit/logging': 4.5.0
       '@turnkey/http': 2.12.0
       '@turnkey/iframe-stamper': 1.2.0
@@ -262,7 +268,7 @@ packages:
     peerDependencies:
       viem: ^2.20.0
     dependencies:
-      '@aa-sdk/core': 4.5.0(typescript@5.2.2)(viem@2.20.0)
+      '@aa-sdk/core': 4.9.0(typescript@5.2.2)(viem@2.20.0)
       '@account-kit/infra': 4.5.0(typescript@5.2.2)(viem@2.20.0)
       viem: 2.20.0(typescript@5.2.2)(zod@3.23.8)
     transitivePeerDependencies:
@@ -1950,7 +1956,7 @@ packages:
       '@noble/hashes': 1.5.0
       clsx: 1.2.1
       eventemitter3: 5.0.1
-      preact: 10.23.1
+      preact: 10.24.3
     dev: false
 
   /@coinbase/wallet-sdk@4.2.3:
@@ -10024,10 +10030,6 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.1
       source-map-js: 1.2.0
-
-  /preact@10.23.1:
-    resolution: {integrity: sha512-O5UdRsNh4vdZaTieWe3XOgSpdMAmkIYBCT3VhQDlKrzyCm8lUYsk0fmVEvoQQifoOjFRTaHZO69ylrzTW2BH+A==}
-    dev: false
 
   /preact@10.24.3:
     resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
