@@ -137,7 +137,7 @@ export function ExchangeContainer() {
     const input = container.querySelector("input");
     if (!input) return;
 
-    input.disabled = !!user;
+    input.disabled = user ? false : true;
 
     input.addEventListener("keypress", blockNativeSubmitEvent);
     input.addEventListener("input", handleInputEvent);
