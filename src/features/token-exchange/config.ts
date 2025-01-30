@@ -19,7 +19,11 @@ export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
 
 export const LOADER_CONTAINER_ID = "web3-loader-container";
 export const SPINNER_COMPONENT_ID = "web3-spinner";
+
 export const SWAP_SUCCESS_CONTAINER_ID = "web3-swap-success-container";
+export const RESULT_VALUE_COMPONENT_ID = "web3-result-value";
+export const RESULT_CONVERTED_VALUE_COMPONENT_ID =
+  "web3-result-converted-value";
 
 export const EARNM_TOKEN_IMAGE_CDN_URL =
   "https://cdn.prod.website-files.com/61e31fdc25d88b56e9dbab02/6797f6a67ac76d4ff158843d_EARNFT%20COIN.png";

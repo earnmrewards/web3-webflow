@@ -6,6 +6,8 @@ import {
   EXCHANGE_CONTAINER_ID,
   LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
+  RESULT_CONVERTED_VALUE_COMPONENT_ID,
+  RESULT_VALUE_COMPONENT_ID,
   SPINNER_COMPONENT_ID,
   STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
@@ -234,9 +236,33 @@ export function ExchangeContainer() {
     ) as HTMLDivElement;
     if (!modal) return;
 
-    modal.style.display = finished ? "block" : "none";
+    modal.style.display = finished ? "flex" : "none";
+
+    const resultValue = container.querySelector(
+      `#${RESULT_VALUE_COMPONENT_ID}`
+    ) as HTMLDivElement;
+    if (resultValue) {
+      const finalValue = amount.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      });
+      const tokenName = selectedToken === 0 ? "EARNM" : "STMX";
+
+      resultValue.innerText = `${finalValue} ${tokenName}`;
+    }
+
+    const resultConvertedValue = container.querySelector(
+      `#${RESULT_CONVERTED_VALUE_COMPONENT_ID}`
+    ) as HTMLDivElement;
+    if (resultConvertedValue) {
+      const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
+      const value = (amount * conversionRate).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      });
+
+      resultConvertedValue.innerText = `${value} EARNM (V2)`;
+    }
   }
-  useEffect(updateSwapModalVisibility, [finished]);
+  useEffect(updateSwapModalVisibility, [finished, amount, selectedToken]);
 
   return null;
 }
