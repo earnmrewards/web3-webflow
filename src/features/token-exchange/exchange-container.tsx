@@ -50,15 +50,15 @@ export function ExchangeContainer() {
       imageContainer.style.opacity = user ? "1" : "0.7";
     }
 
-    const image = container.querySelector(
+    const images: NodeListOf<HTMLImageElement> = container.querySelectorAll(
       `#${TOKEN_IMAGE_COMPONENT_ID}`
-    ) as HTMLImageElement;
-    if (!image) return;
-
-    image.src =
-      selectedToken === 0
-        ? EARNM_TOKEN_IMAGE_CDN_URL
-        : STMX_TOKEN_IMAGE_CDN_URL;
+    );
+    for (const image of images) {
+      image.src =
+        selectedToken === 0
+          ? EARNM_TOKEN_IMAGE_CDN_URL
+          : STMX_TOKEN_IMAGE_CDN_URL;
+    }
   }
   useEffect(updateTokenImage, [user, selectedToken]);
 
