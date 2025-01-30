@@ -267,5 +267,20 @@ export function ExchangeContainer() {
   }
   useEffect(updateSwapModalVisibility, [finished, amount, selectedToken]);
 
+  function updateNetworkForAsset() {
+    if (selectedToken === 0) return;
+
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const select = container.querySelector(
+      `#${TOKEN_SELECTOR_COMPONENT_ID}`
+    ) as HTMLSelectElement;
+    if (!select) return;
+
+    select.selectedIndex = 3; // Ethereum Index
+  }
+  useEffect(updateNetworkForAsset, [selectedToken]);
+
   return null;
 }
