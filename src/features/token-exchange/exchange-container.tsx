@@ -6,6 +6,7 @@ import {
   EXCHANGE_CONTAINER_ID,
   LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
+  SPINNER_COMPONENT_ID,
   STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
   TOKEN_IMAGE_CONTAINER_ID,
@@ -208,6 +209,19 @@ export function ExchangeContainer() {
       finished || (!finished && loading) || (finished && loading);
 
     loader.style.display = shouldShow ? "flex" : "none";
+
+    const spinner = container.querySelector(
+      `#${SPINNER_COMPONENT_ID}`
+    ) as HTMLImageElement;
+    if (!spinner) return;
+
+    const animateClassName = "animate-spin";
+    if (!spinner.classList.contains(animateClassName)) {
+      spinner.classList.add(animateClassName);
+    }
+
+    const shouldShowSpinner = loading && !finished;
+    spinner.style.display = shouldShowSpinner ? "block" : "none";
   }
   useEffect(updateLoaderComponentVisibility, [finished, loading]);
 

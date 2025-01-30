@@ -18,6 +18,7 @@ export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
 export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
 
 export const LOADER_CONTAINER_ID = "web3-loader-container";
+export const SPINNER_COMPONENT_ID = "web3-spinner";
 export const SWAP_SUCCESS_CONTAINER_ID = "web3-swap-success-container";
 
 export const EARNM_TOKEN_IMAGE_CDN_URL =
