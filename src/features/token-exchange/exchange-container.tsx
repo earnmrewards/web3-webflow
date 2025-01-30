@@ -274,7 +274,7 @@ export function ExchangeContainer() {
     if (!container) return;
 
     const select = container.querySelector(
-      `#${TOKEN_SELECTOR_COMPONENT_ID}`
+      `#${NETWORK_SELECTOR_COMPONENT_ID}`
     ) as HTMLSelectElement;
     if (!select) return;
 
