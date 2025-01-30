@@ -6,8 +6,12 @@ import {
   EXCHANGE_CONTAINER_ID,
   LOADER_CONTAINER_ID,
   NETWORK_SELECTOR_COMPONENT_ID,
+  RESULT_CONVERTED_VALUE_COMPONENT_ID,
+  RESULT_VALUE_COMPONENT_ID,
+  SPINNER_COMPONENT_ID,
   STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
+  TOKEN_IMAGE_COMPONENT_ID,
   TOKEN_IMAGE_CONTAINER_ID,
   TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
@@ -41,18 +45,20 @@ export function ExchangeContainer() {
     const imageContainer = container.querySelector(
       `#${TOKEN_IMAGE_CONTAINER_ID}`
     ) as HTMLDivElement;
-    if (!imageContainer) return;
+    if (imageContainer) {
+      imageContainer.style.backgroundColor = user ? "white" : "#eee";
+      imageContainer.style.opacity = user ? "1" : "0.7";
+    }
 
-    imageContainer.style.backgroundColor = user ? "white" : "#eee";
-    imageContainer.style.opacity = user ? "1" : "0.7";
-
-    const image = imageContainer.querySelector("img");
-    if (!image) return;
-
-    image.src =
-      selectedToken === 0
-        ? EARNM_TOKEN_IMAGE_CDN_URL
-        : STMX_TOKEN_IMAGE_CDN_URL;
+    const images: NodeListOf<HTMLImageElement> = container.querySelectorAll(
+      `#${TOKEN_IMAGE_COMPONENT_ID}`
+    );
+    for (const image of images) {
+      image.src =
+        selectedToken === 0
+          ? EARNM_TOKEN_IMAGE_CDN_URL
+          : STMX_TOKEN_IMAGE_CDN_URL;
+    }
   }
   useEffect(updateTokenImage, [user, selectedToken]);
 
@@ -208,6 +214,19 @@ export function ExchangeContainer() {
       finished || (!finished && loading) || (finished && loading);
 
     loader.style.display = shouldShow ? "flex" : "none";
+
+    const spinner = container.querySelector(
+      `#${SPINNER_COMPONENT_ID}`
+    ) as HTMLImageElement;
+    if (!spinner) return;
+
+    const animateClassName = "animate-spin";
+    if (!spinner.classList.contains(animateClassName)) {
+      spinner.classList.add(animateClassName);
+    }
+
+    const shouldShowSpinner = loading && !finished;
+    spinner.style.display = shouldShowSpinner ? "block" : "none";
   }
   useEffect(updateLoaderComponentVisibility, [finished, loading]);
 
@@ -220,9 +239,48 @@ export function ExchangeContainer() {
     ) as HTMLDivElement;
     if (!modal) return;
 
-    modal.style.display = finished ? "block" : "none";
+    modal.style.display = finished ? "flex" : "none";
+
+    const resultValue = container.querySelector(
+      `#${RESULT_VALUE_COMPONENT_ID}`
+    ) as HTMLDivElement;
+    if (resultValue) {
+      const finalValue = amount.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      });
+      const tokenName = selectedToken === 0 ? "EARNM" : "STMX";
+
+      resultValue.innerText = `${finalValue} ${tokenName}`;
+    }
+
+    const resultConvertedValue = container.querySelector(
+      `#${RESULT_CONVERTED_VALUE_COMPONENT_ID}`
+    ) as HTMLDivElement;
+    if (resultConvertedValue) {
+      const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
+      const value = (amount * conversionRate).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      });
+
+      resultConvertedValue.innerText = `${value} EARNM (V2)`;
+    }
   }
-  useEffect(updateSwapModalVisibility, [finished]);
+  useEffect(updateSwapModalVisibility, [finished, amount, selectedToken]);
+
+  function updateNetworkForAsset() {
+    if (selectedToken === 0) return;
+
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const select = container.querySelector(
+      `#${NETWORK_SELECTOR_COMPONENT_ID}`
+    ) as HTMLSelectElement;
+    if (!select) return;
+
+    select.selectedIndex = 3; // Ethereum Index
+  }
+  useEffect(updateNetworkForAsset, [selectedToken]);
 
   return null;
 }
