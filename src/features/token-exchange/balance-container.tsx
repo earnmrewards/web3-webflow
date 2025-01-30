@@ -1,20 +1,20 @@
-import { useUserTokenBalance } from "@/hooks/use-user-token-balance";
 import { useEffect } from "react";
 import {
   EARNM_V1_BALANCE_LABEL_ID,
   EARNM_V2_BALANCE_LABEL_ID,
   STMX_BALANCE_LABEL_ID,
 } from "./config";
+import { useTokenBalance } from "@/hooks/use-token-balance";
 
 type TokenDataType = [number | undefined, string, boolean][];
 
 export function BalanceContainer() {
   const { data: earnmBalance, isFetching: isEarnmFetching } =
-    useUserTokenBalance("earnm");
+    useTokenBalance("earnm");
   const { data: earnmv2Balance, isFetching: isEarnmv2Fetching } =
-    useUserTokenBalance("earnmv2");
+    useTokenBalance("earnmv2");
   const { data: stormxBalance, isFetching: isStormxFetching } =
-    useUserTokenBalance("stormx");
+    useTokenBalance("stormx");
 
   useEffect(() => {
     const tokens: TokenDataType = [
