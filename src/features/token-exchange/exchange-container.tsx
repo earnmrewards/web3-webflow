@@ -11,6 +11,7 @@ import {
   SPINNER_COMPONENT_ID,
   STMX_TOKEN_IMAGE_CDN_URL,
   SWAP_SUCCESS_CONTAINER_ID,
+  TOKEN_IMAGE_COMPONENT_ID,
   TOKEN_IMAGE_CONTAINER_ID,
   TOKEN_SELECTOR_COMPONENT_ID,
 } from "./config";
@@ -44,12 +45,14 @@ export function ExchangeContainer() {
     const imageContainer = container.querySelector(
       `#${TOKEN_IMAGE_CONTAINER_ID}`
     ) as HTMLDivElement;
-    if (!imageContainer) return;
+    if (imageContainer) {
+      imageContainer.style.backgroundColor = user ? "white" : "#eee";
+      imageContainer.style.opacity = user ? "1" : "0.7";
+    }
 
-    imageContainer.style.backgroundColor = user ? "white" : "#eee";
-    imageContainer.style.opacity = user ? "1" : "0.7";
-
-    const image = imageContainer.querySelector("img");
+    const image = container.querySelector(
+      `#${TOKEN_IMAGE_COMPONENT_ID}`
+    ) as HTMLImageElement;
     if (!image) return;
 
     image.src =
