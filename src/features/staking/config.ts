@@ -9,3 +9,5 @@ export const BANNER_CONTAINER_ID = "web3-banner-container";
 
 export const STAKED_AMOUNT_LABEL_ID = "web3-staked-amount";
 export const TOTAL_STAKED_AMOUNT_LABEL_ID = "web3-total-staked-amount";
+export const USER_TOTAL_STAKED_AMOUNT_LABEL_ID =
+  "web3-user-total-staked-amount";
