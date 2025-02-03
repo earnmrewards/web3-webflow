@@ -9,7 +9,10 @@
     <div id="root" feature="staking"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <div class="p-12 h-screen w-screen flex justify-center bg-[#181818]">
+    <div
+      id="web3-staking-container"
+      class="p-12 h-screen w-screen flex justify-center bg-[#181818]"
+    >
       <div class="flex flex-col w-full max-w-4xl space-y-12">
         <a
           id="web3-address-button"
@@ -17,27 +20,36 @@
         >
         </a>
 
-        <div class="bg-[#F9FD30] h-fit py-4 rounded-lg text-sm text-center">
-          Claim Your Rewards in: <strong>02d 12h 30m 00s</strong>
-        </div>
-        <div class="bg-[#F9FD30] h-fit py-4 rounded-lg text-sm text-center">
-          It's time! Claim your reward now and enjoy!
-          <button class="underline font-bold">Claim Now</button>
-        </div>
+        <div
+          id="web3-banner-container"
+          class="bg-[#F9FD30] h-fit py-4 rounded-lg text-sm text-center"
+        ></div>
 
         <h1 class="text-4xl font-bold text-white text-center">Dashboard</h1>
 
         <div class="grid grid-cols-2 gap-4">
-          <div class="p-2 w-full flex border border-white rounded text-white">
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
             Available SmartNodes
+            <span id="web3-staked-amount" class="font-bold text-lg">---</span>
           </div>
-          <div class="p-2 w-full flex border border-white rounded text-white">
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
             Available SmartNodes
+            <span id="web3-total-staked-amount" class="font-bold text-lg"
+              >---</span
+            >
           </div>
-          <div class="p-2 w-full flex border border-white rounded text-white">
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
             Reward for January 2025
           </div>
-          <div class="p-2 w-full flex border border-white rounded text-white">
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
             Reward for February 2025
           </div>
         </div>

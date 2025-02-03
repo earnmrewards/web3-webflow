@@ -1,4 +1,4 @@
-import { useLogout, useUser } from "@account-kit/react";
+import { useAuthModal, useLogout, useUser } from "@account-kit/react";
 import { ADDRESS_BUTTON_COMPONENT_ID } from "./config";
 import { shortenAddress } from "@/utils/shorten-address";
 import { useCallback, useEffect } from "react";
@@ -6,29 +6,25 @@ import { useCallback, useEffect } from "react";
 export function AddressButton() {
   const user = useUser();
   const { logout } = useLogout();
+  const { openAuthModal } = useAuthModal();
 
   const handleClick = useCallback(() => {
-    if (!user) return;
+    if (user) {
+      logout();
+      return;
+    }
 
-    logout();
-  }, [user, logout]);
+    openAuthModal();
+  }, [user, logout, openAuthModal]);
 
   function changeText() {
     const anchors: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(
       `#${ADDRESS_BUTTON_COMPONENT_ID}`
     );
     for (const anchor of anchors) {
-      anchor.innerHTML = user
-        ? `<span class="text-span-70">${shortenAddress(user.address)}</span>`
-        : `Buy <span class="text-span-70">$EARNM</span>`;
-
-      if (user) {
-        anchor.removeAttribute("href");
-        anchor.removeAttribute("target");
-      } else {
-        anchor.href = "https://www.earnm.com/imo";
-        anchor.target = "_blank";
-      }
+      anchor.innerHTML = `<span class="text-span-70">${
+        user ? shortenAddress(user.address) : "Connect Wallet"
+      }</span>`;
 
       anchor.addEventListener("click", handleClick);
     }

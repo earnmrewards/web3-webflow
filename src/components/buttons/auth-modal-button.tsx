@@ -9,7 +9,7 @@ export function AuthModalButton() {
 
   useEffect(() => {
     const buttons: NodeListOf<HTMLElement> = document.querySelectorAll(
-      `[id='${COMPONENT_ID}']`
+      `#${COMPONENT_ID}`
     );
     for (const button of buttons) {
       button.style.display = user ? "none" : "block";
