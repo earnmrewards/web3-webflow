@@ -60,13 +60,45 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-8">
-          <button class="py-2 w-full bg-[#02D632] rounded-full font-bold">
-            Stake More SmartNodes
-          </button>
-          <button class="py-2 w-full bg-white rounded-full font-bold">
-            Buy More SmartNodes
-          </button>
+        <div
+          class="mx-auto p-8 border rounded-lg flex flex-col w-fit text-white"
+        >
+          <div id="web3-staking-selector" class="flex gap-4">
+            <div>
+              <button class="border-b">Stake</button>
+            </div>
+            <div>
+              <button class="border-b">Unstake</button>
+            </div>
+          </div>
+
+          <div class="my-4">
+            <div class="flex flex-col gap-2">
+              <span class="text-[#C5C5C5] text-xs">Amount to Stake</span>
+
+              <div
+                class="flex items-center gap-1 border rounded-lg p-2 border-[#A8A8A8] bg-[#2C2C2C]"
+              >
+                <input
+                  id="web3-amount-input"
+                  class="w-full border-0 bg-transparent text-[#A8A8A8] outline-none"
+                  type="number"
+                  placeholder="0"
+                />
+                <button id="web3-max-button" class="underline text-[#A8A8A8]">
+                  MAX
+                </button>
+              </div>
+
+              <input
+                id="web3-range-input"
+                type="range"
+                min="0"
+                max="100"
+                value="1"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -11,3 +11,8 @@ export const STAKED_AMOUNT_LABEL_ID = "web3-staked-amount";
 export const TOTAL_STAKED_AMOUNT_LABEL_ID = "web3-total-staked-amount";
 export const USER_TOTAL_STAKED_AMOUNT_LABEL_ID =
   "web3-user-total-staked-amount";
+
+export const STAKING_SELECTOR_ID = "web3-staking-selector";
+export const SELECTOR_AMOUNT_INPUT_ID = "web3-amount-input";
+export const SELECTOR_MAX_BUTTON_ID = "web3-max-button";
+export const SELECTOR_RANGE_INPUT_ID = "web3-range-input";

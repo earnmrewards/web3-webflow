@@ -9,10 +9,10 @@ export function Staking() {
   return (
     <>
       <LogInContainer />
-      <StakingContainer />
       <AddressButton />
       <BannerContainer />
       <StatsContainer />
+      <StakingContainer />
     </>
   );
 }
