@@ -9,8 +9,8 @@ import {
 } from "./config";
 import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
-import { useStake } from "@/hooks/staking/use-stake";
 import { ERROR_COMPONENT_ID } from "../global-config";
+import { useStake } from "@/contexts/staking/use-stake";
 
 export function StakingContainer() {
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
@@ -20,7 +20,7 @@ export function StakingContainer() {
   const { data: stakedNodes, isFetching: stakedNodesFetching } =
     useStakedNodes();
 
-  const { stake, unStake, error } = useStake({ amount });
+  const { stake, unstake, error } = useStake();
 
   const getMaxAmount = useCallback(
     () => (stakeType === "stake" ? smartNodes?.length ?? 0 : stakedNodes),
@@ -165,6 +165,10 @@ export function StakingContainer() {
   }
   useEffect(updateInputs, [amount]);
 
+  const handleTrigger = useCallback(() => {
+    stakeType === "stake" ? stake(amount) : unstake(amount);
+  }, [stakeType, amount, stake, unstake]);
+
   function triggerStake() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
     if (!container) return;
@@ -179,16 +183,13 @@ export function StakingContainer() {
     button.style.color = shouldDisable ? "#A0A0A0" : "black";
     button.style.cursor = shouldDisable ? "not-allowed" : "pointer";
 
-    button.addEventListener("click", stakeType === "stake" ? stake : unStake);
+    button.addEventListener("click", handleTrigger);
 
     return () => {
-      button.removeEventListener(
-        "click",
-        stakeType === "stake" ? stake : unStake
-      );
+      button.removeEventListener("click", handleTrigger);
     };
   }
-  useEffect(triggerStake, [stakeType, stake, unStake, amount]);
+  useEffect(triggerStake, [amount, handleTrigger]);
 
   function showErrorText() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

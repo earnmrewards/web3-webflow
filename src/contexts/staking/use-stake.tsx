@@ -1,30 +1,43 @@
-import {
-  abi,
-  CONTRACT_ADDRESS,
-  nftCollectionAbi,
-} from "@/config/contracts/staking";
-import { CONTRACT_ADDRESS as SN_CONTRACT_ADDRESS } from "@/config/contracts/smart-nodes";
+import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
+import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
 import {
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
+import { createContext, ReactNode, useContext, useState } from "react";
+
+import { CONTRACT_ADDRESS as SN_CONTRACT_ADDRESS } from "@/config/contracts/smart-nodes";
+import {
+  abi,
+  CONTRACT_ADDRESS,
+  nftCollectionAbi,
+} from "@/config/contracts/staking";
 import { encodeFunctionData } from "viem";
-import { useCustomBundler } from "../web3/use-custom-bundler";
-import { useOwnedNFTs } from "./use-owned-nfts";
 import { isInternalError } from "@/errors/is-internal-error";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
-import { useState } from "react";
 import { z } from "zod";
+
+interface StakeContextProps {
+  stake: (amount: number) => Promise<void>;
+  unstake: (amount: number) => Promise<void>;
+  error: string;
+  finished: boolean;
+  loading: boolean;
+}
+
+const StakeContext = createContext({} as StakeContextProps);
 
 const stakeSchema = z.object({
   amount: z.number().positive(),
 });
 
-type StakeProps = z.infer<typeof stakeSchema>;
+interface StakeProviderProps {
+  children: ReactNode;
+}
 
-export function useStake({ amount }: StakeProps) {
+export function StakeProvider({ children }: StakeProviderProps) {
   const user = useUser();
   const { client } = useSmartAccountClient({
     type: "LightAccount",
@@ -38,8 +51,9 @@ export function useStake({ amount }: StakeProps) {
 
   const [error, setError] = useState("");
   const [finished, setFinished] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function getNodeIds() {
+  function getNodeIds(amount: number) {
     if (!smartNodes) return [];
 
     const sortedNodes = smartNodes.sort();
@@ -61,9 +75,10 @@ export function useStake({ amount }: StakeProps) {
     return approval as boolean;
   }
 
-  async function stake() {
+  async function stake(amount: number) {
     if (amount === 0 || !user) return;
     setError("");
+    setLoading(true);
 
     // const test: boolean = true;
     // if (test) {
@@ -101,6 +116,7 @@ export function useStake({ amount }: StakeProps) {
       setError(
         "Oops! Looks like you did not fill in the amount of nodes you want to stake"
       );
+      setLoading(false);
       return;
     }
 
@@ -128,7 +144,7 @@ export function useStake({ amount }: StakeProps) {
           data: encodeFunctionData({
             abi,
             functionName: "stake",
-            args: [getNodeIds().map(BigInt)],
+            args: [getNodeIds(amount).map(BigInt)],
           }),
         },
       });
@@ -149,18 +165,22 @@ export function useStake({ amount }: StakeProps) {
           "Oops! Looks like an error occurred while trying to complete your purchase."
         );
       }
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function unStake() {
+  async function unstake(amount: number) {
     if (amount === 0 || !user) return;
     setError("");
+    setLoading(true);
 
     const { success } = stakeSchema.safeParse({ amount });
     if (!success) {
       setError(
         "Oops! Looks like you did not fill in the amount of nodes you want to stake"
       );
+      setLoading(false);
       return;
     }
 
@@ -193,8 +213,24 @@ export function useStake({ amount }: StakeProps) {
           "Oops! Looks like an error occurred while trying to complete your purchase."
         );
       }
+    } finally {
+      setLoading(false);
     }
   }
 
-  return { stake, unStake, error, finished };
+  const value: StakeContextProps = {
+    stake,
+    unstake,
+    error,
+    finished,
+    loading,
+  };
+
+  return (
+    <StakeContext.Provider value={value}>{children}</StakeContext.Provider>
+  );
+}
+
+export function useStake() {
+  return useContext(StakeContext);
 }
