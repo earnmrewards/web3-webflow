@@ -62,8 +62,8 @@ export function useStake({ amount }: StakeProps) {
   }
 
   async function stake() {
+    if (amount === 0 || !user) return;
     setError("");
-    if (!user) return;
 
     // const test: boolean = true;
     // if (test) {
@@ -153,6 +153,7 @@ export function useStake({ amount }: StakeProps) {
   }
 
   async function unStake() {
+    if (amount === 0 || !user) return;
     setError("");
 
     const { success } = stakeSchema.safeParse({ amount });

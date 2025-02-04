@@ -113,6 +113,7 @@ export function StakingContainer() {
 
     range.max = getMaxAmount().toString();
     range.type = "range";
+    range.style.accentColor = "#00D632";
   }
   useEffect(defineRangeInputValues, [getMaxAmount]);
 
@@ -170,8 +171,13 @@ export function StakingContainer() {
 
     const button = container.querySelector(
       `#${STAKING_TRIGGER_BUTTON_ID}`
-    ) as HTMLButtonElement;
+    ) as HTMLAnchorElement;
     if (!button) return;
+
+    const shouldDisable = amount === 0;
+    button.style.backgroundColor = shouldDisable ? "#E2E2E2" : "white";
+    button.style.color = shouldDisable ? "#A0A0A0" : "black";
+    button.style.cursor = shouldDisable ? "not-allowed" : "pointer";
 
     button.addEventListener("click", stakeType === "stake" ? stake : unStake);
 
@@ -182,7 +188,7 @@ export function StakingContainer() {
       );
     };
   }
-  useEffect(triggerStake, [stakeType, stake, unStake]);
+  useEffect(triggerStake, [stakeType, stake, unStake, amount]);
 
   function showErrorText() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
