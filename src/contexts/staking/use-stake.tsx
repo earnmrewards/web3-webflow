@@ -91,7 +91,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
     const approval = await readContract({
       address: SN_CONTRACT_ADDRESS,
-      abi: abi,
+      abi: nftCollectionAbi,
       functionName: "isApprovedForAll",
       args: [user.address, CONTRACT_ADDRESS],
     });
@@ -130,7 +130,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
         await waitForTransactionReceipt({ hash });
       }
 
-      const { hash } = await sendUserOperationAsync({
+      await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -141,14 +141,12 @@ export function StakeProvider({ children }: StakeProviderProps) {
         },
       });
 
-      console.log({ hash });
       setResult({
         operation: "stake",
         amount,
       });
       setFinished(true);
     } catch (error) {
-      console.log(error);
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
@@ -182,7 +180,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
 
     try {
-      const { hash } = await sendUserOperationAsync({
+      await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -193,7 +191,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
         },
       });
 
-      console.log({ hash });
       setResult({
         operation: "unstake",
         amount,
