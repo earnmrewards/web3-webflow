@@ -16,3 +16,5 @@ export const STAKING_SELECTOR_ID = "web3-staking-selector";
 export const SELECTOR_AMOUNT_INPUT_ID = "web3-amount-input";
 export const SELECTOR_MAX_BUTTON_ID = "web3-max-button";
 export const SELECTOR_RANGE_INPUT_ID = "web3-range-input";
+
+export const STAKING_TRIGGER_BUTTON_ID = "web3-stake-trigger";

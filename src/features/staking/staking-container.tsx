@@ -5,9 +5,12 @@ import {
   SELECTOR_RANGE_INPUT_ID,
   STAKING_CONTAINER_ID,
   STAKING_SELECTOR_ID,
+  STAKING_TRIGGER_BUTTON_ID,
 } from "./config";
 import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
+import { useStake } from "@/hooks/staking/use-stake";
+import { ERROR_COMPONENT_ID } from "../global-config";
 
 export function StakingContainer() {
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
@@ -16,6 +19,8 @@ export function StakingContainer() {
   const { data: smartNodes, isFetching: smartNodesFetching } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: stakedNodesFetching } =
     useStakedNodes();
+
+  const { stake, unStake, error } = useStake({ amount });
 
   const getMaxAmount = useCallback(
     () => (stakeType === "stake" ? smartNodes?.length ?? 0 : stakedNodes),
@@ -110,11 +115,19 @@ export function StakingContainer() {
   }
   useEffect(defineRangeInputValues, [getMaxAmount]);
 
-  function handleInputValueChange(event: Event) {
-    const target = event.target as HTMLInputElement;
+  const handleInputValueChange = useCallback(
+    (event: Event) => {
+      const target = event.target as HTMLInputElement;
 
-    setAmount(Number(target.value));
-  }
+      if (getMaxAmount() === 0) {
+        target.value = String(0);
+        return;
+      }
+
+      setAmount(Number(target.value));
+    },
+    [getMaxAmount]
+  );
 
   function addInputsEvent() {
     const inputIds = [SELECTOR_RANGE_INPUT_ID, SELECTOR_AMOUNT_INPUT_ID];
@@ -137,7 +150,7 @@ export function StakingContainer() {
       }
     };
   }
-  useEffect(addInputsEvent, []);
+  useEffect(addInputsEvent, [handleInputValueChange]);
 
   function updateInputs() {
     const inputIds = [SELECTOR_RANGE_INPUT_ID, SELECTOR_AMOUNT_INPUT_ID];
@@ -149,6 +162,38 @@ export function StakingContainer() {
     }
   }
   useEffect(updateInputs, [amount]);
+
+  function triggerStake() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const button = container.querySelector(
+      `#${STAKING_TRIGGER_BUTTON_ID}`
+    ) as HTMLButtonElement;
+    if (!button) return;
+
+    button.addEventListener("click", stakeType === "stake" ? stake : unStake);
+
+    return () => {
+      button.removeEventListener(
+        "click",
+        stakeType === "stake" ? stake : unStake
+      );
+    };
+  }
+  useEffect(triggerStake, [stakeType, stake, unStake]);
+
+  function showErrorText() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      container.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
+  }
+  useEffect(showErrorText, [error]);
 
   return null;
 }
