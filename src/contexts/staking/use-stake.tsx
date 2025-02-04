@@ -5,19 +5,23 @@ import {
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 import { CONTRACT_ADDRESS as SN_CONTRACT_ADDRESS } from "@/config/contracts/smart-nodes";
-import {
-  abi,
-  CONTRACT_ADDRESS,
-  nftCollectionAbi,
-} from "@/config/contracts/staking";
+import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
+import { abi as nftCollectionAbi } from "@/config/contracts/staking/smart-nodes-collection";
 import { encodeFunctionData } from "viem";
 import { isInternalError } from "@/errors/is-internal-error";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { z } from "zod";
+import { useLogStakedNodes } from "@/hooks/staking/use-log-staked-nodes";
 
 interface ResultType {
   operation: "stake" | "unstake" | "claim";
@@ -54,6 +58,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
   });
 
   const { data: smartNodes } = useOwnedNFTs();
+  const { data: stakedNodes, isFetching: fetchingNodes } = useLogStakedNodes();
 
   const [result, setResult] = useState<ResultType | null>(null);
   const [error, setError] = useState("");
@@ -61,7 +66,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
   const [loading, setLoading] = useState(false);
 
   function getNodeIds(amount: number) {
-    if (!smartNodes) return [];
+    if (!smartNodes || smartNodes.length === 0) return [];
 
     const sortedNodes = smartNodes.sort();
     const slicedNodes = sortedNodes.slice(0, amount);
@@ -69,12 +74,24 @@ export function StakeProvider({ children }: StakeProviderProps) {
     return slicedNodes.map((data) => data.tokenId);
   }
 
+  const getStakedNodeIds = useCallback(
+    (amount: number) => {
+      if (!stakedNodes || stakedNodes.length === 0) return [];
+
+      const sortedNodes = stakedNodes.sort((a, b) => b - a);
+      const slicedNodes = sortedNodes.slice(0, amount);
+
+      return slicedNodes;
+    },
+    [stakedNodes]
+  );
+
   async function hasValidApproval() {
     if (!user) return false;
 
     const approval = await readContract({
       address: SN_CONTRACT_ADDRESS,
-      abi: nftCollectionAbi,
+      abi: abi,
       functionName: "isApprovedForAll",
       args: [user.address, CONTRACT_ADDRESS],
     });
@@ -86,37 +103,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
     if (amount === 0 || !user) return;
     setError("");
     setLoading(true);
-
-    // const test: boolean = true;
-    // if (test) {
-    //   const data = await getLogs({
-    //     address: CONTRACT_ADDRESS,
-    //     event: {
-    //       anonymous: false,
-    //       inputs: [
-    //         {
-    //           indexed: true,
-    //           internalType: "address",
-    //           name: "stakerAddress",
-    //           type: "address",
-    //         },
-    //         {
-    //           indexed: false,
-    //           internalType: "uint16[]",
-    //           name: "snTokenIds",
-    //           type: "uint16[]",
-    //         },
-    //       ],
-    //       name: "SmartNodesStaked",
-    //       type: "event",
-    //     },
-    //     fromBlock: BigInt(114038218),
-    //     toBlock: "latest",
-    //   });
-
-    //   console.log(data);
-    //   return;
-    // }
 
     const { success } = stakeSchema.safeParse({ amount });
     if (!success) {
@@ -182,7 +168,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
   }
 
   async function unstake(amount: number) {
-    if (amount === 0 || !user) return;
+    if (amount === 0 || !user || fetchingNodes) return;
     setError("");
     setLoading(true);
 
@@ -202,8 +188,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
           data: encodeFunctionData({
             abi,
             functionName: "unstake",
-            // TODO: Figure out how to fetch staked node ids
-            args: [],
+            args: [getStakedNodeIds(amount).map(BigInt)],
           }),
         },
       });
