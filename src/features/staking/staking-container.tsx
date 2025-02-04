@@ -39,8 +39,8 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLDivElement> =
-      selector.querySelectorAll("div");
+    const buttons: NodeListOf<HTMLButtonElement> =
+      selector.querySelectorAll("button");
     for (const button of buttons) {
       button.addEventListener("click", handleStakeButtonClick);
     }
@@ -60,8 +60,8 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLDivElement> =
-      selector.querySelectorAll("div");
+    const buttons: NodeListOf<HTMLButtonElement> =
+      selector.querySelectorAll("button");
     for (const [index, button] of buttons.entries()) {
       const stakeTypeIndex = stakeType === "stake" ? 0 : 1;
 
