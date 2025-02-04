@@ -141,7 +141,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
           },
         });
 
-        // TODO: Add custom blocks for ARB
         await waitForTransactionReceipt({ hash });
       }
 
@@ -163,17 +162,18 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
       setFinished(true);
     } catch (error) {
+      console.log(error);
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
         setError(
-          "Oops! You do not have sufficient funds to complete your purchase."
+          "Oops! You do not have sufficient funds to complete your operation."
         );
       } else if (isRejectedError(error)) {
         setError("Oops! Looks like you rejected the transaction signature.");
       } else {
         setError(
-          "Oops! Looks like an error occurred while trying to complete your purchase."
+          "Oops! Looks like an error occurred while trying to complete your operation."
         );
       }
     } finally {
