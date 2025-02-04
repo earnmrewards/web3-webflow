@@ -32,7 +32,7 @@
             class="p-2 w-full flex flex-col border border-white rounded text-white"
           >
             Your SmartNodes
-            <span class="font-bold text-lg">11</span>
+            <span id="web3-sn-amount" class="font-bold text-lg">---</span>
           </div>
           <div
             class="p-2 w-full flex flex-col border border-white rounded text-white"
@@ -64,8 +64,8 @@
           class="mx-auto p-8 border rounded-lg flex flex-col w-fit text-white"
         >
           <div id="web3-staking-selector" class="flex gap-4">
-            <div class="cursor-pointer">Stake</div>
-            <div class="cursor-pointer">Unstake</div>
+            <a href="#" class="cursor-pointer">Stake</a>
+            <a href="#" class="cursor-pointer">Unstake</a>
           </div>
 
           <div class="my-4">
@@ -82,18 +82,16 @@
                   placeholder="0"
                   min="0"
                 />
-                <button id="web3-max-button" class="underline text-[#A8A8A8]">
+                <a
+                  href="#"
+                  id="web3-max-button"
+                  class="underline text-[#A8A8A8]"
+                >
                   MAX
-                </button>
+                </a>
               </div>
 
-              <input
-                id="web3-range-input"
-                type="range"
-                min="0"
-                max="100"
-                value="1"
-              />
+              <input id="web3-range-input" min="0" max="100" value="1" />
             </div>
           </div>
 

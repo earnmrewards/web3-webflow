@@ -39,15 +39,15 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLButtonElement> =
-      selector.querySelectorAll("button");
-    for (const button of buttons) {
-      button.addEventListener("click", handleStakeButtonClick);
+    const anchors: NodeListOf<HTMLAnchorElement> =
+      selector.querySelectorAll("a");
+    for (const anchor of anchors) {
+      anchor.addEventListener("click", handleStakeButtonClick);
     }
 
     return () => {
-      for (const button of buttons) {
-        button.removeEventListener("click", handleStakeButtonClick);
+      for (const anchor of anchors) {
+        anchor.removeEventListener("click", handleStakeButtonClick);
       }
     };
   }
@@ -60,17 +60,17 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLButtonElement> =
-      selector.querySelectorAll("button");
-    for (const [index, button] of buttons.entries()) {
+    const anchors: NodeListOf<HTMLAnchorElement> =
+      selector.querySelectorAll("a");
+    for (const [index, anchor] of anchors.entries()) {
       const stakeTypeIndex = stakeType === "stake" ? 0 : 1;
 
       if (stakeTypeIndex === index) {
-        button.style.borderBottom = "2px solid #02D632";
-        button.style.color = "white";
+        anchor.style.borderBottom = "2px solid #02D632";
+        anchor.style.color = "white";
       } else {
-        button.style.borderBottom = "";
-        button.style.color = "#A8A8A8";
+        anchor.style.borderBottom = "";
+        anchor.style.color = "#A8A8A8";
       }
     }
   }
@@ -112,6 +112,7 @@ export function StakingContainer() {
     if (!range) return;
 
     range.max = getMaxAmount().toString();
+    range.type = "range";
   }
   useEffect(defineRangeInputValues, [getMaxAmount]);
 

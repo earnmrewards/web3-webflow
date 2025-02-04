@@ -1,6 +1,7 @@
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { useTotalStakedNodes } from "@/hooks/staking/use-total-staked-nodes";
 import {
+  SN_AMOUNT_LABEL_ID,
   STAKED_AMOUNT_LABEL_ID,
   STAKING_CONTAINER_ID,
   TOTAL_STAKED_AMOUNT_LABEL_ID,
@@ -9,10 +10,12 @@ import {
 import { useEffect } from "react";
 import { useUser } from "@account-kit/react";
 import { useUserTotalStakedNodes } from "@/hooks/staking/use-user-total-staked-nodes";
+import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 
 export function StatsContainer() {
   const user = useUser();
 
+  const { data: smartNodes, isFetching: smartNodesFetching } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: stakedNodesFetching } =
     useStakedNodes();
   const { data: totalStakedNodes, isFetching: totalStakedNodesFetching } =
@@ -21,6 +24,18 @@ export function StatsContainer() {
     data: userTotalStakedNodes,
     isFetching: userTotalStakedNodesFetching,
   } = useUserTotalStakedNodes();
+
+  function showSmartNodesAmount() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const snAmountLabel = container.querySelector(`#${SN_AMOUNT_LABEL_ID}`);
+    if (!snAmountLabel) return;
+
+    const shouldShow = !smartNodesFetching && user && smartNodes;
+    snAmountLabel.innerHTML = shouldShow ? smartNodes.length.toString() : "---";
+  }
+  useEffect(showSmartNodesAmount, [smartNodesFetching, smartNodes, user]);
 
   function showStakedAmount() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
