@@ -39,8 +39,8 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLButtonElement> =
-      selector.querySelectorAll("button");
+    const buttons: NodeListOf<HTMLDivElement> =
+      selector.querySelectorAll("div");
     for (const button of buttons) {
       button.addEventListener("click", handleStakeButtonClick);
     }
@@ -60,17 +60,17 @@ export function StakingContainer() {
     const selector = container.querySelector(`#${STAKING_SELECTOR_ID}`);
     if (!selector) return;
 
-    const buttons: NodeListOf<HTMLButtonElement> =
-      selector.querySelectorAll("button");
+    const buttons: NodeListOf<HTMLDivElement> =
+      selector.querySelectorAll("div");
     for (const [index, button] of buttons.entries()) {
       const stakeTypeIndex = stakeType === "stake" ? 0 : 1;
 
       if (stakeTypeIndex === index) {
-        button.classList.add("border-b");
-        button.classList.add("border-b-[#02D632]");
+        button.style.borderBottom = "2px solid #02D632";
+        button.style.color = "white";
       } else {
-        button.classList.remove("border-b");
-        button.classList.remove("border-b-[#02D632]");
+        button.style.borderBottom = "";
+        button.style.color = "#A8A8A8";
       }
     }
   }

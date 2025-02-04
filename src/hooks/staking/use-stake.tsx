@@ -65,6 +65,37 @@ export function useStake({ amount }: StakeProps) {
     setError("");
     if (!user) return;
 
+    // const test: boolean = true;
+    // if (test) {
+    //   const data = await getLogs({
+    //     address: CONTRACT_ADDRESS,
+    //     event: {
+    //       anonymous: false,
+    //       inputs: [
+    //         {
+    //           indexed: true,
+    //           internalType: "address",
+    //           name: "stakerAddress",
+    //           type: "address",
+    //         },
+    //         {
+    //           indexed: false,
+    //           internalType: "uint16[]",
+    //           name: "snTokenIds",
+    //           type: "uint16[]",
+    //         },
+    //       ],
+    //       name: "SmartNodesStaked",
+    //       type: "event",
+    //     },
+    //     fromBlock: BigInt(114038218),
+    //     toBlock: "latest",
+    //   });
+
+    //   console.log(data);
+    //   return;
+    // }
+
     const { success } = stakeSchema.safeParse({ amount });
     if (!success) {
       setError(
