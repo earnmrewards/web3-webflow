@@ -182,6 +182,9 @@ export function StakingContainer() {
     button.style.backgroundColor = shouldDisable ? "#E2E2E2" : "white";
     button.style.color = shouldDisable ? "#A0A0A0" : "black";
     button.style.cursor = shouldDisable ? "not-allowed" : "pointer";
+    button.style.textTransform = "capitalize";
+
+    button.innerText = `${stakeType} More SmartNodes`;
 
     button.addEventListener("click", handleTrigger);
 
@@ -189,7 +192,7 @@ export function StakingContainer() {
       button.removeEventListener("click", handleTrigger);
     };
   }
-  useEffect(triggerStake, [amount, handleTrigger]);
+  useEffect(triggerStake, [amount, handleTrigger, stakeType]);
 
   function showErrorText() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

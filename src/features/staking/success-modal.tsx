@@ -46,7 +46,7 @@ export function SuccessModal() {
     );
     if (description) {
       const { operation, amount } = result;
-      const descAlias = alias[operation].title;
+      const descAlias = alias[operation].description;
 
       description.innerHTML = `You successfully ${descAlias} <strong>${amount} SmartNodes</strong>`;
     }
