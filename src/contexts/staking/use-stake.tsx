@@ -19,12 +19,18 @@ import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { z } from "zod";
 
+interface ResultType {
+  operation: "stake" | "unstake" | "claim";
+  amount: number;
+}
+
 interface StakeContextProps {
   stake: (amount: number) => Promise<void>;
   unstake: (amount: number) => Promise<void>;
   error: string;
   finished: boolean;
   loading: boolean;
+  result: ResultType | null;
 }
 
 const StakeContext = createContext({} as StakeContextProps);
@@ -49,6 +55,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
   const { data: smartNodes } = useOwnedNFTs();
 
+  const [result, setResult] = useState<ResultType | null>(null);
   const [error, setError] = useState("");
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -150,6 +157,10 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
 
       console.log({ hash });
+      setResult({
+        operation: "stake",
+        amount,
+      });
       setFinished(true);
     } catch (error) {
       if (isInternalError(error)) {
@@ -198,6 +209,10 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
 
       console.log({ hash });
+      setResult({
+        operation: "unstake",
+        amount,
+      });
       setFinished(true);
     } catch (error) {
       if (isInternalError(error)) {
@@ -224,6 +239,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     error,
     finished,
     loading,
+    result,
   };
 
   return (

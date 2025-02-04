@@ -19,3 +19,7 @@ export const SELECTOR_MAX_BUTTON_ID = "web3-max-button";
 export const SELECTOR_RANGE_INPUT_ID = "web3-range-input";
 
 export const STAKING_TRIGGER_BUTTON_ID = "web3-stake-trigger";
+
+export const STAKING_SUCCESS_MODAL_ID = "web3-success-container";
+export const STAKING_SUCCESS_MODAL_TITLE_ID = "web3-success-modal-title";
+export const STAKING_SUCCESS_MODAL_DESC_ID = "web3-success-modal-description";
