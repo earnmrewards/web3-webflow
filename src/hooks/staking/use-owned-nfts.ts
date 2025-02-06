@@ -15,7 +15,7 @@ export function useOwnedNFTs() {
   const user = useUser();
 
   async function getOwnedNFTs() {
-    if (!user) return;
+    if (!user) return [];
 
     const url = new URL(
       `${import.meta.env.VITE_ALCHEMY_ARB_RPC_URL}/nft/v3/${
@@ -46,7 +46,7 @@ export function useOwnedNFTs() {
         import.meta.env.VITE_SMART_NODES_CONTRACT_ADDRESS
     );
 
-    return snTokens;
+    return snTokens.map((token) => Number(token.tokenId));
   }
 
   return useQuery({

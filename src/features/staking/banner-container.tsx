@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
-import { BANNER_CONTAINER_ID, STAKING_CONTAINER_ID } from "./config";
+import {
+  BANNER_CONTAINER_ID,
+  CLAIMING_TRIGGER_BUTTON_ID,
+  STAKING_CONTAINER_ID,
+} from "./config";
 import { useUser } from "@account-kit/react";
+import { useClaimableRewards } from "@/hooks/staking/use-claimable-rewards";
+import { useStake } from "@/contexts/staking/use-stake";
 
 export function BannerContainer() {
   const user = useUser();
   const [timeLeft, setTimeLeft] = useState(calculateCountdown());
+
+  const { data: claimableRewards } = useClaimableRewards();
+  const { claim } = useStake();
 
   function getBannerComponent() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -53,13 +62,15 @@ export function BannerContainer() {
   }
 
   function updateCountdown() {
+    if (claimableRewards > 0) return;
+
     const timer = setInterval(() => {
       setTimeLeft(calculateCountdown());
     }, 1000);
 
     return () => clearInterval(timer);
   }
-  useEffect(updateCountdown, []);
+  useEffect(updateCountdown, [claimableRewards]);
 
   function updateBannerContent() {
     const banner = getBannerComponent();
@@ -70,9 +81,31 @@ export function BannerContainer() {
       return;
     }
 
+    if (claimableRewards > 0) {
+      banner.innerHTML = `It’s time! Claim your reward now and enjoy! <strong id="web3-claim-trigger">Claim Now!</strong>`;
+      return;
+    }
+
     banner.innerHTML = `Claim Your Rewards in: <strong>${timeLeft}</strong>`;
   }
-  useEffect(updateBannerContent, [user, timeLeft]);
+  useEffect(updateBannerContent, [user, timeLeft, claimableRewards]);
+
+  function triggerClaim() {
+    const banner = getBannerComponent();
+    if (!banner) return;
+
+    const button = banner.querySelector(
+      `#${CLAIMING_TRIGGER_BUTTON_ID}`
+    ) as HTMLSpanElement;
+    if (!button) return;
+
+    button.addEventListener("click", claim);
+
+    return () => {
+      button.removeEventListener("click", claim);
+    };
+  }
+  useEffect(triggerClaim, [claim]);
 
   return null;
 }

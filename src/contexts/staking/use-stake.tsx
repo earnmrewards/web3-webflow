@@ -5,13 +5,7 @@ import {
   useSmartAccountClient,
   useUser,
 } from "@account-kit/react";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 import { CONTRACT_ADDRESS as SN_CONTRACT_ADDRESS } from "@/config/contracts/smart-nodes";
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
@@ -22,6 +16,7 @@ import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { z } from "zod";
 import { useLogStakedNodes } from "@/hooks/staking/use-log-staked-nodes";
+import { useClaimableNodes } from "@/hooks/staking/use-claimable-nodes";
 
 interface ResultType {
   operation: "stake" | "unstake" | "claim";
@@ -31,6 +26,7 @@ interface ResultType {
 interface StakeContextProps {
   stake: (amount: number) => Promise<void>;
   unstake: (amount: number) => Promise<void>;
+  claim: () => Promise<void>;
   error: string;
   finished: boolean;
   loading: boolean;
@@ -59,32 +55,31 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
   const { data: smartNodes } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: fetchingNodes } = useLogStakedNodes();
+  const { data: claimableNodes, isFetching: fetchingClaimableNodes } =
+    useClaimableNodes();
 
   const [result, setResult] = useState<ResultType | null>(null);
   const [error, setError] = useState("");
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function getNodeIds(amount: number) {
-    if (!smartNodes || smartNodes.length === 0) return [];
+  function getNodeIds(amount: number, type: "stake" | "unstake" | "claim") {
+    const lists = {
+      stake: smartNodes,
+      unstake: stakedNodes,
+      claim: claimableNodes,
+    };
+    const list = lists[type];
+    if (!list || list.length === 0) return [];
 
-    const sortedNodes = smartNodes.sort();
-    const slicedNodes = sortedNodes.slice(0, amount);
+    const size = type === "claim" ? list.length : amount;
+    const fixedAmount = size > 100 ? 100 : size;
 
-    return slicedNodes.map((data) => data.tokenId);
+    const sortedNodes = list.sort();
+    const slicedNodes = sortedNodes.slice(0, fixedAmount);
+
+    return slicedNodes;
   }
-
-  const getStakedNodeIds = useCallback(
-    (amount: number) => {
-      if (!stakedNodes || stakedNodes.length === 0) return [];
-
-      const sortedNodes = stakedNodes.sort((a, b) => b - a);
-      const slicedNodes = sortedNodes.slice(0, amount);
-
-      return slicedNodes;
-    },
-    [stakedNodes]
-  );
 
   async function hasValidApproval() {
     if (!user) return false;
@@ -130,19 +125,20 @@ export function StakeProvider({ children }: StakeProviderProps) {
         await waitForTransactionReceipt({ hash });
       }
 
+      const functionName = "stake";
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
-            functionName: "stake",
-            args: [getNodeIds(amount).map(BigInt)],
+            functionName: functionName,
+            args: [getNodeIds(amount, functionName).map(BigInt)],
           }),
         },
       });
 
       setResult({
-        operation: "stake",
+        operation: functionName,
         amount,
       });
       setFinished(true);
@@ -180,22 +176,70 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
 
     try {
+      const functionName = "unstake";
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
-            functionName: "unstake",
-            args: [getStakedNodeIds(amount).map(BigInt)],
+            functionName,
+            args: [getNodeIds(amount, functionName).map(BigInt)],
           }),
         },
       });
 
       setResult({
-        operation: "unstake",
+        operation: functionName,
         amount,
       });
       setFinished(true);
+    } catch (error) {
+      if (isInternalError(error)) {
+        setError("Oops! Looks like an internal error happens.");
+      } else if (isInsufficientFundsError(error)) {
+        setError(
+          "Oops! You do not have sufficient funds to complete your purchase."
+        );
+      } else if (isRejectedError(error)) {
+        setError("Oops! Looks like you rejected the transaction signature.");
+      } else {
+        setError(
+          "Oops! Looks like an error occurred while trying to complete your purchase."
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function claim() {
+    if (!user || fetchingClaimableNodes) return;
+    setError("");
+    setLoading(true);
+
+    if (claimableNodes.length === 0) {
+      setError("Oops! Looks like none of your nodes have rewards available");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const functionName = "claim";
+      await sendUserOperationAsync({
+        uo: {
+          target: CONTRACT_ADDRESS,
+          data: encodeFunctionData({
+            abi,
+            functionName: "claimRewards",
+            args: [getNodeIds(0, functionName).map(BigInt)],
+          }),
+        },
+      });
+
+      setResult({
+        operation: functionName,
+        amount: getNodeIds(0, functionName).length,
+      });
     } catch (error) {
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
@@ -222,6 +266,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     finished,
     loading,
     result,
+    claim,
   };
 
   return (

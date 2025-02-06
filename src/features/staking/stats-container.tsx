@@ -1,6 +1,7 @@
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { useTotalStakedNodes } from "@/hooks/staking/use-total-staked-nodes";
 import {
+  CLAIMABLE_REWARDS_LABEL_ID,
   SN_AMOUNT_LABEL_ID,
   STAKED_AMOUNT_LABEL_ID,
   STAKING_CONTAINER_ID,
@@ -11,6 +12,7 @@ import { useEffect } from "react";
 import { useUser } from "@account-kit/react";
 import { useUserTotalStakedNodes } from "@/hooks/staking/use-user-total-staked-nodes";
 import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
+import { useClaimableRewards } from "@/hooks/staking/use-claimable-rewards";
 
 export function StatsContainer() {
   const user = useUser();
@@ -24,6 +26,8 @@ export function StatsContainer() {
     data: userTotalStakedNodes,
     isFetching: userTotalStakedNodesFetching,
   } = useUserTotalStakedNodes();
+  const { data: claimableRewards, isFetching: claimableRewardsFetching } =
+    useClaimableRewards();
 
   function showSmartNodesAmount() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -86,6 +90,26 @@ export function StatsContainer() {
   useEffect(showUserTotalStakedNodes, [
     userTotalStakedNodesFetching,
     userTotalStakedNodes,
+    user,
+  ]);
+
+  function showClaimableRewards() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const claimableRewardsLabel = container.querySelector(
+      `#${CLAIMABLE_REWARDS_LABEL_ID}`
+    );
+    if (!claimableRewardsLabel) return;
+
+    const shouldShow = !claimableRewardsFetching && user;
+    claimableRewardsLabel.innerHTML = shouldShow
+      ? claimableRewards.toString()
+      : "---";
+  }
+  useEffect(showClaimableRewards, [
+    claimableRewards,
+    claimableRewardsFetching,
     user,
   ]);
 
