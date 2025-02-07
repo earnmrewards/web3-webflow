@@ -62,7 +62,7 @@ export function BannerContainer() {
   }
 
   function updateCountdown() {
-    if (claimableRewards > 0) return;
+    if (claimableRewards > 0 || !user) return;
 
     const timer = setInterval(() => {
       setTimeLeft(calculateCountdown());
@@ -70,19 +70,19 @@ export function BannerContainer() {
 
     return () => clearInterval(timer);
   }
-  useEffect(updateCountdown, [claimableRewards]);
+  useEffect(updateCountdown, [claimableRewards, user]);
 
   function updateBannerContent() {
     const banner = getBannerComponent();
     if (!banner) return;
 
     if (!user) {
-      banner.innerHTML = `Connect your wallet to see your SmartNodes and Rewards! <button id="web3-auth-modal-button" class="underline font-bold">Connect Wallet</button>`;
+      banner.innerHTML = `Connect your wallet to see your SmartNodes and Rewards! <strong id="web3-auth-modal-button" class="underline cursor-pointer">Connect Wallet</strong>`;
       return;
     }
 
     if (claimableRewards > 0) {
-      banner.innerHTML = `It’s time! Claim your reward now and enjoy! <strong id="web3-claim-trigger">Claim Now!</strong>`;
+      banner.innerHTML = `It’s time! Claim your reward now and enjoy! <strong id="web3-claim-trigger" class="underline cursor-pointer">Claim Now!</strong>`;
       return;
     }
 
