@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  BUY_MORE_TRIGGER_BUTTON_ID,
   SELECTOR_AMOUNT_INPUT_ID,
   SELECTOR_MAX_BUTTON_ID,
   SELECTOR_RANGE_INPUT_ID,
@@ -184,7 +185,7 @@ export function StakingContainer() {
     button.style.cursor = shouldDisable ? "not-allowed" : "pointer";
     button.style.textTransform = "capitalize";
 
-    button.innerText = `${stakeType} More SmartNodes`;
+    button.innerText = `${stakeType} SmartNodes`;
 
     button.addEventListener("click", handleTrigger);
 
@@ -193,6 +194,19 @@ export function StakingContainer() {
     };
   }
   useEffect(triggerStake, [amount, handleTrigger, stakeType]);
+
+  function changeBuyMoreButtonVisibility() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const button = container.querySelector(
+      `#${BUY_MORE_TRIGGER_BUTTON_ID}`
+    ) as HTMLElement;
+    if (!button) return;
+
+    button.style.display = stakeType === "stake" ? "block" : "none";
+  }
+  useEffect(changeBuyMoreButtonVisibility, [stakeType]);
 
   function showErrorText() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

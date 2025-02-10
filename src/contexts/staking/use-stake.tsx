@@ -18,8 +18,10 @@ import { z } from "zod";
 import { useLogStakedNodes } from "@/hooks/staking/use-log-staked-nodes";
 import { useClaimableNodes } from "@/hooks/staking/use-claimable-nodes";
 
+type StakeType = "stake" | "unstake" | "claim";
+
 interface ResultType {
-  operation: "stake" | "unstake" | "claim";
+  operation: StakeType;
   amount: number;
 }
 
@@ -63,7 +65,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function getNodeIds(amount: number, type: "stake" | "unstake" | "claim") {
+  function getNodeIds(amount: number, type: StakeType) {
     const lists = {
       stake: smartNodes,
       unstake: stakedNodes,
@@ -94,6 +96,18 @@ export function StakeProvider({ children }: StakeProviderProps) {
     return approval as boolean;
   }
 
+  function hasEnoughNodes(amount: number, type: StakeType) {
+    const lists = {
+      stake: smartNodes,
+      unstake: stakedNodes,
+      claim: claimableNodes,
+    };
+    const list = lists[type];
+    if (!list || list.length === 0) return false;
+
+    return amount <= list.length;
+  }
+
   async function stake(amount: number) {
     if (amount === 0 || !user) return;
     setError("");
@@ -103,6 +117,16 @@ export function StakeProvider({ children }: StakeProviderProps) {
     if (!success) {
       setError(
         "Oops! Looks like you did not fill in the amount of nodes you want to stake"
+      );
+      setLoading(false);
+      return;
+    }
+
+    const functionName = "stake";
+    const enoughNodes = hasEnoughNodes(amount, functionName);
+    if (!enoughNodes) {
+      setError(
+        `Oops! Looks like you don't have enough nodes to perform this ${functionName}`
       );
       setLoading(false);
       return;
@@ -125,7 +149,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
         await waitForTransactionReceipt({ hash });
       }
 
-      const functionName = "stake";
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
@@ -175,8 +198,17 @@ export function StakeProvider({ children }: StakeProviderProps) {
       return;
     }
 
+    const functionName = "unstake";
+    const enoughNodes = hasEnoughNodes(amount, functionName);
+    if (!enoughNodes) {
+      setError(
+        `Oops! Looks like you don't have enough nodes to perform this ${functionName}`
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
-      const functionName = "unstake";
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,

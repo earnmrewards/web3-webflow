@@ -47,8 +47,9 @@ export function SuccessModal() {
     if (description) {
       const { operation, amount } = result;
       const descAlias = alias[operation].description;
+      const plural = amount > 1 ? "s" : "";
 
-      description.innerHTML = `You successfully ${descAlias} <strong>${amount} SmartNodes</strong>`;
+      description.innerHTML = `You successfully ${descAlias} <strong>${amount} SmartNode${plural}</strong>`;
     }
   }
   useEffect(updateModalTexts, [result]);

@@ -21,6 +21,7 @@ export const SELECTOR_RANGE_INPUT_ID = "web3-range-input";
 
 export const STAKING_TRIGGER_BUTTON_ID = "web3-stake-trigger";
 export const CLAIMING_TRIGGER_BUTTON_ID = "web3-claim-trigger";
+export const BUY_MORE_TRIGGER_BUTTON_ID = "web3-buy-more-button";
 
 export const STAKING_SUCCESS_MODAL_ID = "web3-success-container";
 export const STAKING_SUCCESS_MODAL_TITLE_ID = "web3-success-modal-title";
