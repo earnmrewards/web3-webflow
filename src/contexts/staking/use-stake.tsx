@@ -77,7 +77,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     const size = type === "claim" ? list.length : amount;
     const fixedAmount = size > 100 ? 100 : size;
 
-    const sortedNodes = list.sort();
+    const sortedNodes = list.sort((a, b) => a - b);
     const slicedNodes = sortedNodes.slice(0, fixedAmount);
 
     return slicedNodes;
@@ -209,6 +209,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
 
     try {
+      console.log(getNodeIds(amount, functionName));
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
@@ -226,6 +227,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
       setFinished(true);
     } catch (error) {
+      console.log(error);
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
