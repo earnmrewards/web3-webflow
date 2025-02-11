@@ -14,6 +14,8 @@ export const USER_TOTAL_STAKED_AMOUNT_LABEL_ID =
   "web3-user-total-staked-amount";
 export const CLAIMABLE_REWARDS_LABEL_ID = "web3-claimable-rewards";
 
+export const REWARD_POOL_CONTAINER_ID = "web3-reward-container";
+
 export const STAKING_SELECTOR_ID = "web3-staking-selector";
 export const SELECTOR_AMOUNT_INPUT_ID = "web3-amount-input";
 export const SELECTOR_MAX_BUTTON_ID = "web3-max-button";

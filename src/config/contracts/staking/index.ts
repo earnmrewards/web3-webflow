@@ -6,11 +6,6 @@ export const abi = [
       { internalType: "address", name: "__initialOwner", type: "address" },
       { internalType: "address", name: "__smartNodesErc721", type: "address" },
       { internalType: "address", name: "__earnmTokenErc20", type: "address" },
-      {
-        internalType: "address",
-        name: "__rewardsClaimFeeReceiver",
-        type: "address",
-      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -33,14 +28,6 @@ export const abi = [
     type: "error",
   },
   { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint8", name: "bits", type: "uint8" },
-      { internalType: "uint256", name: "value", type: "uint256" },
-    ],
-    name: "SafeCastOverflowedUintDowncast",
-    type: "error",
-  },
   {
     inputs: [{ internalType: "address", name: "token", type: "address" }],
     name: "SafeERC20FailedOperation",
@@ -244,31 +231,13 @@ export const abi = [
     ],
     name: "claimRewards",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
     name: "earnmTokenErc20",
     outputs: [{ internalType: "contract IERC20", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getClaimFee",
-    outputs: [
-      { internalType: "uint128", name: "claimFeeWei", type: "uint128" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getClaimFeesReceiver",
-    outputs: [
-      { internalType: "address", name: "claimFeesReceiver", type: "address" },
-    ],
     stateMutability: "view",
     type: "function",
   },
@@ -298,13 +267,18 @@ export const abi = [
         name: "rewardsWeiPerSmartNodePerSecond_",
         type: "uint128",
       },
+      {
+        internalType: "uint128[]",
+        name: "memoryRewardsPerSmartNode",
+        type: "uint128[]",
+      },
     ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint16", name: "snTokenId", type: "uint16" }],
-    name: "getLastRewardsIterationTimestamp",
+    inputs: [],
+    name: "getLastIterationTimestamp",
     outputs: [
       {
         internalType: "uint40",
@@ -316,8 +290,8 @@ export const abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getLastRewardsIterationTimestamp",
+    inputs: [{ internalType: "uint16", name: "snTokenId", type: "uint16" }],
+    name: "getLastRewardTimestamp",
     outputs: [
       {
         internalType: "uint40",
@@ -341,6 +315,15 @@ export const abi = [
     outputs: [
       { internalType: "uint128", name: "earnmClaimedWei", type: "uint128" },
     ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint40", name: "iterationTimestamp", type: "uint40" },
+    ],
+    name: "getRewardsFromIterationTimestamp",
+    outputs: [{ internalType: "uint128", name: "rewardsWei", type: "uint128" }],
     stateMutability: "view",
     type: "function",
   },
@@ -450,30 +433,24 @@ export const abi = [
   },
   {
     inputs: [
-      { internalType: "uint128", name: "rewardsClaimFee", type: "uint128" },
+      { internalType: "uint40", name: "iterationTimestamp", type: "uint40" },
+      { internalType: "uint128", name: "rewardAmount", type: "uint128" },
     ],
-    name: "setRewardsClaimFee",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "rewardsClaimFeeReceiver",
-        type: "address",
-      },
-    ],
-    name: "setRewardsClaimFeeReceiver",
+    name: "setTimestampToReward",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "smartNodesErc721",
-    outputs: [{ internalType: "contract IERC721", name: "", type: "address" }],
+    name: "smartNodesErc721c",
+    outputs: [
+      {
+        internalType: "contract ISmartNodesERC721C",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
@@ -509,7 +486,7 @@ export const abi = [
     ],
     name: "unstake",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -534,13 +511,6 @@ export const abi = [
       { internalType: "uint16[]", name: "snTokenIds", type: "uint16[]" },
     ],
     name: "updateRewards",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-    name: "withdraw",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

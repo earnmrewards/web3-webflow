@@ -7,6 +7,7 @@ import { StakingContainer } from "./staking-container";
 import { StatsContainer } from "./stats-container";
 import { LoaderContainer } from "./loader-container";
 import { SuccessModal } from "./success-modal";
+import { RewardPoolContainer } from "./reward-pool-container";
 
 export function Staking() {
   return (
@@ -18,6 +19,7 @@ export function Staking() {
       <StakingContainer />
       <LoaderContainer />
       <SuccessModal />
+      <RewardPoolContainer />
     </StakeProvider>
   );
 }
