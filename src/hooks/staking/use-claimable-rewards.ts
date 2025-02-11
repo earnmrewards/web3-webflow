@@ -29,13 +29,16 @@ export function useClaimableRewards() {
       })
     );
 
-    return rewards.reduce((acc, reward) => acc + reward, 0);
+    const precision = 10 ** 18;
+    const claimableRewards = rewards.reduce((acc, reward) => acc + reward, 0);
+
+    return claimableRewards / precision;
   }
 
   return useQuery({
     queryKey: ["claimable-rewards", user?.address],
     queryFn: getClaimableReward,
     initialData: 0,
-    enabled: !!stakedNodes,
+    enabled: stakedNodes.length > 0,
   });
 }

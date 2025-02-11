@@ -36,7 +36,8 @@ export function RewardPoolContainer() {
           args: [timestamp],
         });
 
-        return reward as number;
+        const precision = 10 ** 18;
+        return Number(reward) / precision;
       } catch (error) {
         return 0;
       }

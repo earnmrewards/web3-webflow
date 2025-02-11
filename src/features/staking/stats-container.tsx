@@ -102,11 +102,9 @@ export function StatsContainer() {
     );
     if (!claimableRewardsLabel) return;
 
-    const precision = 10 ** 18;
-    const claimableValue = (claimableRewards / precision).toLocaleString(
-      undefined,
-      { maximumFractionDigits: 4 }
-    );
+    const claimableValue = claimableRewards.toLocaleString(undefined, {
+      maximumFractionDigits: 4,
+    });
 
     const shouldShow = !claimableRewardsFetching && user;
     claimableRewardsLabel.innerHTML = shouldShow ? claimableValue : "---";
