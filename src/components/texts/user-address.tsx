@@ -18,7 +18,7 @@ export function UserAddress() {
     for (const textField of textFields) {
       textField.innerText = user
         ? shortenAddress(user.address)
-        : "Not Connected";
+        : "Not connected";
 
       textField.addEventListener("click", addCopyEvent);
     }
