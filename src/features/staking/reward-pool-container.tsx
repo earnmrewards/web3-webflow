@@ -2,11 +2,13 @@ import { useCallback, useEffect } from "react";
 import { REWARD_POOL_CONTAINER_ID, STAKING_CONTAINER_ID } from "./config";
 import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
+import { useUser } from "@account-kit/react";
 
 const months = ["January", "February", "March", "April", "May"];
 const FIXED_YEAR = 2025;
 
 export function RewardPoolContainer() {
+  const user = useUser();
   const { readContract } = useCustomBundler({ chain: "arbitrum" });
 
   function getContainer() {
@@ -49,7 +51,7 @@ export function RewardPoolContainer() {
     const container = getContainer();
     if (!container) return;
 
-    const currentMonthIndex = new Date().getMonth();
+    const currentMonthIndex = new Date().getMonth() - 1;
     months.forEach((month, index) => {
       const currentChildren = container.children.length;
       if (index > currentMonthIndex || currentChildren > index) return;
@@ -72,14 +74,27 @@ export function RewardPoolContainer() {
       container.appendChild(card);
     });
   }
-  useEffect(addCardsByMonth, [getTimestampReward]);
+  useEffect(addCardsByMonth, []);
 
   function updateCardsValue() {
     const container = getContainer();
     if (!container) return;
 
+    const currentMonthIndex = new Date().getMonth() - 1;
+    if (!user) {
+      months.forEach((_, index) => {
+        const element = container.children.item(index);
+        if (!element) return;
+
+        const label = element.querySelector("span");
+        if (!label) return;
+
+        label.innerText = "---";
+      });
+      return;
+    }
+
     (async () => {
-      const currentMonthIndex = new Date().getMonth();
       const promises = months.map(async (_, index) => {
         if (index > currentMonthIndex) return null;
 
@@ -104,7 +119,7 @@ export function RewardPoolContainer() {
       });
     })();
   }
-  useEffect(updateCardsValue, [getTimestampReward]);
+  useEffect(updateCardsValue, [getTimestampReward, user]);
 
   return null;
 }

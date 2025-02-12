@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   BUY_MORE_TRIGGER_BUTTON_ID,
   SELECTOR_AMOUNT_INPUT_ID,
+  SELECTOR_AMOUNT_LABEL_ID,
   SELECTOR_MAX_BUTTON_ID,
   SELECTOR_RANGE_INPUT_ID,
   STAKING_CONTAINER_ID,
@@ -12,8 +13,12 @@ import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { ERROR_COMPONENT_ID } from "../global-config";
 import { useStake } from "@/contexts/staking/use-stake";
+import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
+import { useUser } from "@account-kit/react";
 
 export function StakingContainer() {
+  const user = useUser();
+
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
   const [amount, setAmount] = useState(0);
 
@@ -28,10 +33,20 @@ export function StakingContainer() {
     [stakeType, smartNodes, stakedNodes]
   );
 
-  function handleStakeButtonClick() {
+  const handleStakeButtonClick = useCallback(() => {
+    if (!user) return;
+
     setStakeType((type) => (type === "stake" ? "unstake" : "stake"));
     setAmount(0);
+  }, [user]);
+
+  function resetValuesWhenDisconnect() {
+    if (user) return;
+
+    setAmount(0);
+    setStakeType("stake");
   }
+  useEffect(resetValuesWhenDisconnect, [user]);
 
   function changeStakeType() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -43,6 +58,7 @@ export function StakingContainer() {
     const anchors: NodeListOf<HTMLAnchorElement> =
       selector.querySelectorAll("a");
     for (const anchor of anchors) {
+      anchor.style.cursor = user ? "pointer" : "not-allowed";
       anchor.addEventListener("click", handleStakeButtonClick);
     }
 
@@ -52,7 +68,7 @@ export function StakingContainer() {
       }
     };
   }
-  useEffect(changeStakeType, []);
+  useEffect(changeStakeType, [user, handleStakeButtonClick]);
 
   function changeStakeButtonColor() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -145,11 +161,13 @@ export function StakingContainer() {
 
     for (const component of components) {
       component.addEventListener("change", handleInputValueChange);
+      component.addEventListener("keypress", blockNativeSubmitEvent);
     }
 
     return () => {
       for (const component of components) {
         component.removeEventListener("change", handleInputValueChange);
+        component.removeEventListener("keypress", blockNativeSubmitEvent);
       }
     };
   }
@@ -207,6 +225,20 @@ export function StakingContainer() {
     button.style.display = stakeType === "stake" ? "block" : "none";
   }
   useEffect(changeBuyMoreButtonVisibility, [stakeType]);
+
+  function changeAmountLabelText() {
+    const container = document.getElementById(STAKING_CONTAINER_ID);
+    if (!container) return;
+
+    const label = container.querySelector(
+      `#${SELECTOR_AMOUNT_LABEL_ID}`
+    ) as HTMLElement;
+    if (!label) return;
+
+    label.style.textTransform = "capitalize";
+    label.innerText = `Amount To ${stakeType}`;
+  }
+  useEffect(changeAmountLabelText, [stakeType]);
 
   function showErrorText() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
