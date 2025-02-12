@@ -16,6 +16,8 @@ export const TOKEN_IMAGE_COMPONENT_ID = "web3-token-image";
 export const MAX_AMOUNT_BUTTON_COMPONENT_ID = "web3-max-amount-button";
 export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
 
+export const CONVERSION_RATE_CONTAINER_ID = "web3-conversion-rate-container";
+
 export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
 
 export const LOADER_CONTAINER_ID = "web3-loader-container";
@@ -30,3 +32,5 @@ export const EARNM_TOKEN_IMAGE_CDN_URL =
   "https://cdn.prod.website-files.com/61e31fdc25d88b56e9dbab02/6797f6a67ac76d4ff158843d_EARNFT%20COIN.png";
 export const STMX_TOKEN_IMAGE_CDN_URL =
   "https://cdn.prod.website-files.com/61e31fdc25d88b56e9dbab02/6797f4444710f28f19e81492_stormx-logo.png";
+
+export const CONVERSION_RATE = [0.7, 0.12];
