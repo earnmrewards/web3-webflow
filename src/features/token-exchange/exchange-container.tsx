@@ -298,9 +298,10 @@ export function ExchangeContainer() {
     if (!rateContainer) return;
 
     const currentToken = selectedToken === 0 ? "$EARNM" : "$STRMX";
-    rateContainer.innerText = `1 ${currentToken} = ${CONVERSION_RATE[selectedToken]} $EARNM v2`;
+    const rateValue = user ? CONVERSION_RATE[selectedToken] : "---";
+    rateContainer.innerText = `1 ${currentToken} = ${rateValue} $EARNM v2`;
   }
-  useEffect(updateConversionRateLabel, [selectedToken]);
+  useEffect(updateConversionRateLabel, [selectedToken, user]);
 
   return null;
 }
