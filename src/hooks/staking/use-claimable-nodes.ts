@@ -3,10 +3,12 @@ import { useLogStakedNodes } from "./use-log-staked-nodes";
 import { useCustomBundler } from "../web3/use-custom-bundler";
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
 import { useQuery } from "@tanstack/react-query";
+import { useClaimableRewards } from "./use-claimable-rewards";
 
 export function useClaimableNodes() {
   const user = useUser();
   const { data: stakedNodes } = useLogStakedNodes();
+  const { data: claimableRewards } = useClaimableRewards();
   const { readContract } = useCustomBundler({ chain: "arbitrum" });
 
   async function getClaimableNodes() {
@@ -36,6 +38,6 @@ export function useClaimableNodes() {
     queryKey: ["claimable-nodes", user?.address],
     queryFn: getClaimableNodes,
     initialData: [],
-    enabled: !!stakedNodes,
+    enabled: !!stakedNodes && claimableRewards > 0,
   });
 }
