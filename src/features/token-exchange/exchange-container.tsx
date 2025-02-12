@@ -1,6 +1,8 @@
 import { useAuthModal, useChain, useUser } from "@account-kit/react";
 import {
   AMOUNT_TO_GET_LABEL_ID,
+  CONVERSION_RATE,
+  CONVERSION_RATE_LABEL_ID,
   EARNM_TOKEN_IMAGE_CDN_URL,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
@@ -193,10 +195,12 @@ export function ExchangeContainer() {
     const label = document.getElementById(AMOUNT_TO_GET_LABEL_ID);
     if (!label) return;
 
-    const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
-    const value = (amount * conversionRate).toLocaleString(undefined, {
-      maximumFractionDigits: 2,
-    });
+    const value = (amount * CONVERSION_RATE[selectedToken]).toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits: 2,
+      }
+    );
     label.innerText = value;
   }
   useEffect(updateConversionValue, [amount, selectedToken]);
@@ -257,10 +261,12 @@ export function ExchangeContainer() {
       `#${RESULT_CONVERTED_VALUE_COMPONENT_ID}`
     ) as HTMLDivElement;
     if (resultConvertedValue) {
-      const conversionRate = selectedToken === 0 ? 0.7 : 0.12;
-      const value = (amount * conversionRate).toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-      });
+      const value = (amount * CONVERSION_RATE[selectedToken]).toLocaleString(
+        undefined,
+        {
+          maximumFractionDigits: 2,
+        }
+      );
 
       resultConvertedValue.innerText = `${value} EARNM (V2)`;
     }
@@ -281,6 +287,21 @@ export function ExchangeContainer() {
     select.selectedIndex = 3; // Ethereum Index
   }
   useEffect(updateNetworkForAsset, [selectedToken]);
+
+  function updateConversionRateLabel() {
+    const container = document.getElementById(EXCHANGE_CONTAINER_ID);
+    if (!container) return;
+
+    const rateContainer = container.querySelector(
+      `#${CONVERSION_RATE_LABEL_ID}`
+    ) as HTMLElement;
+    if (!rateContainer) return;
+
+    const currentToken = selectedToken === 0 ? "$EARNM" : "$STRMX";
+    const rateValue = user ? CONVERSION_RATE[selectedToken] : "---";
+    rateContainer.innerText = `1 ${currentToken} = ${rateValue} $EARNM v2`;
+  }
+  useEffect(updateConversionRateLabel, [selectedToken, user]);
 
   return null;
 }
