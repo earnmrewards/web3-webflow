@@ -16,7 +16,7 @@ export const TOKEN_IMAGE_COMPONENT_ID = "web3-token-image";
 export const MAX_AMOUNT_BUTTON_COMPONENT_ID = "web3-max-amount-button";
 export const AMOUNT_TO_GET_LABEL_ID = "web3-amount-to-get";
 
-export const CONVERSION_RATE_CONTAINER_ID = "web3-conversion-rate-container";
+export const CONVERSION_RATE_LABEL_ID = "web3-conversion-rate-label";
 
 export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
 

@@ -2,7 +2,7 @@ import { useAuthModal, useChain, useUser } from "@account-kit/react";
 import {
   AMOUNT_TO_GET_LABEL_ID,
   CONVERSION_RATE,
-  CONVERSION_RATE_CONTAINER_ID,
+  CONVERSION_RATE_LABEL_ID,
   EARNM_TOKEN_IMAGE_CDN_URL,
   EXCHANGE_BUTTON_COMPONENT_ID,
   EXCHANGE_CONTAINER_ID,
@@ -293,7 +293,7 @@ export function ExchangeContainer() {
     if (!container) return;
 
     const rateContainer = container.querySelector(
-      `#${CONVERSION_RATE_CONTAINER_ID}`
+      `#${CONVERSION_RATE_LABEL_ID}`
     ) as HTMLElement;
     if (!rateContainer) return;
 
