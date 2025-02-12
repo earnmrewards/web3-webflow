@@ -91,6 +91,8 @@ export function BannerContainer() {
   useEffect(updateBannerContent, [user, timeLeft, claimableRewards]);
 
   function triggerClaim() {
+    if (claimableRewards === 0) return;
+
     const banner = getBannerComponent();
     if (!banner) return;
 
@@ -105,7 +107,7 @@ export function BannerContainer() {
       button.removeEventListener("click", claim);
     };
   }
-  useEffect(triggerClaim, [claim]);
+  useEffect(triggerClaim, [claim, claimableRewards]);
 
   return null;
 }
