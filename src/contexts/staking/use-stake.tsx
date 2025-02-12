@@ -38,7 +38,7 @@ interface StakeContextProps {
 const StakeContext = createContext({} as StakeContextProps);
 
 const stakeSchema = z.object({
-  amount: z.number().positive(),
+  amount: z.number().positive().int(),
 });
 
 interface StakeProviderProps {
@@ -118,7 +118,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     const { success } = stakeSchema.safeParse({ amount });
     if (!success) {
       setError(
-        "Oops! Looks like you did not fill in the amount of nodes you want to stake"
+        "Oops! Looks like you didn't fill in the number of nodes correctly."
       );
       setLoading(false);
       return;
@@ -198,7 +198,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     const { success } = stakeSchema.safeParse({ amount });
     if (!success) {
       setError(
-        "Oops! Looks like you did not fill in the amount of nodes you want to stake"
+        "Oops! Looks like you didn't fill in the number of nodes correctly."
       );
       setLoading(false);
       return;
