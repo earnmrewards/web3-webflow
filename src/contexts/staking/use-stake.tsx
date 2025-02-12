@@ -132,6 +132,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
       return;
     }
 
+    const params = new URL(window.location.href).searchParams;
     try {
       const validApproval = await hasValidApproval();
       if (!validApproval) {
@@ -166,6 +167,9 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
       setFinished(true);
     } catch (error) {
+      if (params.get("debugging")) {
+        console.log(error);
+      }
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
@@ -209,7 +213,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
 
     try {
-      console.log(getNodeIds(amount, functionName));
       await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
@@ -227,7 +230,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
       });
       setFinished(true);
     } catch (error) {
-      console.log(error);
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
       } else if (isInsufficientFundsError(error)) {
@@ -274,6 +276,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
         operation: functionName,
         amount: getNodeIds(0, functionName).length,
       });
+      setFinished(true);
     } catch (error) {
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
