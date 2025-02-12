@@ -22,15 +22,18 @@ export function StakingContainer() {
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
   const [amount, setAmount] = useState(0);
 
-  const { data: smartNodes, isFetching: smartNodesFetching } = useOwnedNFTs();
+  const {
+    data: { totalCount: smartNodesCount },
+    isFetching: smartNodesFetching,
+  } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: stakedNodesFetching } =
     useStakedNodes();
 
   const { stake, unstake, error } = useStake();
 
   const getMaxAmount = useCallback(
-    () => (stakeType === "stake" ? smartNodes?.length ?? 0 : stakedNodes),
-    [stakeType, smartNodes, stakedNodes]
+    () => (stakeType === "stake" ? smartNodesCount : stakedNodes),
+    [stakeType, smartNodesCount, stakedNodes]
   );
 
   const handleStakeButtonClick = useCallback(() => {
@@ -99,7 +102,7 @@ export function StakingContainer() {
     const maxAmount = getMaxAmount();
     if (fetching || maxAmount === 0) return;
 
-    setAmount(maxAmount);
+    setAmount(maxAmount > 100 ? 100 : maxAmount);
   }, [stakeType, smartNodesFetching, stakedNodesFetching, getMaxAmount]);
 
   function maxButtonBehavior() {
@@ -128,7 +131,9 @@ export function StakingContainer() {
     ) as HTMLInputElement;
     if (!range) return;
 
-    range.max = getMaxAmount().toString();
+    const maxAmount = getMaxAmount() > 100 ? 100 : getMaxAmount();
+
+    range.max = maxAmount.toString();
     range.type = "range";
     range.style.accentColor = "#00D632";
   }
@@ -141,6 +146,10 @@ export function StakingContainer() {
       if (getMaxAmount() === 0) {
         target.value = String(0);
         return;
+      }
+
+      if (Number(target.value) > 100) {
+        target.value = String(100);
       }
 
       setAmount(Number(target.value));

@@ -17,7 +17,10 @@ import { useClaimableRewards } from "@/hooks/staking/use-claimable-rewards";
 export function StatsContainer() {
   const user = useUser();
 
-  const { data: smartNodes, isFetching: smartNodesFetching } = useOwnedNFTs();
+  const {
+    data: { totalCount: smartNodesCount },
+    isFetching: smartNodesFetching,
+  } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: stakedNodesFetching } =
     useStakedNodes();
   const { data: totalStakedNodes, isFetching: totalStakedNodesFetching } =
@@ -36,10 +39,10 @@ export function StatsContainer() {
     const snAmountLabel = container.querySelector(`#${SN_AMOUNT_LABEL_ID}`);
     if (!snAmountLabel) return;
 
-    const shouldShow = !smartNodesFetching && user && smartNodes;
-    snAmountLabel.innerHTML = shouldShow ? smartNodes.length.toString() : "---";
+    const shouldShow = !smartNodesFetching && user;
+    snAmountLabel.innerHTML = shouldShow ? smartNodesCount.toString() : "---";
   }
-  useEffect(showSmartNodesAmount, [smartNodesFetching, smartNodes, user]);
+  useEffect(showSmartNodesAmount, [smartNodesFetching, smartNodesCount, user]);
 
   function showStakedAmount() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

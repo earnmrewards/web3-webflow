@@ -9,13 +9,14 @@ const responseSchema = z.object({
       tokenId: z.string(),
     })
   ),
+  totalCount: z.number(),
 });
 
 export function useOwnedNFTs() {
   const user = useUser();
 
   async function getOwnedNFTs() {
-    if (!user) return [];
+    if (!user) return { smartNodes: [], totalCount: 0 };
 
     const url = new URL(
       `${import.meta.env.VITE_ALCHEMY_ARB_RPC_URL}/nft/v3/${
@@ -24,35 +25,38 @@ export function useOwnedNFTs() {
     );
     url.searchParams.append("owner", user.address);
     url.searchParams.append("withMetadata", "false");
+    url.searchParams.append(
+      "contractAddresses[]",
+      import.meta.env.VITE_SMART_NODES_CONTRACT_ADDRESS
+    );
 
     const request = await fetch(url.toString());
     if (request.status !== 200) {
       console.error("Failed to fetch the owned nfts", {
         status: request.status,
       });
-      return [];
+      return { smartNodes: [], totalCount: 0 };
     }
 
     const response = await request.json();
     const parsedResponse = responseSchema.safeParse(response);
     if (!parsedResponse.success) {
       console.error("A wrong response body was coming from owned nft list");
-      return [];
+      return { smartNodes: [], totalCount: 0 };
     }
 
-    const snTokens = parsedResponse.data.ownedNfts.filter(
-      (tokens) =>
-        tokens.contractAddress ===
-        import.meta.env.VITE_SMART_NODES_CONTRACT_ADDRESS
-    );
+    const { ownedNfts, totalCount } = parsedResponse.data;
 
-    return snTokens.map((token) => Number(token.tokenId));
+    return {
+      smartNodes: ownedNfts.map(({ tokenId }) => Number(tokenId)),
+      totalCount,
+    };
   }
 
   return useQuery({
     queryKey: ["owned-nfts", user?.address],
     queryFn: getOwnedNFTs,
-    initialData: [],
+    initialData: { smartNodes: [], totalCount: 0 },
     enabled: !!user,
   });
 }

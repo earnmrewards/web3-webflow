@@ -55,7 +55,9 @@ export function StakeProvider({ children }: StakeProviderProps) {
     chain: "arbitrum",
   });
 
-  const { data: smartNodes } = useOwnedNFTs();
+  const {
+    data: { smartNodes },
+  } = useOwnedNFTs();
   const { data: stakedNodes, isFetching: fetchingNodes } = useLogStakedNodes();
   const { data: claimableNodes, isFetching: fetchingClaimableNodes } =
     useClaimableNodes();
