@@ -24,6 +24,11 @@ export function RewardPoolContainer() {
   }
 
   function getLastDayTimestampOfMonth(index: number) {
+    // TODO: Remove me for prod
+    if (index === 0) {
+      return 1739318400;
+    }
+
     const date = new Date(Date.UTC(FIXED_YEAR, index + 1, 0, 0, 0, 0));
     return Math.floor(date.getTime() / 1000);
   }
