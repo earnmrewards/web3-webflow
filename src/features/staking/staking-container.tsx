@@ -9,12 +9,12 @@ import {
   STAKING_SELECTOR_ID,
   STAKING_TRIGGER_BUTTON_ID,
 } from "./config";
-import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { ERROR_COMPONENT_ID } from "../global-config";
 import { useStake } from "@/contexts/staking/use-stake";
 import { blockNativeSubmitEvent } from "@/utils/block-native-submit-event";
 import { useUser } from "@account-kit/react";
+import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
 
 export function StakingContainer() {
   const user = useUser();
@@ -22,18 +22,21 @@ export function StakingContainer() {
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
   const [amount, setAmount] = useState(0);
 
-  const {
-    data: { totalCount: smartNodesCount },
-    isFetching: smartNodesFetching,
-  } = useOwnedNFTs();
-  const { data: stakedNodes, isFetching: stakedNodesFetching } =
-    useStakedNodes();
+  const { data: smartNodes, loading: smartNodesLoading } = useHeldNodes({
+    page: 1,
+    take: 100,
+  });
+  const { data: stakedNodes, loading: stakedNodesLoading } = useStakedNodes({
+    page: 1,
+    take: 100,
+  });
 
   const { stake, unstake, error } = useStake();
 
   const getMaxAmount = useCallback(
-    () => (stakeType === "stake" ? smartNodesCount : stakedNodes),
-    [stakeType, smartNodesCount, stakedNodes]
+    () =>
+      stakeType === "stake" ? smartNodes?.count ?? 0 : stakedNodes?.count ?? 0,
+    [stakeType, smartNodes, stakedNodes]
   );
 
   const handleStakeButtonClick = useCallback(() => {
@@ -98,12 +101,12 @@ export function StakingContainer() {
 
   const handleMaxButtonClick = useCallback(() => {
     const fetching =
-      stakeType === "stake" ? smartNodesFetching : stakedNodesFetching;
+      stakeType === "stake" ? smartNodesLoading : stakedNodesLoading;
     const maxAmount = getMaxAmount();
     if (fetching || maxAmount === 0) return;
 
     setAmount(maxAmount > 100 ? 100 : maxAmount);
-  }, [stakeType, smartNodesFetching, stakedNodesFetching, getMaxAmount]);
+  }, [stakeType, smartNodesLoading, stakedNodesLoading, getMaxAmount]);
 
   function maxButtonBehavior() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

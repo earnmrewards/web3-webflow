@@ -5,15 +5,17 @@ import {
   STAKING_CONTAINER_ID,
 } from "./config";
 import { useUser } from "@account-kit/react";
-import { useClaimableRewards } from "@/hooks/staking/use-claimable-rewards";
 import { useStake } from "@/contexts/staking/use-stake";
+import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 
 export function BannerContainer() {
   const user = useUser();
   const [timeLeft, setTimeLeft] = useState(calculateCountdown());
 
-  const { data: claimableRewards } = useClaimableRewards();
+  const { data } = useStakedNodes({ page: 1, take: 1 });
   const { claim } = useStake();
+
+  const claimableRewards = data?.totalRewards ?? 0;
 
   function getBannerComponent() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

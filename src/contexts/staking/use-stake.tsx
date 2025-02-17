@@ -1,4 +1,3 @@
-import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
 import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
 import {
   useSendUserOperation,
@@ -15,8 +14,10 @@ import { isInternalError } from "@/errors/is-internal-error";
 import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { z } from "zod";
-import { useLogStakedNodes } from "@/hooks/staking/use-log-staked-nodes";
 import { useClaimableNodes } from "@/hooks/staking/use-claimable-nodes";
+import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
+import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
+import { useQueryClient } from "@tanstack/react-query";
 
 type StakeType = "stake" | "unstake" | "claim";
 
@@ -54,11 +55,13 @@ export function StakeProvider({ children }: StakeProviderProps) {
   const { waitForTransactionReceipt, readContract } = useCustomBundler({
     chain: "arbitrum",
   });
+  const queryClient = useQueryClient();
 
-  const {
-    data: { smartNodes },
-  } = useOwnedNFTs();
-  const { data: stakedNodes, isFetching: fetchingNodes } = useLogStakedNodes();
+  const { data: heldNodes } = useHeldNodes({ page: 1, take: 100 });
+  const { data: stakedNodes, loading: stakedNodesLoading } = useStakedNodes({
+    page: 1,
+    take: 100,
+  });
   const { data: claimableNodes, isFetching: fetchingClaimableNodes } =
     useClaimableNodes();
 
@@ -69,9 +72,9 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
   function getNodeIds(amount: number, type: StakeType) {
     const lists = {
-      stake: smartNodes,
-      unstake: stakedNodes,
-      claim: claimableNodes,
+      stake: heldNodes?.nodes ?? [],
+      unstake: stakedNodes?.nodes.map(({ tokenId }) => tokenId) ?? [],
+      claim: claimableNodes.map(({ tokenId }) => tokenId),
     };
     const list = lists[type];
     if (!list || list.length === 0) return [];
@@ -100,8 +103,8 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
   function hasEnoughNodes(amount: number, type: StakeType) {
     const lists = {
-      stake: smartNodes,
-      unstake: stakedNodes,
+      stake: heldNodes?.nodes,
+      unstake: stakedNodes?.nodes.map(({ tokenId }) => tokenId),
       claim: claimableNodes,
     };
     const list = lists[type];
@@ -152,7 +155,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
         await waitForTransactionReceipt({ hash });
       }
 
-      await sendUserOperationAsync({
+      const { hash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -168,6 +171,9 @@ export function StakeProvider({ children }: StakeProviderProps) {
         amount,
       });
       setFinished(true);
+
+      await waitForTransactionReceipt({ hash });
+      queryClient.invalidateQueries({ queryKey: [user.address, "held-nodes"] });
     } catch (error) {
       if (params.get("debugging")) {
         console.log(error);
@@ -191,7 +197,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
   }
 
   async function unstake(amount: number) {
-    if (amount === 0 || !user || fetchingNodes) return;
+    if (amount === 0 || !user || stakedNodesLoading) return;
     setError("");
     setLoading(true);
 
@@ -215,7 +221,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
 
     try {
-      await sendUserOperationAsync({
+      const { hash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -231,6 +237,11 @@ export function StakeProvider({ children }: StakeProviderProps) {
         amount,
       });
       setFinished(true);
+
+      await waitForTransactionReceipt({ hash });
+      queryClient.invalidateQueries({
+        queryKey: [user.address, "staked-nodes"],
+      });
     } catch (error) {
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");
@@ -263,7 +274,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
     try {
       const functionName = "claim";
-      await sendUserOperationAsync({
+      const { hash } = await sendUserOperationAsync({
         uo: {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
@@ -279,6 +290,11 @@ export function StakeProvider({ children }: StakeProviderProps) {
         amount: getNodeIds(0, functionName).length,
       });
       setFinished(true);
+
+      await waitForTransactionReceipt({ hash });
+      queryClient.invalidateQueries({
+        queryKey: [user.address, "staked-nodes"],
+      });
     } catch (error) {
       if (isInternalError(error)) {
         setError("Oops! Looks like an internal error happens.");

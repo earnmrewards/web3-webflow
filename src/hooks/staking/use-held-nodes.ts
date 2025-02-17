@@ -1,17 +1,15 @@
 import { api } from "@/services/api";
-import { stakedResponseSchema } from "@/types/staking";
+import { heldResponseSchema } from "@/types/staking";
 import { useUser } from "@account-kit/react";
 import { useQuery } from "@tanstack/react-query";
-import { z } from "zod";
 
-interface StakedNodesProps {
+interface HeldNodesProps {
   page: number;
   take: number;
 }
 
-interface StakedNodesResponse {
-  nodes: z.infer<typeof stakedResponseSchema>["data"]["smartNodes"]["data"];
-  totalRewards: number;
+interface HeldNodesResponse {
+  nodes: number[];
   count: number;
   currentPage: number;
   nextPage: number | null;
@@ -19,26 +17,24 @@ interface StakedNodesResponse {
   lastPage: number;
 }
 
-export function useStakedNodes({ page, take }: StakedNodesProps) {
+export function useHeldNodes({ page, take }: HeldNodesProps) {
   const user = useUser();
 
-  async function getStakedNodes(): Promise<StakedNodesResponse | undefined> {
+  async function getHeldNodes(): Promise<HeldNodesResponse | undefined> {
     const { data, status } = await api.get(
-      `/smartnodes/staked/${user?.address}?page=${page}&take=${take}`
+      `/smartnodes/held/${user?.address}?page=${page}&take=${take}`
     );
-
     if (status !== 200) return;
 
-    const parsedResponse = stakedResponseSchema.safeParse(data);
+    const parsedResponse = heldResponseSchema.safeParse(data);
     if (!parsedResponse.success) return;
 
     const {
-      data: { smartNodes, totalRewards },
+      data: { smartNodes },
     } = parsedResponse.data;
 
     return {
-      nodes: smartNodes.data,
-      totalRewards,
+      nodes: smartNodes.data.map(({ tokenId }) => Number(tokenId)),
       count: smartNodes.count,
       currentPage: smartNodes.currentPage,
       nextPage: smartNodes.nextPage,
@@ -48,8 +44,8 @@ export function useStakedNodes({ page, take }: StakedNodesProps) {
   }
 
   const { data, isLoading } = useQuery({
-    queryKey: [user?.address, "staked-nodes", { page, take }],
-    queryFn: getStakedNodes,
+    queryKey: [user?.address, "held-nodes", { page, take }],
+    queryFn: getHeldNodes,
     enabled: !!user,
   });
 

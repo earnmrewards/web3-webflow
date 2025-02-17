@@ -3,34 +3,27 @@ import { useTotalStakedNodes } from "@/hooks/staking/use-total-staked-nodes";
 import {
   CLAIMABLE_REWARDS_LABEL_ID,
   SN_AMOUNT_LABEL_ID,
-  STAKED_AMOUNT_LABEL_ID,
   STAKING_CONTAINER_ID,
   TOTAL_STAKED_AMOUNT_LABEL_ID,
   USER_TOTAL_STAKED_AMOUNT_LABEL_ID,
 } from "./config";
 import { useEffect } from "react";
 import { useUser } from "@account-kit/react";
-import { useUserTotalStakedNodes } from "@/hooks/staking/use-user-total-staked-nodes";
-import { useOwnedNFTs } from "@/hooks/staking/use-owned-nfts";
-import { useClaimableRewards } from "@/hooks/staking/use-claimable-rewards";
+import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
 
 export function StatsContainer() {
   const user = useUser();
 
-  const {
-    data: { totalCount: smartNodesCount },
-    isFetching: smartNodesFetching,
-  } = useOwnedNFTs();
-  const { data: stakedNodes, isFetching: stakedNodesFetching } =
-    useStakedNodes();
-  const { data: totalStakedNodes, isFetching: totalStakedNodesFetching } =
+  const { data: heldNodes, loading: heldNodesLoading } = useHeldNodes({
+    page: 1,
+    take: 100,
+  });
+  const { data: stakedNodes, loading: stakedNodesLoading } = useStakedNodes({
+    page: 1,
+    take: 100,
+  });
+  const { data: totalStakedNodes, isLoading: totalStakedNodesLoading } =
     useTotalStakedNodes();
-  const {
-    data: userTotalStakedNodes,
-    isFetching: userTotalStakedNodesFetching,
-  } = useUserTotalStakedNodes();
-  const { data: claimableRewards, isFetching: claimableRewardsFetching } =
-    useClaimableRewards();
 
   function showSmartNodesAmount() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -39,22 +32,10 @@ export function StatsContainer() {
     const snAmountLabel = container.querySelector(`#${SN_AMOUNT_LABEL_ID}`);
     if (!snAmountLabel) return;
 
-    const shouldShow = !smartNodesFetching && user;
-    snAmountLabel.innerHTML = shouldShow ? smartNodesCount.toString() : "---";
+    const shouldShow = !heldNodesLoading && user && heldNodes;
+    snAmountLabel.innerHTML = shouldShow ? heldNodes.count.toString() : "---";
   }
-  useEffect(showSmartNodesAmount, [smartNodesFetching, smartNodesCount, user]);
-
-  function showStakedAmount() {
-    const container = document.getElementById(STAKING_CONTAINER_ID);
-    if (!container) return;
-
-    const stakedLabel = container.querySelector(`#${STAKED_AMOUNT_LABEL_ID}`);
-    if (!stakedLabel) return;
-
-    const shouldShow = !stakedNodesFetching && user;
-    stakedLabel.innerHTML = shouldShow ? stakedNodes.toString() : "---";
-  }
-  useEffect(showStakedAmount, [stakedNodesFetching, stakedNodes, user]);
+  useEffect(showSmartNodesAmount, [heldNodesLoading, heldNodes, user]);
 
   function showTotalStakedNodes() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -65,13 +46,13 @@ export function StatsContainer() {
     );
     if (!totalStakedLabel) return;
 
-    const shouldShow = !totalStakedNodesFetching && user;
+    const shouldShow = !totalStakedNodesLoading && user;
     totalStakedLabel.innerHTML = shouldShow
       ? totalStakedNodes.toString()
       : "---";
   }
   useEffect(showTotalStakedNodes, [
-    totalStakedNodesFetching,
+    totalStakedNodesLoading,
     totalStakedNodes,
     user,
   ]);
@@ -85,16 +66,12 @@ export function StatsContainer() {
     );
     if (!userTotalStakedLabel) return;
 
-    const shouldShow = !userTotalStakedNodesFetching && user;
+    const shouldShow = !stakedNodesLoading && user && stakedNodes;
     userTotalStakedLabel.innerHTML = shouldShow
-      ? userTotalStakedNodes.toString()
+      ? stakedNodes.count.toString()
       : "---";
   }
-  useEffect(showUserTotalStakedNodes, [
-    userTotalStakedNodesFetching,
-    userTotalStakedNodes,
-    user,
-  ]);
+  useEffect(showUserTotalStakedNodes, [stakedNodesLoading, stakedNodes, user]);
 
   function showClaimableRewards() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -105,18 +82,19 @@ export function StatsContainer() {
     );
     if (!claimableRewardsLabel) return;
 
-    const claimableValue = claimableRewards.toLocaleString(undefined, {
+    const shouldShow = !stakedNodesLoading && user && stakedNodes;
+    if (!shouldShow) {
+      claimableRewardsLabel.innerHTML = "---";
+      return;
+    }
+
+    const claimableValue = stakedNodes.totalRewards.toLocaleString(undefined, {
       maximumFractionDigits: 4,
     });
 
-    const shouldShow = !claimableRewardsFetching && user;
-    claimableRewardsLabel.innerHTML = shouldShow ? claimableValue : "---";
+    claimableRewardsLabel.innerHTML = claimableValue;
   }
-  useEffect(showClaimableRewards, [
-    claimableRewards,
-    claimableRewardsFetching,
-    user,
-  ]);
+  useEffect(showClaimableRewards, [stakedNodesLoading, stakedNodes, user]);
 
   return null;
 }

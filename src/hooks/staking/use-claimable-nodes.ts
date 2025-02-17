@@ -1,27 +1,26 @@
 import { useUser } from "@account-kit/react";
-import { useLogStakedNodes } from "./use-log-staked-nodes";
 import { useCustomBundler } from "../web3/use-custom-bundler";
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
 import { useQuery } from "@tanstack/react-query";
-import { useClaimableRewards } from "./use-claimable-rewards";
+import { useStakedNodes } from "./use-staked-nodes";
 
 export function useClaimableNodes() {
   const user = useUser();
-  const { data: stakedNodes } = useLogStakedNodes();
-  const { data: claimableRewards } = useClaimableRewards();
+  const { data: stakedNodes } = useStakedNodes({ page: 1, take: 1 });
   const { readContract } = useCustomBundler({ chain: "arbitrum" });
 
   async function getClaimableNodes() {
-    if (stakedNodes.length === 0) return [];
+    const stakedList = stakedNodes?.nodes || [];
+    if (stakedList.length === 0) return [];
 
     const nodes = await Promise.all(
-      stakedNodes.filter(async (nodeId) => {
+      stakedList.filter(async ({ tokenId }) => {
         try {
           const reward = await readContract({
             address: CONTRACT_ADDRESS,
             abi,
             functionName: "getRewards",
-            args: [BigInt(nodeId)],
+            args: [BigInt(tokenId)],
           });
 
           return Number(reward) > 0;
@@ -35,9 +34,9 @@ export function useClaimableNodes() {
   }
 
   return useQuery({
-    queryKey: ["claimable-nodes", user?.address],
+    queryKey: [user?.address, "claimable-nodes"],
     queryFn: getClaimableNodes,
     initialData: [],
-    enabled: !!stakedNodes && claimableRewards > 0,
+    enabled: !!stakedNodes && stakedNodes.totalRewards > 0,
   });
 }

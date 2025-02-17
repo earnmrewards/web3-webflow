@@ -8,7 +8,6 @@ export const ADDRESS_BUTTON_COMPONENT_ID = "web3-address-button";
 export const BANNER_CONTAINER_ID = "web3-banner-container";
 
 export const SN_AMOUNT_LABEL_ID = "web3-sn-amount";
-export const STAKED_AMOUNT_LABEL_ID = "web3-staked-amount";
 export const TOTAL_STAKED_AMOUNT_LABEL_ID = "web3-total-staked-amount";
 export const USER_TOTAL_STAKED_AMOUNT_LABEL_ID =
   "web3-user-total-staked-amount";
