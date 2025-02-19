@@ -108,7 +108,7 @@ export function StakingTableList({
                   )}
                 </div>
                 <div className="flex flex-col text-nowrap">
-                  <span className="text-block-24">Purchased Date</span>
+                  <span className="text-block-24">Received Date</span>
                   <span className="text-white font-bold">
                     {new Date(receivedAt).toLocaleDateString()}
                   </span>

@@ -50,7 +50,7 @@ export function StakingTableListSkeleton({
             <div className="mt-1 h-6 w-12 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
           </div>
           <div className="flex flex-col text-nowrap">
-            <span className="text-block-24">Purchased Date</span>
+            <span className="text-block-24">Received Date</span>
             <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full" />
           </div>
         </div>
