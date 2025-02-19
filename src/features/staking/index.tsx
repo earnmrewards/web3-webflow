@@ -3,11 +3,11 @@ import { AddressButton } from "./address-button";
 import { BannerContainer } from "./banner-container";
 import { STAKING_FEATURE_ID } from "./config";
 import { LogInContainer } from "./log-in-container";
-import { StakingContainer } from "./staking-container";
 import { StatsContainer } from "./stats-container";
 import { LoaderContainer } from "./loader-container";
 import { SuccessModal } from "./success-modal";
 import { RewardPoolContainer } from "./reward-pool-container";
+import { StakingComponent } from "./staking-component";
 
 export function Staking() {
   return (
@@ -16,10 +16,11 @@ export function Staking() {
       <AddressButton />
       <BannerContainer />
       <StatsContainer />
-      <StakingContainer />
       <LoaderContainer />
       <SuccessModal />
       <RewardPoolContainer />
+
+      <StakingComponent />
     </StakeProvider>
   );
 }

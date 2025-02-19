@@ -2,6 +2,7 @@ import { api } from "@/services/api";
 import { heldResponseSchema } from "@/types/staking";
 import { useUser } from "@account-kit/react";
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 interface HeldNodesProps {
   page: number;
@@ -9,7 +10,7 @@ interface HeldNodesProps {
 }
 
 interface HeldNodesResponse {
-  nodes: number[];
+  nodes: z.infer<typeof heldResponseSchema>["data"]["smartNodes"]["data"];
   count: number;
   currentPage: number;
   nextPage: number | null;
@@ -34,7 +35,7 @@ export function useHeldNodes({ page, take }: HeldNodesProps) {
     } = parsedResponse.data;
 
     return {
-      nodes: smartNodes.data.map(({ tokenId }) => Number(tokenId)),
+      nodes: smartNodes.data,
       count: smartNodes.count,
       currentPage: smartNodes.currentPage,
       nextPage: smartNodes.nextPage,

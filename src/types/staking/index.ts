@@ -8,6 +8,7 @@ export const heldResponseSchema = z.object({
       data: z.array(
         z.object({
           tokenId: z.number(),
+          receivedAt: z.string(),
         })
       ),
       ...paginationSchema.shape,

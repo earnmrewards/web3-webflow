@@ -22,7 +22,7 @@ export function StakingContainer() {
   const [stakeType, setStakeType] = useState<"stake" | "unstake">("stake");
   const [amount, setAmount] = useState(0);
 
-  const { data: smartNodes, loading: smartNodesLoading } = useHeldNodes({
+  const { data: heldNodes, loading: heldNodesLoading } = useHeldNodes({
     page: 1,
     take: 100,
   });
@@ -35,8 +35,8 @@ export function StakingContainer() {
 
   const getMaxAmount = useCallback(
     () =>
-      stakeType === "stake" ? smartNodes?.count ?? 0 : stakedNodes?.count ?? 0,
-    [stakeType, smartNodes, stakedNodes]
+      stakeType === "stake" ? heldNodes?.count ?? 0 : stakedNodes?.count ?? 0,
+    [stakeType, heldNodes, stakedNodes]
   );
 
   const handleStakeButtonClick = useCallback(() => {
@@ -101,12 +101,12 @@ export function StakingContainer() {
 
   const handleMaxButtonClick = useCallback(() => {
     const fetching =
-      stakeType === "stake" ? smartNodesLoading : stakedNodesLoading;
+      stakeType === "stake" ? heldNodesLoading : stakedNodesLoading;
     const maxAmount = getMaxAmount();
     if (fetching || maxAmount === 0) return;
 
     setAmount(maxAmount > 100 ? 100 : maxAmount);
-  }, [stakeType, smartNodesLoading, stakedNodesLoading, getMaxAmount]);
+  }, [stakeType, heldNodesLoading, stakedNodesLoading, getMaxAmount]);
 
   function maxButtonBehavior() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

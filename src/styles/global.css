@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-block-24 {
+  color: #c5c5c5;
+  font-family: Galano Grotesque, Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}

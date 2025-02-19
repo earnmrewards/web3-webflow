@@ -72,7 +72,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
 
   function getNodeIds(amount: number, type: StakeType) {
     const lists = {
-      stake: heldNodes?.nodes ?? [],
+      stake: heldNodes?.nodes.map(({ tokenId }) => tokenId) ?? [],
       unstake: stakedNodes?.nodes.map(({ tokenId }) => tokenId) ?? [],
       claim: claimableNodes.map(({ tokenId }) => tokenId),
     };
