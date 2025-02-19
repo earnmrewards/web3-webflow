@@ -95,6 +95,7 @@ export function StakingComponent() {
         setSelectionMode={setSelectionMode}
         stakeOption={stakeOption}
         setSelectedNodes={setSelectedNodes}
+        selectedNodes={selectedNodes}
       />
 
       <StakingEmptyTable stakeOption={stakeOption} />

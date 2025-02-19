@@ -31,7 +31,7 @@ export function StakingContainer() {
     take: 100,
   });
 
-  const { stake, unstake, error } = useStake();
+  const { error } = useStake();
 
   const getMaxAmount = useCallback(
     () =>
@@ -196,9 +196,9 @@ export function StakingContainer() {
   }
   useEffect(updateInputs, [amount]);
 
-  const handleTrigger = useCallback(() => {
-    stakeType === "stake" ? stake(amount) : unstake(amount);
-  }, [stakeType, amount, stake, unstake]);
+  // const handleTrigger = useCallback(() => {
+  //   stakeType === "stake" ? stake(amount) : unstake(amount);
+  // }, [stakeType, amount, stake, unstake]);
 
   function triggerStake() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -217,13 +217,13 @@ export function StakingContainer() {
 
     button.innerText = `${stakeType} SmartNodes`;
 
-    button.addEventListener("click", handleTrigger);
+    // button.addEventListener("click", handleTrigger);
 
-    return () => {
-      button.removeEventListener("click", handleTrigger);
-    };
+    // return () => {
+    //   button.removeEventListener("click", handleTrigger);
+    // };
   }
-  useEffect(triggerStake, [amount, handleTrigger, stakeType]);
+  useEffect(triggerStake, [amount, stakeType]);
 
   function changeBuyMoreButtonVisibility() {
     const container = document.getElementById(STAKING_CONTAINER_ID);

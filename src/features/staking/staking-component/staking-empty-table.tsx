@@ -9,11 +9,11 @@ interface StakingEmptyTableProps {
 }
 
 export function StakingEmptyTable({ stakeOption }: StakingEmptyTableProps) {
-  const { data: heldNodes, loading: loadingHeldNodes } = useHeldNodes({
+  const { data: heldNodes } = useHeldNodes({
     page: 1,
     take: 1,
   });
-  const { data: stakedNodes, loading: loadingStakedNodes } = useStakedNodes({
+  const { data: stakedNodes } = useStakedNodes({
     page: 1,
     take: 1,
   });
@@ -26,7 +26,7 @@ export function StakingEmptyTable({ stakeOption }: StakingEmptyTableProps) {
   }, [heldNodes, stakedNodes, stakeOption]);
 
   useEffect(() => {
-    if (loadingStakedNodes || loadingHeldNodes) return;
+    if (!heldNodes || !stakedNodes) return;
 
     const content = document.getElementById(STAKING_CONTENT_ID);
     if (content) {
@@ -39,9 +39,9 @@ export function StakingEmptyTable({ stakeOption }: StakingEmptyTableProps) {
     if (actionComponent) {
       actionComponent.style.display = hasNodes ? "flex" : "none";
     }
-  }, [loadingHeldNodes, loadingStakedNodes, hasNodes]);
+  }, [heldNodes, stakedNodes, hasNodes]);
 
-  if (hasNodes || loadingStakedNodes || loadingHeldNodes) return null;
+  if (hasNodes || !heldNodes || !stakedNodes) return null;
 
   return (
     <div className="text-[#6C6C6C] text-lg text-center">

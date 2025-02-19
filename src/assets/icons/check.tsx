@@ -13,8 +13,8 @@ export function CheckIcon(props: ComponentProps<"svg">) {
       <path
         d="M1.78906 5.50537L4.78906 8.50537L12.2891 1.00537"
         stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
     </svg>
   );
