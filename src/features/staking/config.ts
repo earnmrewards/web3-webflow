@@ -37,3 +37,4 @@ export const STAKING_PAGINATION_COMPONENT_ID =
   "web3-staking-component-pagination";
 export const STAKING_COMPONENT_ACTIONS_ID = "web3-staking-component-actions";
 export const MAX_ITEMS_PER_PAGE = 24;
+export const MAX_VISIBLE_PAGES = 3;
