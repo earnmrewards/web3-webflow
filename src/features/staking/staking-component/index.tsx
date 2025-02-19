@@ -70,9 +70,18 @@ export function StakingComponent() {
           stakeOption={stakeOption}
           viewType={viewType}
           setViewType={setViewType}
+          selectionMode={selectionMode}
+          selectedNodes={selectedNodes}
+          setSelectedNodes={setSelectedNodes}
         />
       ) : (
-        <StakingTableGrid page={page} stakeOption={stakeOption} />
+        <StakingTableGrid
+          page={page}
+          stakeOption={stakeOption}
+          selectedNodes={selectedNodes}
+          setSelectedNodes={setSelectedNodes}
+          selectionMode={selectionMode}
+        />
       )}
 
       <StakingPagination

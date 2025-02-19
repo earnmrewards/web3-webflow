@@ -10,19 +10,27 @@ export function StakingTableListSkeleton({
 }: StakingTableListSkeletonProps) {
   if (option === "staked") {
     return (
-      <div className="grid py-0 grid-cols-1 gap-4">
+      <div className="grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y">
         {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
           <div
             key={`skeleton-${index}`}
-            className="flex items-center border border-[#C5C5C5] rounded-2xl p-2 space-x-4"
+            className="grid grid-cols-4 border border-[#C5C5C5] rounded-2xl p-5"
           >
             <div className="flex flex-col">
               <span className="text-block-24">ID</span>
               <div className="mt-1 h-6 w-12 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
             </div>
             <div className="flex flex-col text-nowrap">
-              <span className="text-block-24">Purchased Date</span>
+              <span className="text-block-24">Staked on</span>
               <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-block-24">Reward</span>
+              <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-block-24">Claimable In</span>
+              <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
             </div>
           </div>
         ))}

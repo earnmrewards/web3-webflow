@@ -63,6 +63,12 @@ export function StakingNodesSelector({
 
   function handleSelectAll() {
     if (isSelectedAll()) return;
+
+    if (stakeOption === "available") {
+      setSelectedNodes(heldNodes?.nodes.map((node) => node.tokenId) ?? []);
+    } else {
+      setSelectedNodes(stakedNodes?.nodes.map((node) => node.tokenId) ?? []);
+    }
   }
 
   return createPortal(
