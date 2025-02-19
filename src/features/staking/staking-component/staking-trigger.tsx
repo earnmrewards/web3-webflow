@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { STAKING_COMPONENT_ACTIONS_ID } from "../config";
 import { StakeOption } from "./types";
 import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
@@ -28,10 +34,22 @@ export function StakingTrigger({
     page: 1,
     take: 100,
   });
-  const { stake, unstake } = useStake();
+  const { stake, unstake, claim } = useStake();
+
+  const hasReward = useMemo(() => {
+    if (!stakedNodes) return false;
+
+    const rewards = stakedNodes.nodes.reduce(
+      (acc, node) => node.reward + acc,
+      0
+    );
+    return rewards > 0;
+  }, [stakedNodes]);
 
   const handleSelectionMode = useCallback(() => {
     if (selectionMode && selectedNodes.length > 0) {
+      if (stakeOption === "staked" && hasReward) return;
+
       stakeOption === "available"
         ? stake(selectedNodes)
         : unstake(selectedNodes);
@@ -55,6 +73,7 @@ export function StakingTrigger({
     selectedNodes,
     stake,
     unstake,
+    hasReward,
   ]);
 
   function addSelectionModeListener() {
@@ -72,6 +91,11 @@ export function StakingTrigger({
       loadingHeldNodes || loadingStakedNodes ? "not-allowed" : "pointer";
     anchor.addEventListener("click", handleSelectionMode);
 
+    if (selectionMode && stakeOption === "staked") {
+      anchor.style.opacity = hasReward ? "0.5" : "1";
+      anchor.style.cursor = hasReward ? "not-allowed" : "pointer";
+    }
+
     return () => {
       anchor.removeEventListener("click", handleSelectionMode);
     };
@@ -82,6 +106,41 @@ export function StakingTrigger({
     loadingHeldNodes,
     loadingStakedNodes,
     stakeOption,
+    hasReward,
+  ]);
+
+  const handleClaimingTrigger = useCallback(() => {
+    if (!selectionMode || stakeOption !== "staked" || !hasReward) return;
+
+    claim(selectedNodes);
+  }, [selectionMode, stakeOption, hasReward, selectedNodes, claim]);
+
+  function changeClaimingButtonVisibility() {
+    const component = document.getElementById(STAKING_COMPONENT_ACTIONS_ID);
+    if (!component) return;
+
+    const anchors: NodeListOf<HTMLAnchorElement> =
+      component.querySelectorAll("a");
+    const anchor = anchors[1];
+    if (!anchor) return;
+
+    const shouldShow = selectionMode && stakeOption === "staked";
+    anchor.style.display = shouldShow ? "block" : "none";
+
+    anchor.style.opacity = hasReward ? "1" : "0.5";
+    anchor.style.cursor = hasReward ? "pointer" : "not-allowed";
+
+    anchor.addEventListener("click", handleClaimingTrigger);
+
+    return () => {
+      anchor.removeEventListener("click", handleClaimingTrigger);
+    };
+  }
+  useEffect(changeClaimingButtonVisibility, [
+    selectionMode,
+    stakeOption,
+    hasReward,
+    handleClaimingTrigger,
   ]);
 
   return null;
