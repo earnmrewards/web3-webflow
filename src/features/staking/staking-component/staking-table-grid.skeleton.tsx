@@ -2,7 +2,7 @@ import SmartNodeImage from "@/assets/images/smart-node.png";
 
 export function StakingTableGridSkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-4 max-h-[540px] overflow-y-auto">
+    <div className="grid py-0 grid-cols-3 gap-4 max-h-[540px] overflow-y-auto">
       {new Array(6).fill(0).map((_, index) => (
         <div
           key={index}

@@ -48,7 +48,7 @@ export function StakingTableGrid({ stakeOption, page }: StakingTableGridProps) {
   }
 
   return createPortal(
-    <div className="grid grid-cols-3 gap-4 max-h-[540px] overflow-y-auto">
+    <div className="grid py-0 grid-cols-3 gap-4 max-h-[540px] overflow-y-auto">
       {getCurrentNodes() &&
         getCurrentNodes()?.nodes.map(({ tokenId }) => (
           <div

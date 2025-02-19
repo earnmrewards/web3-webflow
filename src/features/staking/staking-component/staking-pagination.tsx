@@ -52,16 +52,16 @@ export function StakingPagination({
 
   return createPortal(
     <>
-      <button
-        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm"
+      <a
+        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano"
         onClick={() => handlePageChange("prev")}
       >
         {`< Back`}
-      </button>
+      </a>
       {new Array(selectedNodes?.lastPage || 1).fill(0).map((_, index) => (
         <button
           key={index}
-          className="rounded-full border px-4 py-2"
+          className="rounded-full border px-4 py-2 font-galano"
           style={{
             backgroundColor: page === index + 1 ? "#00D632" : "transparent",
             color: page === index + 1 ? "black" : "white",
@@ -71,12 +71,12 @@ export function StakingPagination({
           {index + 1}
         </button>
       ))}
-      <button
-        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm"
+      <a
+        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano"
         onClick={() => handlePageChange("next")}
       >
         {`Next >`}
-      </button>
+      </a>
     </>,
     paginationComponent
   );

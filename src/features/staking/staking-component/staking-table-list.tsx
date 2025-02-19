@@ -49,12 +49,12 @@ export function StakingTableList({ page, stakeOption }: StakingTableListProps) {
   return createPortal(
     <>
       {stakeOption === "available" && (
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid py-0 grid-cols-6 gap-4">
           {heldNodes &&
             heldNodes.nodes.map(({ tokenId, receivedAt }) => (
               <div className="flex flex-col border border-[#C5C5C5] rounded-2xl p-2 space-y-2">
                 <div className="flex flex-col">
-                  <span className="text-block-24">ID</span>
+                  <span className="text-block-24 font-galano">ID</span>
                   <span className="text-white font-bold">{tokenId}</span>
                 </div>
                 <div className="flex flex-col text-nowrap">
@@ -69,7 +69,7 @@ export function StakingTableList({ page, stakeOption }: StakingTableListProps) {
       )}
 
       {stakeOption === "staked" && (
-        <div className="grid grid-cols-1 gap-4 max-h-[540px] overflow-y-auto">
+        <div className="grid py-0 grid-cols-1 gap-4 max-h-[540px] overflow-y-auto">
           {stakedNodes &&
             stakedNodes.nodes.map(({ tokenId, stakedAt }) => (
               <div

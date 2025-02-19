@@ -10,7 +10,7 @@ export function StakingTableListSkeleton({
 }: StakingTableListSkeletonProps) {
   if (option === "staked") {
     return (
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid py-0 grid-cols-1 gap-4">
         {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
           <div
             key={`skeleton-${index}`}
@@ -31,7 +31,7 @@ export function StakingTableListSkeleton({
   }
 
   return (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="grid py-0 grid-cols-6 gap-4">
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={`skeleton-${index}`}

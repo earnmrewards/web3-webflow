@@ -5,7 +5,11 @@ export default withAccountKitUi(
   {
     content: ["./*.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
-      extend: {},
+      extend: {
+        fontFamily: {
+          galano: ["Galano Grotesque", "Verdana", "sans-serif"],
+        },
+      },
     },
     plugins: [],
   },
