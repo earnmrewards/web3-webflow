@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckIcon } from "@/assets/icons/check";
 import { useCountdown } from "@/components/use-countdown";
+import { EarnM } from "@/assets/icons/earnm";
 
 interface StakingTableListProps {
   page: number;
@@ -163,7 +164,14 @@ export function StakingTableList({
 
                 <div className="flex flex-col">
                   <span className="text-block-24 font-galano">Reward</span>
-                  <span className="text-white font-bold">{reward}</span>
+                  <div className="flex items-center gap-1">
+                    <EarnM />
+                    <span className="text-white font-bold">
+                      {reward.toLocaleString(undefined, {
+                        maximumFractionDigits: 4,
+                      })}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex flex-col">

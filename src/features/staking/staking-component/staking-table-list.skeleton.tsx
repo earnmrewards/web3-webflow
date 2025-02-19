@@ -1,3 +1,4 @@
+import { EarnM } from "@/assets/icons/earnm";
 import { MAX_ITEMS_PER_PAGE } from "../config";
 import { StakeOption } from "./types";
 
@@ -10,7 +11,7 @@ export function StakingTableListSkeleton({
 }: StakingTableListSkeletonProps) {
   if (option === "staked") {
     return (
-      <div className="grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y">
+      <div className="grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto">
         {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
           <div
             key={`skeleton-${index}`}
@@ -26,7 +27,10 @@ export function StakingTableListSkeleton({
             </div>
             <div className="flex flex-col">
               <span className="text-block-24">Reward</span>
-              <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
+              <div className="flex items-center gap-1">
+                <EarnM />
+                <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
+              </div>
             </div>
             <div className="flex flex-col">
               <span className="text-block-24">Claimable In</span>
