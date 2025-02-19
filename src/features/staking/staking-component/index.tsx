@@ -10,6 +10,8 @@ import { StakingTableGrid } from "./staking-table-grid";
 import { StakingViewSelector } from "./staking-view-selector";
 import { StakingTrigger } from "./staking-trigger";
 import { useUser } from "@account-kit/react";
+import { StakingEmptyTable } from "./staking-empty-table";
+import { StakingNodesSelector } from "./staking-nodes-selector";
 
 export function StakingComponent() {
   const user = useUser();
@@ -19,6 +21,7 @@ export function StakingComponent() {
   const [viewType, setViewType] = useState<ViewType>("list");
   const [page, setPage] = useState(1);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedNodes, setSelectedNodes] = useState<number[]>([]);
 
   useEffect(() => {
     const component = document.getElementById(
@@ -45,9 +48,21 @@ export function StakingComponent() {
         setStakeOption={setStakeOption}
         setPage={setPage}
         setSelectionMode={setSelectionMode}
+        setSelectedNodes={setSelectedNodes}
       />
 
-      <StakingViewSelector viewType={viewType} setViewType={setViewType} />
+      <StakingViewSelector
+        viewType={viewType}
+        setViewType={setViewType}
+        selectionMode={selectionMode}
+      />
+      <StakingNodesSelector
+        stakeOption={stakeOption}
+        selectionMode={selectionMode}
+        setSelectionMode={setSelectionMode}
+        selectedNodes={selectedNodes}
+        setSelectedNodes={setSelectedNodes}
+      />
 
       {viewType === "list" ? (
         <StakingTableList
@@ -70,7 +85,10 @@ export function StakingComponent() {
         selectionMode={selectionMode}
         setSelectionMode={setSelectionMode}
         stakeOption={stakeOption}
+        setSelectedNodes={setSelectedNodes}
       />
+
+      <StakingEmptyTable stakeOption={stakeOption} />
     </>,
     component
   );

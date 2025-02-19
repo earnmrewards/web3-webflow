@@ -50,6 +50,10 @@ export function StakingPagination({
     setPage(page + 1 > selectedNodes.lastPage ? page : page + 1);
   }
 
+  function handlePageClick(page: number) {
+    setPage(page);
+  }
+
   return createPortal(
     <>
       <a
@@ -67,6 +71,7 @@ export function StakingPagination({
             color: page === index + 1 ? "black" : "white",
             borderColor: page === index + 1 ? "#00D632" : "white",
           }}
+          onClick={() => handlePageClick(index + 1)}
         >
           {index + 1}
         </a>

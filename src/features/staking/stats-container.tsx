@@ -16,11 +16,11 @@ export function StatsContainer() {
 
   const { data: heldNodes, loading: heldNodesLoading } = useHeldNodes({
     page: 1,
-    take: 100,
+    take: 1,
   });
   const { data: stakedNodes, loading: stakedNodesLoading } = useStakedNodes({
     page: 1,
-    take: 100,
+    take: 1,
   });
   const { data: totalStakedNodes, isLoading: totalStakedNodesLoading } =
     useTotalStakedNodes();

@@ -8,6 +8,7 @@ interface StakingSelectorProps {
   setStakeOption: Dispatch<SetStateAction<StakeOption>>;
   setPage: Dispatch<SetStateAction<number>>;
   setSelectionMode: Dispatch<SetStateAction<boolean>>;
+  setSelectedNodes: Dispatch<SetStateAction<number[]>>;
 }
 
 export function StakingSelector({
@@ -15,6 +16,7 @@ export function StakingSelector({
   setStakeOption,
   setPage,
   setSelectionMode,
+  setSelectedNodes,
 }: StakingSelectorProps) {
   const user = useUser();
 
@@ -34,8 +36,9 @@ export function StakingSelector({
       setStakeOption(option);
       setPage(1);
       setSelectionMode(false);
+      setSelectedNodes([]);
     },
-    [user, setStakeOption, setPage, setSelectionMode]
+    [user, setStakeOption, setPage, setSelectionMode, setSelectedNodes]
   );
 
   useEffect(() => {

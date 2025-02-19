@@ -9,11 +9,13 @@ import { createPortal } from "react-dom";
 interface StakingViewSelectorProps {
   viewType: ViewType;
   setViewType: Dispatch<SetStateAction<ViewType>>;
+  selectionMode: boolean;
 }
 
 export function StakingViewSelector({
   viewType,
   setViewType,
+  selectionMode,
 }: StakingViewSelectorProps) {
   const [viewSelectorComponent, setViewSelectorComponent] =
     useState<HTMLElement | null>(null);
@@ -32,7 +34,11 @@ export function StakingViewSelector({
   if (!viewSelectorComponent) return null;
 
   return createPortal(
-    <div className="h-12 w-full flex items-center justify-end gap-2">
+    <div
+      className={`h-12 w-full flex items-center justify-end gap-2 ${
+        selectionMode ? "hidden" : ""
+      }`}
+    >
       <ListIcon
         className="w-5 h-5 cursor-pointer"
         color={viewType === "list" ? "#02D632" : "white"}

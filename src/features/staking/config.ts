@@ -30,6 +30,7 @@ export const STAKING_SUCCESS_MODAL_TITLE_ID = "web3-success-modal-title";
 export const STAKING_SUCCESS_MODAL_DESC_ID = "web3-success-modal-description";
 
 export const STAKING_COMPONENT_ID = "web3-staking-component";
+export const STAKING_CONTENT_ID = "web3-staking-content";
 export const STAKING_VIEW_SELECTOR_ID = "web3-staking-component-view-selector";
 export const STAKING_TABLE_COMPONENT_ID = "web3-staking-component-table";
 export const STAKING_PAGINATION_COMPONENT_ID =
