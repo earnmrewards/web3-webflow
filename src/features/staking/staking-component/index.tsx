@@ -9,8 +9,11 @@ import { StakingPagination } from "./staking-pagination";
 import { StakingTableGrid } from "./staking-table-grid";
 import { StakingViewSelector } from "./staking-view-selector";
 import { StakingTrigger } from "./staking-trigger";
+import { useUser } from "@account-kit/react";
 
 export function StakingComponent() {
+  const user = useUser();
+
   const [component, setComponent] = useState<HTMLElement | null>(null);
   const [stakeOption, setStakeOption] = useState<StakeOption>("available");
   const [viewType, setViewType] = useState<ViewType>("list");
@@ -25,6 +28,13 @@ export function StakingComponent() {
 
     setComponent(component);
   }, []);
+
+  useEffect(() => {
+    const component = document.getElementById(STAKING_COMPONENT_ID);
+    if (!component) return;
+
+    component.style.display = user ? "block" : "none";
+  }, [user]);
 
   if (!component) return null;
 

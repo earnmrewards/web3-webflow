@@ -69,7 +69,7 @@ export function StakingTableList({ page, stakeOption }: StakingTableListProps) {
       )}
 
       {stakeOption === "staked" && (
-        <div className="grid py-0 grid-cols-1 gap-4 max-h-[540px] overflow-y-auto">
+        <div className="grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto">
           {stakedNodes &&
             stakedNodes.nodes.map(({ tokenId, stakedAt }) => (
               <div

@@ -53,15 +53,15 @@ export function StakingPagination({
   return createPortal(
     <>
       <a
-        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano"
+        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer"
         onClick={() => handlePageChange("prev")}
       >
         {`< Back`}
       </a>
       {new Array(selectedNodes?.lastPage || 1).fill(0).map((_, index) => (
-        <button
+        <a
           key={index}
-          className="rounded-full border px-4 py-2 font-galano"
+          className="rounded-full border border-[#C5C5C5] px-4 py-2 font-galano cursor-pointer"
           style={{
             backgroundColor: page === index + 1 ? "#00D632" : "transparent",
             color: page === index + 1 ? "black" : "white",
@@ -69,10 +69,10 @@ export function StakingPagination({
           }}
         >
           {index + 1}
-        </button>
+        </a>
       ))}
       <a
-        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano"
+        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer"
         onClick={() => handlePageChange("next")}
       >
         {`Next >`}
