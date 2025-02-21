@@ -15,7 +15,7 @@ export function StakingTableListSkeleton({
         {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
           <div
             key={`skeleton-${index}`}
-            className="grid grid-cols-4 border border-[#C5C5C5] rounded-2xl p-5"
+            className="grid grid-cols-2 md:grid-cols-4 border border-[#C5C5C5] rounded-2xl p-5"
           >
             <div className="flex flex-col">
               <span className="text-block-24">ID</span>
@@ -43,7 +43,7 @@ export function StakingTableListSkeleton({
   }
 
   return (
-    <div className="grid py-0 grid-cols-6 gap-4">
+    <div className="grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={`skeleton-${index}`}

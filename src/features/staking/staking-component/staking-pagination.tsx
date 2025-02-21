@@ -83,7 +83,7 @@ export function StakingPagination({
   }
 
   return createPortal(
-    <>
+    <div className="w-full flex flex-col md:flex-row items-center justify-center p-2 gap-2">
       <a
         data-disabled={page === 1}
         className={`border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50`}
@@ -135,7 +135,7 @@ export function StakingPagination({
       >
         {`Next >`}
       </a>
-    </>,
+    </div>,
     paginationComponent
   );
 }

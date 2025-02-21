@@ -3,7 +3,7 @@ import { MAX_ITEMS_PER_PAGE } from "../config";
 
 export function StakingTableGridSkeleton() {
   return (
-    <div className="grid py-0 grid-cols-3 gap-4 max-h-[490px] overflow-y-auto">
+    <div className="grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[490px] overflow-y-auto">
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={index}

@@ -73,9 +73,8 @@ export function StakingNodesSelector({
 
   return createPortal(
     <div
-      className={`my-4 px-4 py-2 flex items-center justify-between bg-[#00D632] w-full rounded-lg text-black font-galano ${
-        selectionMode ? "" : "hidden"
-      }`}
+      data-mode={selectionMode}
+      className="my-4 px-4 py-2 data-[mode=false]:hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0 bg-[#00D632] w-full rounded-lg text-black font-galano"
     >
       <div className="flex items-center gap-6">
         <CloseIcon

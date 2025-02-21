@@ -39,6 +39,8 @@ const stakeSchema = z.object({
   selectedNodes: z.array(z.number().positive().int()),
 });
 
+const OLD_TOKEN_ADDRESS = import.meta.env.VITE_EARNM_OLD_ETH_ADDRESS;
+
 interface StakeProviderProps {
   children: ReactNode;
 }
@@ -230,7 +232,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
           data: encodeFunctionData({
             abi,
             functionName: "claimRewards",
-            args: [sortedSelectedNodes.map(BigInt)],
+            args: [OLD_TOKEN_ADDRESS, sortedSelectedNodes.map(BigInt)],
           }),
         },
       });

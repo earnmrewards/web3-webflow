@@ -76,7 +76,7 @@ export function StakingTableList({
   return createPortal(
     <>
       {stakeOption === "available" && (
-        <div className="grid py-0 grid-cols-6 gap-4">
+        <div className="grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {heldNodes &&
             heldNodes.nodes.map(({ tokenId, receivedAt }) => (
               <div
@@ -125,13 +125,9 @@ export function StakingTableList({
             stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
               <div
                 key={tokenId}
-                className={`grid ${
-                  selectionMode ? "grid-cols-5" : "grid-cols-4"
-                } border rounded-2xl p-5`}
-                style={{
-                  borderColor: isSelected(tokenId) ? "#00D632" : "#C5C5C5",
-                  cursor: selectionMode ? "pointer" : "default",
-                }}
+                data-mode={selectionMode}
+                data-selected={isSelected(tokenId)}
+                className="grid grid-cols-2 md:grid-cols-4 data-[mode=true]:grid-cols-3 md:data-[mode=true]:grid-cols-5 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer"
                 onClick={() => handleSelect(tokenId)}
               >
                 {selectionMode && (
