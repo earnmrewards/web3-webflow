@@ -20,16 +20,6 @@ interface StakingTriggerProps {
   selectedNodes: number[];
 }
 
-const disabledTriggerStyles = {
-  opacity: "0.5",
-  cursor: "not-allowed",
-};
-
-const enabledTriggerStyles = {
-  opacity: "1",
-  cursor: "pointer",
-};
-
 export function StakingTrigger({
   selectionMode,
   setSelectionMode,
@@ -46,6 +36,18 @@ export function StakingTrigger({
     take: 100,
   });
   const { stake, unstake, claim, error } = useStake();
+
+  function getButtonComponent(type: "trigger" | "claiming") {
+    const component = document.getElementById(STAKING_COMPONENT_ACTIONS_ID);
+    if (!component) return;
+
+    const anchors: NodeListOf<HTMLAnchorElement> =
+      component.querySelectorAll("a");
+    const anchor = anchors[type === "trigger" ? 0 : 1];
+    if (!anchor) return;
+
+    return anchor;
+  }
 
   const hasReward = useMemo(() => {
     if (!stakedNodes) return false;
@@ -72,6 +74,7 @@ export function StakingTrigger({
 
     if (selectedNodes.length === 0 || (stakeOption === "staked" && hasReward))
       return;
+
     stakeOption === "available" ? stake(selectedNodes) : unstake(selectedNodes);
   }, [
     selectionMode,
@@ -88,56 +91,50 @@ export function StakingTrigger({
     hasReward,
   ]);
 
-  function addSelectionModeListener() {
-    const component = document.getElementById(STAKING_COMPONENT_ACTIONS_ID);
-    if (!component) return;
-
-    const anchors: NodeListOf<HTMLAnchorElement> =
-      component.querySelectorAll("a");
-    const anchor = anchors[0];
+  function addTriggerEvent() {
+    const anchor = getButtonComponent("trigger");
     if (!anchor) return;
 
     anchor.addEventListener("click", handleSelectionMode);
-
-    if (loadingHeldNodes || loadingStakedNodes) {
-      anchor.style.opacity = enabledTriggerStyles.opacity;
-      anchor.style.cursor = enabledTriggerStyles.cursor;
-      return;
-    }
-
-    if (!selectionMode) {
-      anchor.innerText = "Select SmartNodes";
-      anchor.style.opacity = enabledTriggerStyles.opacity;
-      anchor.style.cursor = enabledTriggerStyles.cursor;
-      return;
-    }
-
-    anchor.innerText = stakeOption === "available" ? "Stake" : "Unstake";
-
-    if (selectedNodes.length === 0) {
-      anchor.style.opacity = disabledTriggerStyles.opacity;
-      anchor.style.cursor = disabledTriggerStyles.cursor;
-      return;
-    }
-
-    if (stakeOption === "staked" && hasReward) {
-      anchor.style.opacity = disabledTriggerStyles.opacity;
-      anchor.style.cursor = disabledTriggerStyles.cursor;
-      return;
-    }
 
     return () => {
       anchor.removeEventListener("click", handleSelectionMode);
     };
   }
-  useEffect(addSelectionModeListener, [
-    selectionMode,
-    handleSelectionMode,
+  useEffect(addTriggerEvent, [selectionMode, handleSelectionMode]);
+
+  function handlePreSelection() {
+    const anchor = getButtonComponent("trigger");
+    if (!anchor || selectionMode) return;
+
+    anchor.innerText = "Select SmartNodes";
+
+    const shouldBlock = loadingHeldNodes || loadingStakedNodes;
+    anchor.style.opacity = shouldBlock ? "0.5" : "1";
+    anchor.style.cursor = shouldBlock ? "not-allowed" : "pointer";
+  }
+  useEffect(handlePreSelection, [
     loadingHeldNodes,
     loadingStakedNodes,
-    stakeOption,
-    hasReward,
+    selectionMode,
+  ]);
+
+  function handlePosSelection() {
+    const anchor = getButtonComponent("trigger");
+    if (!anchor || !selectionMode) return;
+
+    anchor.innerText = stakeOption === "available" ? "Stake" : "Unstake";
+
+    const shouldBlock =
+      selectedNodes.length === 0 || (stakeOption === "staked" && hasReward);
+    anchor.style.opacity = shouldBlock ? "0.5" : "1";
+    anchor.style.cursor = shouldBlock ? "not-allowed" : "pointer";
+  }
+  useEffect(handlePosSelection, [
+    selectionMode,
     selectedNodes,
+    hasReward,
+    stakeOption,
   ]);
 
   const handleClaimingTrigger = useCallback(() => {
