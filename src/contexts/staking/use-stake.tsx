@@ -86,7 +86,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
       return;
     }
 
-    const functionName = "stake";
     const params = new URL(window.location.href).searchParams;
     try {
       const validApproval = await hasValidApproval();
@@ -111,14 +110,14 @@ export function StakeProvider({ children }: StakeProviderProps) {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
-            functionName: functionName,
+            functionName: "stake",
             args: [sortedSelectedNodes.map(BigInt)],
           }),
         },
       });
 
       setResult({
-        operation: functionName,
+        operation: "stake",
         selectedNodes,
       });
       setFinished(true);
@@ -164,7 +163,6 @@ export function StakeProvider({ children }: StakeProviderProps) {
       return;
     }
 
-    const functionName = "unstake";
     const params = new URL(window.location.href).searchParams;
     try {
       const sortedSelectedNodes = selectedNodes.sort((a, b) => a - b);
@@ -173,14 +171,14 @@ export function StakeProvider({ children }: StakeProviderProps) {
           target: CONTRACT_ADDRESS,
           data: encodeFunctionData({
             abi,
-            functionName,
+            functionName: "unstake",
             args: [sortedSelectedNodes.map(BigInt)],
           }),
         },
       });
 
       setResult({
-        operation: functionName,
+        operation: "unstake",
         selectedNodes,
       });
       setFinished(true);

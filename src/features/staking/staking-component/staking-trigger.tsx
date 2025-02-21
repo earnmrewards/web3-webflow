@@ -10,6 +10,7 @@ import { StakeOption } from "./types";
 import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { useStake } from "@/contexts/staking/use-stake";
+import { ERROR_COMPONENT_ID } from "@/features/global-config";
 
 interface StakingTriggerProps {
   selectionMode: boolean;
@@ -34,7 +35,7 @@ export function StakingTrigger({
     page: 1,
     take: 100,
   });
-  const { stake, unstake, claim } = useStake();
+  const { stake, unstake, claim, error } = useStake();
 
   const hasReward = useMemo(() => {
     if (!stakedNodes) return false;
@@ -142,6 +143,17 @@ export function StakingTrigger({
     hasReward,
     handleClaimingTrigger,
   ]);
+
+  function showErrorText() {
+    const textLabels: NodeListOf<HTMLParagraphElement> =
+      document.querySelectorAll(`#${ERROR_COMPONENT_ID}`);
+    if (textLabels.length === 0) return;
+
+    for (const label of textLabels) {
+      label.innerText = error;
+    }
+  }
+  useEffect(showErrorText, [error]);
 
   return null;
 }
