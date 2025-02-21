@@ -21,12 +21,13 @@ type StakeType = "stake" | "unstake" | "claim";
 interface ResultType {
   operation: StakeType;
   selectedNodes: number[];
+  selectedRewards?: number;
 }
 
 interface StakeContextProps {
   stake: (selectedNodes: number[]) => Promise<void>;
   unstake: (selectedNodes: number[]) => Promise<void>;
-  claim: (selectedNodes: number[]) => Promise<void>;
+  claim: (selectedNodes: number[], selectedRewards: number) => Promise<void>;
   error: string;
   finished: boolean;
   loading: boolean;
@@ -212,7 +213,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
     }
   }
 
-  async function claim(selectedNodes: number[]) {
+  async function claim(selectedNodes: number[], selectedRewards: number) {
     if (!user) return;
     setError("");
     setLoading(true);
@@ -240,6 +241,7 @@ export function StakeProvider({ children }: StakeProviderProps) {
       setResult({
         operation: "claim",
         selectedNodes,
+        selectedRewards,
       });
       setFinished(true);
 
@@ -264,6 +266,8 @@ export function StakeProvider({ children }: StakeProviderProps) {
           "Oops! Looks like an error occurred while trying to complete your purchase."
         );
       }
+    } finally {
+      setLoading(false);
     }
   }
 

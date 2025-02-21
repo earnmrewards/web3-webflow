@@ -45,11 +45,21 @@ export function SuccessModal() {
       `#${STAKING_SUCCESS_MODAL_DESC_ID}`
     );
     if (description) {
-      const { operation, selectedNodes } = result;
+      const { operation, selectedNodes, selectedRewards } = result;
       const descAlias = alias[operation].description;
       const plural = selectedNodes.length > 1 ? "s" : "";
 
-      description.innerHTML = `You successfully ${descAlias} <strong>${selectedNodes.length} SmartNode${plural}</strong>`;
+      let finalDescription = `You successfully ${descAlias} <strong>${selectedNodes.length} SmartNode${plural}</strong>`;
+      if (operation === "claim") {
+        finalDescription += ` and earned <strong>${selectedRewards?.toLocaleString(
+          undefined,
+          {
+            maximumFractionDigits: 4,
+          }
+        )} $EARNM</strong>`;
+      }
+
+      description.innerHTML = finalDescription;
     }
   }
   useEffect(updateModalTexts, [result]);

@@ -49,8 +49,8 @@ export function StakingTrigger({
     return anchor;
   }
 
-  const hasReward = useMemo(() => {
-    if (!stakedNodes) return false;
+  const selectedRewards = useMemo(() => {
+    if (!stakedNodes) return 0;
 
     const rewards = stakedNodes.nodes.reduce((acc, node) => {
       const selectedNode = selectedNodes.find((id) => id === node.tokenId);
@@ -59,8 +59,10 @@ export function StakingTrigger({
       return node.reward + acc;
     }, 0);
 
-    return rewards > 0;
+    return rewards;
   }, [stakedNodes, selectedNodes]);
+
+  const hasReward = selectedRewards > 0;
 
   const handleSelectionMode = useCallback(() => {
     const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
@@ -140,8 +142,15 @@ export function StakingTrigger({
   const handleClaimingTrigger = useCallback(() => {
     if (!selectionMode || stakeOption !== "staked" || !hasReward) return;
 
-    claim(selectedNodes);
-  }, [selectionMode, stakeOption, hasReward, selectedNodes, claim]);
+    claim(selectedNodes, selectedRewards);
+  }, [
+    selectionMode,
+    stakeOption,
+    hasReward,
+    selectedNodes,
+    claim,
+    selectedRewards,
+  ]);
 
   function changeClaimingButtonVisibility() {
     const component = document.getElementById(STAKING_COMPONENT_ACTIONS_ID);
