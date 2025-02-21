@@ -26,14 +26,14 @@ export function StakingTableListSkeleton({
               <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full" />
             </div>
             <div className="flex flex-col">
-              <span className="text-block-24">Reward</span>
+              <span className="text-block-24">Withdrawable Now</span>
               <div className="flex items-center gap-1">
                 <EarnM />
                 <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-block-24">Claimable In</span>
+              <span className="text-block-24">More Rewards In</span>
               <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
             </div>
           </div>

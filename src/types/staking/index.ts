@@ -32,3 +32,22 @@ export const stakedResponseSchema = z.object({
     totalRewards: z.number(),
   }),
 });
+
+export const iterationResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    iterations: z.object({
+      data: z.array(
+        z.object({
+          iterationRewardEther: z.number(),
+          iterationEnd: z.string(),
+          iterationFrom: z.string(),
+          totalSnStaked: z.number(),
+          iterationRewardErc20: z.string(),
+          rewardsCalulationCsv: z.string().url(),
+        })
+      ),
+      ...paginationSchema.shape,
+    }),
+  }),
+});

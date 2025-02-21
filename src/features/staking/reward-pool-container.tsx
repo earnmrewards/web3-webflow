@@ -9,6 +9,7 @@ const FIXED_YEAR = 2025;
 
 export function RewardPoolContainer() {
   const user = useUser();
+
   const { readContract } = useCustomBundler({ chain: "arbitrum" });
 
   function getContainer() {

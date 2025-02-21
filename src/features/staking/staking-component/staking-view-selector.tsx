@@ -39,15 +39,15 @@ export function StakingViewSelector({
         selectionMode ? "hidden" : ""
       }`}
     >
-      <ListIcon
-        className="w-5 h-5 cursor-pointer"
-        color={viewType === "list" ? "#02D632" : "white"}
-        onClick={() => handleViewTypeChange("list")}
-      />
       <GridIcon
         className="w-5 h-5 cursor-pointer"
         color={viewType === "grid" ? "#02D632" : "white"}
         onClick={() => handleViewTypeChange("grid")}
+      />
+      <ListIcon
+        className="w-5 h-5 cursor-pointer"
+        color={viewType === "list" ? "#02D632" : "white"}
+        onClick={() => handleViewTypeChange("list")}
       />
     </div>,
     viewSelectorComponent

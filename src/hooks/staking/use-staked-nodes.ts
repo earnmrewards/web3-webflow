@@ -50,7 +50,7 @@ export function useStakedNodes({ page, take }: StakedNodesProps) {
   const { data, isLoading } = useQuery({
     queryKey: [user?.address, "staked-nodes", { page, take }],
     queryFn: getStakedNodes,
-    enabled: !!user,
+    enabled: !!user && !!page && !!take,
   });
 
   return { data, loading: isLoading };

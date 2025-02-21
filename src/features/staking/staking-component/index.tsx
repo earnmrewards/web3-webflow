@@ -18,7 +18,7 @@ export function StakingComponent() {
 
   const [component, setComponent] = useState<HTMLElement | null>(null);
   const [stakeOption, setStakeOption] = useState<StakeOption>("available");
-  const [viewType, setViewType] = useState<ViewType>("list");
+  const [viewType, setViewType] = useState<ViewType>("grid");
   const [page, setPage] = useState(1);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNodes, setSelectedNodes] = useState<number[]>([]);

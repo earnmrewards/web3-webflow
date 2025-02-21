@@ -81,11 +81,9 @@ export function StakingTableList({
             heldNodes.nodes.map(({ tokenId, receivedAt }) => (
               <div
                 key={tokenId}
-                className="flex flex-col border border-[#C5C5C5] rounded-2xl p-3 space-y-2"
-                style={{
-                  borderColor: isSelected(tokenId) ? "#00D632" : "#C5C5C5",
-                  cursor: selectionMode ? "pointer" : "default",
-                }}
+                data-mode={selectionMode}
+                data-selected={isSelected(tokenId)}
+                className="flex flex-col border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-3 space-y-2 data-[mode=true]:cursor-pointer"
                 onClick={() => handleSelect(tokenId)}
               >
                 <div className="flex justify-between">
@@ -95,12 +93,8 @@ export function StakingTableList({
                   </div>
                   {selectionMode && (
                     <div
-                      className="flex items-center justify-center w-5 h-5 rounded-md"
-                      style={{
-                        backgroundColor: isSelected(tokenId)
-                          ? "#00D632"
-                          : "#D9D9D9",
-                      }}
+                      data-selected={isSelected(tokenId)}
+                      className="flex items-center justify-center w-5 h-5 rounded-md border-[#C5C5C5] data-[selected=true]:border-[#00D632]"
                     >
                       {isSelected(tokenId) && (
                         <CheckIcon className="w-3.5 h-3.5 color-white" />
@@ -133,12 +127,8 @@ export function StakingTableList({
                 {selectionMode && (
                   <div className="flex items-center justify-center max-w-20">
                     <div
-                      className="flex items-center justify-center w-5 h-5 rounded-md"
-                      style={{
-                        backgroundColor: isSelected(tokenId)
-                          ? "#00D632"
-                          : "#D9D9D9",
-                      }}
+                      data-selected={isSelected(tokenId)}
+                      className="flex items-center justify-center w-5 h-5 rounded-md border-[#C5C5C5] data-[selected=true]:border-[#00D632]"
                     >
                       {isSelected(tokenId) && (
                         <CheckIcon className="w-3.5 h-3.5 color-white" />
@@ -159,7 +149,9 @@ export function StakingTableList({
                 </div>
 
                 <div className="flex flex-col">
-                  <span className="text-block-24 font-galano">Reward</span>
+                  <span className="text-block-24 font-galano">
+                    Withdrawable Now
+                  </span>
                   <div className="flex items-center gap-1">
                     <EarnM />
                     <span className="text-white font-bold">
@@ -172,7 +164,7 @@ export function StakingTableList({
 
                 <div className="flex flex-col">
                   <span className="text-block-24 font-galano">
-                    Claimable In
+                    More Rewards In
                   </span>
                   <span className="text-white font-bold">{timeLeft}</span>
                 </div>

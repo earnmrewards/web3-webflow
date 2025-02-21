@@ -40,12 +40,15 @@ export function StakingTrigger({
   const hasReward = useMemo(() => {
     if (!stakedNodes) return false;
 
-    const rewards = stakedNodes.nodes.reduce(
-      (acc, node) => node.reward + acc,
-      0
-    );
+    const rewards = stakedNodes.nodes.reduce((acc, node) => {
+      const selectedNode = selectedNodes.find((id) => id === node.tokenId);
+      if (!selectedNode) return acc;
+
+      return node.reward + acc;
+    }, 0);
+
     return rewards > 0;
-  }, [stakedNodes]);
+  }, [stakedNodes, selectedNodes]);
 
   const handleSelectionMode = useCallback(() => {
     if (selectionMode && selectedNodes.length > 0) {

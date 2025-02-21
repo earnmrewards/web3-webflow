@@ -83,11 +83,9 @@ export function StakingTableGrid({
         getCurrentNodes()?.nodes.map(({ tokenId }) => (
           <div
             key={tokenId}
-            className="flex flex-col p-2 border rounded-lg space-y-2"
-            style={{
-              borderColor: isSelected(tokenId) ? "#00D632" : "#C5C5C5",
-              cursor: selectionMode ? "pointer" : "default",
-            }}
+            data-mode={selectionMode}
+            data-selected={isSelected(tokenId)}
+            className="flex flex-col p-2 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-lg space-y-2 data-[mode=true]:cursor-pointer"
             onClick={() => handleSelect(tokenId)}
           >
             <div className="flex justify-between">
@@ -98,12 +96,8 @@ export function StakingTableGrid({
 
               {selectionMode && (
                 <div
-                  className="flex items-center justify-center w-5 h-5 rounded-md"
-                  style={{
-                    backgroundColor: isSelected(tokenId)
-                      ? "#00D632"
-                      : "#D9D9D9",
-                  }}
+                  data-selected={isSelected(tokenId)}
+                  className="flex items-center justify-center w-5 h-5 rounded-md border-[#C5C5C5] data-[selected=true]:border-[#00D632]"
                 >
                   {isSelected(tokenId) && (
                     <CheckIcon className="w-3.5 h-3.5 color-white" />
