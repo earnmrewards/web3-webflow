@@ -88,8 +88,12 @@ export function StakingTableList({
               >
                 <div className="flex justify-between">
                   <div className="flex flex-col">
-                    <span className="text-block-24 font-galano">ID</span>
-                    <span className="text-white font-bold">{tokenId}</span>
+                    <span className="text-block-24 font-galano">
+                      SmartNode ID
+                    </span>
+                    <span className="heading-text-table text-white font-bold">
+                      {tokenId}
+                    </span>
                   </div>
                   {selectionMode && (
                     <div
@@ -104,7 +108,7 @@ export function StakingTableList({
                 </div>
                 <div className="flex flex-col text-nowrap">
                   <span className="text-block-24">Received Date</span>
-                  <span className="text-white font-bold">
+                  <span className="heading-text-table text-white font-bold">
                     {new Date(receivedAt).toLocaleDateString()}
                   </span>
                 </div>
@@ -137,13 +141,17 @@ export function StakingTableList({
                   </div>
                 )}
                 <div className="flex flex-col">
-                  <span className="text-block-24 font-galano">ID</span>
-                  <span className="text-white font-bold">{tokenId}</span>
+                  <span className="text-block-24 font-galano">
+                    SmartNode ID
+                  </span>
+                  <span className="heading-text-table text-white font-bold">
+                    {tokenId}
+                  </span>
                 </div>
 
                 <div className="flex flex-col">
                   <span className="text-block-24 font-galano">Staked on</span>
-                  <span className="text-white font-bold">
+                  <span className="heading-text-table text-white font-bold">
                     {new Date(stakedAt).toLocaleDateString()}
                   </span>
                 </div>
@@ -154,7 +162,7 @@ export function StakingTableList({
                   </span>
                   <div className="flex items-center gap-1">
                     <EarnM />
-                    <span className="text-white font-bold">
+                    <span className="heading-text-table text-white font-bold">
                       {reward.toLocaleString(undefined, {
                         maximumFractionDigits: 4,
                       })}
@@ -166,7 +174,9 @@ export function StakingTableList({
                   <span className="text-block-24 font-galano">
                     More Rewards In
                   </span>
-                  <span className="text-white font-bold">{timeLeft}</span>
+                  <span className="heading-text-table text-white font-bold">
+                    {timeLeft}
+                  </span>
                 </div>
               </div>
             ))}

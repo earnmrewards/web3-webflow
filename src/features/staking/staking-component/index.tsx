@@ -7,7 +7,6 @@ import { StakeOption, ViewType } from "./types";
 import { StakingTableList } from "./staking-table-list";
 import { StakingPagination } from "./staking-pagination";
 import { StakingTableGrid } from "./staking-table-grid";
-import { StakingViewSelector } from "./staking-view-selector";
 import { StakingTrigger } from "./staking-trigger";
 import { useUser } from "@account-kit/react";
 import { StakingEmptyTable } from "./staking-empty-table";
@@ -18,7 +17,7 @@ export function StakingComponent() {
 
   const [component, setComponent] = useState<HTMLElement | null>(null);
   const [stakeOption, setStakeOption] = useState<StakeOption>("available");
-  const [viewType, setViewType] = useState<ViewType>("grid");
+  const [viewType, setViewType] = useState<ViewType>("list");
   const [page, setPage] = useState(1);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNodes, setSelectedNodes] = useState<number[]>([]);
@@ -51,11 +50,11 @@ export function StakingComponent() {
         setSelectedNodes={setSelectedNodes}
       />
 
-      <StakingViewSelector
+      {/* <StakingViewSelector
         viewType={viewType}
         setViewType={setViewType}
         selectionMode={selectionMode}
-      />
+      /> */}
       <StakingNodesSelector
         stakeOption={stakeOption}
         selectionMode={selectionMode}

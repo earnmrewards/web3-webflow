@@ -62,7 +62,10 @@ export function StakingNodesSelector({
   }
 
   function handleSelectAll() {
-    if (isSelectedAll()) return;
+    if (isSelectedAll()) {
+      setSelectedNodes([]);
+      return;
+    }
 
     if (stakeOption === "available") {
       setSelectedNodes(heldNodes?.nodes.map((node) => node.tokenId) ?? []);

@@ -20,6 +20,16 @@ interface StakingTriggerProps {
   selectedNodes: number[];
 }
 
+const disabledTriggerStyles = {
+  opacity: "0.5",
+  cursor: "not-allowed",
+};
+
+const enabledTriggerStyles = {
+  opacity: "1",
+  cursor: "pointer",
+};
+
 export function StakingTrigger({
   selectionMode,
   setSelectionMode,
@@ -51,20 +61,18 @@ export function StakingTrigger({
   }, [stakedNodes, selectedNodes]);
 
   const handleSelectionMode = useCallback(() => {
-    if (selectionMode && selectedNodes.length > 0) {
-      if (stakeOption === "staked" && hasReward) return;
-
-      stakeOption === "available"
-        ? stake(selectedNodes)
-        : unstake(selectedNodes);
-      return;
-    }
-
     const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
     if (loadingHeldNodes || loadingStakedNodes || !nodes) return;
 
-    setSelectedNodes(nodes?.nodes.map(({ tokenId }) => tokenId) || []);
-    setSelectionMode(true);
+    if (!selectionMode) {
+      setSelectedNodes(nodes?.nodes.map(({ tokenId }) => tokenId) || []);
+      setSelectionMode(true);
+      return;
+    }
+
+    if (selectedNodes.length === 0 || (stakeOption === "staked" && hasReward))
+      return;
+    stakeOption === "available" ? stake(selectedNodes) : unstake(selectedNodes);
   }, [
     selectionMode,
     setSelectionMode,
@@ -89,15 +97,33 @@ export function StakingTrigger({
     const anchor = anchors[0];
     if (!anchor) return;
 
-    const text = stakeOption === "available" ? "Stake" : "Unstake";
-    anchor.innerText = selectionMode ? text : "Select SmartNodes";
-    anchor.style.cursor =
-      loadingHeldNodes || loadingStakedNodes ? "not-allowed" : "pointer";
     anchor.addEventListener("click", handleSelectionMode);
 
-    if (selectionMode && stakeOption === "staked") {
-      anchor.style.opacity = hasReward ? "0.5" : "1";
-      anchor.style.cursor = hasReward ? "not-allowed" : "pointer";
+    if (loadingHeldNodes || loadingStakedNodes) {
+      anchor.style.opacity = enabledTriggerStyles.opacity;
+      anchor.style.cursor = enabledTriggerStyles.cursor;
+      return;
+    }
+
+    if (!selectionMode) {
+      anchor.innerText = "Select SmartNodes";
+      anchor.style.opacity = enabledTriggerStyles.opacity;
+      anchor.style.cursor = enabledTriggerStyles.cursor;
+      return;
+    }
+
+    anchor.innerText = stakeOption === "available" ? "Stake" : "Unstake";
+
+    if (selectedNodes.length === 0) {
+      anchor.style.opacity = disabledTriggerStyles.opacity;
+      anchor.style.cursor = disabledTriggerStyles.cursor;
+      return;
+    }
+
+    if (stakeOption === "staked" && hasReward) {
+      anchor.style.opacity = disabledTriggerStyles.opacity;
+      anchor.style.cursor = disabledTriggerStyles.cursor;
+      return;
     }
 
     return () => {
@@ -111,6 +137,7 @@ export function StakingTrigger({
     loadingStakedNodes,
     stakeOption,
     hasReward,
+    selectedNodes,
   ]);
 
   const handleClaimingTrigger = useCallback(() => {

@@ -1,4 +1,4 @@
-import SmartNodeImage from "@/assets/images/smart-node.png";
+import SmartNodeImage from "@/assets/images/smart-node-placeholder.png";
 import { MAX_ITEMS_PER_PAGE } from "../config";
 
 export function StakingTableGridSkeleton() {
