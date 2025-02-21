@@ -76,7 +76,7 @@ export function StakingNodesSelector({
       data-mode={selectionMode}
       className="my-4 px-4 py-2 data-[mode=false]:hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0 bg-[#00D632] w-full rounded-lg text-black font-galano"
     >
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 md:gap-6">
         <CloseIcon
           className="w-4 h-4 cursor-pointer"
           onClick={handleSelectionMode}
