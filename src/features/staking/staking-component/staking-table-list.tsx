@@ -76,7 +76,7 @@ export function StakingTableList({
   return createPortal(
     <>
       {stakeOption === "available" && (
-        <div className="grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="mt-3 grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {heldNodes &&
             heldNodes.nodes.map(({ tokenId, receivedAt }) => (
               <div
@@ -98,7 +98,7 @@ export function StakingTableList({
                   {selectionMode && (
                     <div
                       data-selected={isSelected(tokenId)}
-                      className="flex items-center justify-center w-5 h-5 rounded-md border-[#C5C5C5] data-[selected=true]:border-[#00D632]"
+                      className="ml-2 flex items-center justify-center w-5 h-5 rounded-md bg-[#C5C5C5] data-[selected=true]:bg-[#00D632]"
                     >
                       {isSelected(tokenId) && (
                         <CheckIcon className="w-3.5 h-3.5 color-white" />
@@ -118,7 +118,7 @@ export function StakingTableList({
       )}
 
       {stakeOption === "staked" && (
-        <div className="grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto">
+        <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar">
           {stakedNodes &&
             stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
               <div
@@ -132,7 +132,7 @@ export function StakingTableList({
                   <div className="flex items-center justify-center max-w-20">
                     <div
                       data-selected={isSelected(tokenId)}
-                      className="flex items-center justify-center w-5 h-5 rounded-md border-[#C5C5C5] data-[selected=true]:border-[#00D632]"
+                      className="flex items-center justify-center w-5 h-5 rounded-md bg-[#C5C5C5] data-[selected=true]:bg-[#00D632]"
                     >
                       {isSelected(tokenId) && (
                         <CheckIcon className="w-3.5 h-3.5 color-white" />
