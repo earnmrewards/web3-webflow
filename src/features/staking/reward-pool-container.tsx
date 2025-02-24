@@ -4,7 +4,7 @@ import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
 import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
 import { useUser } from "@account-kit/react";
 
-const months = ["January", "February", "March", "April", "May"];
+const months = ["February", "March", "April", "May"];
 const FIXED_YEAR = 2025;
 
 export function RewardPoolContainer() {
