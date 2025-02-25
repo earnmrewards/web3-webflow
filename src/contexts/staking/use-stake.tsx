@@ -1,5 +1,6 @@
 import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
 import {
+  useChain,
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
@@ -15,6 +16,7 @@ import { isInsufficientFundsError } from "@/errors/is-insufficient-funds-error";
 import { isRejectedError } from "@/errors/is-rejected-error";
 import { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { networkDef } from "@/types/network";
 
 type StakeType = "stake" | "unstake" | "claim";
 
@@ -48,6 +50,7 @@ interface StakeProviderProps {
 
 export function StakeProvider({ children }: StakeProviderProps) {
   const user = useUser();
+  const { setChain } = useChain();
   const { client } = useSmartAccountClient({
     type: "LightAccount",
   });
@@ -61,6 +64,13 @@ export function StakeProvider({ children }: StakeProviderProps) {
   const [error, setError] = useState("");
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  function getChain() {
+    const { arbitrum } = networkDef;
+    const isProduction = import.meta.env.VITE_ENVIRONMENT === "production";
+
+    return isProduction ? arbitrum.mainnet : arbitrum.testnet;
+  }
 
   async function hasValidApproval() {
     if (!user) return false;
@@ -88,6 +98,8 @@ export function StakeProvider({ children }: StakeProviderProps) {
       setLoading(false);
       return;
     }
+
+    setChain({ chain: getChain() });
 
     const params = new URL(window.location.href).searchParams;
     try {
@@ -166,6 +178,8 @@ export function StakeProvider({ children }: StakeProviderProps) {
       return;
     }
 
+    setChain({ chain: getChain() });
+
     const params = new URL(window.location.href).searchParams;
     try {
       const sortedSelectedNodes = selectedNodes.sort((a, b) => a - b);
@@ -223,6 +237,8 @@ export function StakeProvider({ children }: StakeProviderProps) {
       setLoading(false);
       return;
     }
+
+    setChain({ chain: getChain() });
 
     const params = new URL(window.location.href).searchParams;
     try {

@@ -47,6 +47,16 @@ export function StakingNodesSelector({
     setViewSelectorComponent(component as HTMLElement);
   }, []);
 
+  const allNodesCount = useCallback(() => {
+    const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
+    if (!nodes) return 0;
+
+    const { count } = nodes;
+    if (count >= 100) return 100;
+
+    return count;
+  }, [heldNodes, stakeOption, stakedNodes]);
+
   const isSelectedAll = useCallback(() => {
     const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
     if (!nodes) return false;
@@ -85,7 +95,9 @@ export function StakingNodesSelector({
           onClick={handleSelectionMode}
         />
         <div className="flex items-center gap-2">
-          <span>{selectedNodes.length}/100</span>
+          <span>
+            {selectedNodes.length}/{allNodesCount()}
+          </span>
           <span>Selected</span>
         </div>
       </div>
