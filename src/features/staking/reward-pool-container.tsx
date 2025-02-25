@@ -72,9 +72,10 @@ export function RewardPoolContainer() {
       monthText.className = "text-block-24";
       monthText.textContent = `${month} ${FIXED_YEAR}`;
 
-      const infoText = document.createElement("span");
+      const infoText = document.createElement("a");
       infoText.className = "text-block-25";
       infoText.textContent = "---";
+      infoText.href = "#";
 
       card.append(monthText);
       card.append(infoText);
@@ -90,27 +91,32 @@ export function RewardPoolContainer() {
 
     const { iterations } = data;
     let counter = 0;
-    iterations.forEach(({ iterationEnd, iterationRewardEther }) => {
-      const displayMonth = getDisplayMonths().find(({ index }) => {
-        const date = new Date(iterationEnd);
+    iterations.forEach(
+      ({ iterationEnd, iterationRewardEther, rewardsCalulationCsv }) => {
+        const displayMonth = getDisplayMonths().find(({ index }) => {
+          const date = new Date(iterationEnd);
 
-        return date.getMonth() + 1 === index;
-      });
-      if (!displayMonth) return;
+          return date.getMonth() + 1 === index;
+        });
+        if (!displayMonth) return;
 
-      const element = container.children.item(counter);
-      if (!element) return;
+        const element = container.children.item(counter);
+        if (!element) return;
 
-      const label = element.querySelector("span");
-      if (!label) return;
+        const label = element.querySelector("a") as HTMLAnchorElement;
+        if (!label) return;
 
-      label.innerText = String(
-        iterationRewardEther.toLocaleString(undefined, {
-          maximumFractionDigits: 4,
-        })
-      );
-      counter++;
-    });
+        label.href = rewardsCalulationCsv;
+        label.target = "_blank";
+        label.innerText = String(
+          iterationRewardEther.toLocaleString(undefined, {
+            maximumFractionDigits: 4,
+          })
+        );
+        label.style.textDecoration = "underline";
+        counter++;
+      }
+    );
   }
   useEffect(updateCardsValue, [user, loading, data]);
 
