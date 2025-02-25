@@ -1,16 +1,32 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { REWARD_POOL_CONTAINER_ID, STAKING_CONTAINER_ID } from "./config";
-import { useCustomBundler } from "@/hooks/web3/use-custom-bundler";
-import { abi, CONTRACT_ADDRESS } from "@/config/contracts/staking";
+import { useIterations } from "@/hooks/staking/use-iterations";
 import { useUser } from "@account-kit/react";
 
-const months = ["February", "March", "April", "May"];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 const FIXED_YEAR = 2025;
+const MAX_CARDS = 5;
 
 export function RewardPoolContainer() {
   const user = useUser();
 
-  const { readContract } = useCustomBundler({ chain: "arbitrum" });
+  const { data, loading } = useIterations({
+    page: 1,
+    take: 20,
+  });
 
   function getContainer() {
     const container = document.getElementById(STAKING_CONTAINER_ID);
@@ -24,43 +40,29 @@ export function RewardPoolContainer() {
     return poolContainer;
   }
 
-  function getLastDayTimestampOfMonth(index: number) {
-    // TODO: Remove me for prod
-    if (index === 0) {
-      return 1739318400;
-    }
+  function getDisplayMonths() {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const firstMonth = currentMonth - MAX_CARDS + 1;
 
-    const date = new Date(Date.UTC(FIXED_YEAR, index + 1, 0, 0, 0, 0));
-    return Math.floor(date.getTime() / 1000);
+    const shouldShowFirstMonth = currentDate.getFullYear() === FIXED_YEAR;
+    const firstMonthIndex = shouldShowFirstMonth ? 1 : 0;
+
+    const monthsWithIndex = months.map((month, index) => ({ month, index }));
+
+    return monthsWithIndex.slice(
+      firstMonth > 0 ? firstMonth : firstMonthIndex,
+      currentMonth + 1
+    );
   }
-
-  const getTimestampReward = useCallback(
-    async (timestamp: number) => {
-      try {
-        const reward = await readContract({
-          address: CONTRACT_ADDRESS,
-          abi,
-          functionName: "getRewardsFromIterationTimestamp",
-          args: [timestamp],
-        });
-
-        const precision = 10 ** 18;
-        return Number(reward) / precision;
-      } catch (error) {
-        return 0;
-      }
-    },
-    [readContract]
-  );
 
   function addCardsByMonth() {
     const container = getContainer();
     if (!container) return;
 
-    const currentMonthIndex = new Date().getMonth() - 1;
-    months.forEach((month, index) => {
+    getDisplayMonths().forEach(({ month }, index) => {
       const currentChildren = container.children.length;
-      if (index > currentMonthIndex || currentChildren > index) return;
+      if (currentChildren > index) return;
 
       const card = document.createElement("div");
       card.id = "w-node-_7268edfa-b76d-877e-7adb-9b6dd10ae2ca-71367837";
@@ -84,48 +86,33 @@ export function RewardPoolContainer() {
 
   function updateCardsValue() {
     const container = getContainer();
-    if (!container) return;
+    if (!container || !data || loading) return;
 
-    const currentMonthIndex = new Date().getMonth() - 1;
-    if (!user) {
-      months.forEach((_, index) => {
-        const element = container.children.item(index);
-        if (!element) return;
+    const { iterations } = data;
+    let counter = 0;
+    iterations.forEach(({ iterationEnd, iterationRewardEther }) => {
+      const displayMonth = getDisplayMonths().find(({ index }) => {
+        const date = new Date(iterationEnd);
 
-        const label = element.querySelector("span");
-        if (!label) return;
-
-        label.innerText = "---";
+        return date.getMonth() + 1 === index;
       });
-      return;
-    }
+      if (!displayMonth) return;
 
-    (async () => {
-      const promises = months.map(async (_, index) => {
-        if (index > currentMonthIndex) return null;
+      const element = container.children.item(counter);
+      if (!element) return;
 
-        const timestamp = getLastDayTimestampOfMonth(index);
-        const rewardValue = await getTimestampReward(timestamp);
+      const label = element.querySelector("span");
+      if (!label) return;
 
-        return rewardValue;
-      });
-
-      const results = (await Promise.all(promises)).filter(
-        (data) => data !== null
+      label.innerText = String(
+        iterationRewardEther.toLocaleString(undefined, {
+          maximumFractionDigits: 4,
+        })
       );
-
-      results.forEach((rewardValue, index) => {
-        const element = container.children.item(index);
-        if (!element) return;
-
-        const label = element.querySelector("span");
-        if (!label) return;
-
-        label.innerText = String(rewardValue);
-      });
-    })();
+      counter++;
+    });
   }
-  useEffect(updateCardsValue, [getTimestampReward, user]);
+  useEffect(updateCardsValue, [user, loading, data]);
 
   return null;
 }

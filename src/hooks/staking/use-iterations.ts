@@ -47,7 +47,7 @@ export function useIterations({ page, take }: IterationsProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["iterations", { page, take }],
     queryFn: getIterations,
-    enabled: !!page && !!take && !!user,
+    enabled: !!user,
   });
 
   return { data, loading: isLoading };
