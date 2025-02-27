@@ -83,13 +83,14 @@ export function StakingPagination({
   }
 
   return createPortal(
-    <div className="w-full flex flex-col md:flex-row items-center justify-center p-2 gap-2">
+    <div className="w-full flex flex-col md:flex-row items-center justify-center p-2 gap-2 text-xs md:text-sm">
       <a
         data-disabled={page === 1}
-        className={`border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50`}
+        className={`flex items-center gap-2 border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50`}
         onClick={() => handlePageChange("prev")}
       >
-        {`< Back`}
+        {`<`}
+        <span className="hidden md:block">Back</span>
       </a>
       {page > 3 && (
         <>
@@ -104,36 +105,39 @@ export function StakingPagination({
         </>
       )}
 
-      {getVisiblePages().map((pageNum) => (
-        <a
-          key={pageNum}
-          data-active={page === pageNum}
-          className="rounded-full border border-[#C5C5C5] px-4 py-2 font-galano cursor-pointer text-white bg-transparent data-[active=true]:bg-[#00D632] data-[active=true]:text-black data-[active=true]:border-[#00D632]"
-          onClick={() => handlePageClick(pageNum)}
-        >
-          {pageNum}
-        </a>
-      ))}
-
-      {page < lastPage - 2 && (
-        <>
-          <span className="text-white/50 px-2">...</span>
+      <div className="flex items-center gap-2">
+        {getVisiblePages().map((pageNum) => (
           <a
-            data-active={page === lastPage}
+            key={pageNum}
+            data-active={page === pageNum}
             className="rounded-full border border-[#C5C5C5] px-4 py-2 font-galano cursor-pointer text-white bg-transparent data-[active=true]:bg-[#00D632] data-[active=true]:text-black data-[active=true]:border-[#00D632]"
-            onClick={() => handlePageClick(lastPage)}
+            onClick={() => handlePageClick(pageNum)}
           >
-            {lastPage}
+            {pageNum}
           </a>
-        </>
-      )}
+        ))}
+
+        {page < lastPage - 2 && (
+          <>
+            <span className="text-white/50 px-2">...</span>
+            <a
+              data-active={page === lastPage}
+              className="rounded-full border border-[#C5C5C5] px-4 py-2 font-galano cursor-pointer text-white bg-transparent data-[active=true]:bg-[#00D632] data-[active=true]:text-black data-[active=true]:border-[#00D632]"
+              onClick={() => handlePageClick(lastPage)}
+            >
+              {lastPage}
+            </a>
+          </>
+        )}
+      </div>
 
       <a
         data-disabled={page === lastPage}
-        className="border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
+        className="flex items-center gap-2 border border-[#C5C5C5] rounded-full px-4 py-2 text-sm text-white font-galano cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
         onClick={() => handlePageChange("next")}
       >
-        {`Next >`}
+        <span className="hidden md:block">Next</span>
+        {`>`}
       </a>
     </div>,
     paginationComponent

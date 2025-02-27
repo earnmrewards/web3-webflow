@@ -123,9 +123,9 @@ export function StakingTableList({
             stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
               <div
                 key={tokenId}
-                data-mode={selectionMode}
                 data-selected={isSelected(tokenId)}
-                className="grid grid-cols-2 md:grid-cols-4 data-[mode=true]:grid-cols-3 md:data-[mode=true]:grid-cols-5 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer"
+                data-mode={selectionMode}
+                className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer"
                 onClick={() => handleSelect(tokenId)}
               >
                 {selectionMode && (
@@ -141,15 +141,14 @@ export function StakingTableList({
                   </div>
                 )}
                 <div className="flex flex-col">
-                  <span className="text-block-24 font-galano">
+                  <span className="text-block-24 font-galano whitespace-nowrap">
                     SmartNode ID
                   </span>
                   <span className="heading-text-table text-white font-bold">
                     {tokenId}
                   </span>
                 </div>
-
-                <div className="flex flex-col">
+                <div className="flex flex-col whitespace-nowrap">
                   <span className="text-block-24 font-galano">Staked on</span>
                   <span className="heading-text-table text-white font-bold">
                     {new Date(stakedAt).toLocaleDateString()}
@@ -157,7 +156,7 @@ export function StakingTableList({
                 </div>
 
                 <div className="flex flex-col">
-                  <span className="text-block-24 font-galano">
+                  <span className="text-block-24 font-galano whitespace-nowrap">
                     Withdrawable Now
                   </span>
                   <div className="flex items-center gap-1">
@@ -170,11 +169,11 @@ export function StakingTableList({
                   </div>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col whitespace-nowrap">
                   <span className="text-block-24 font-galano">
                     More Rewards In
                   </span>
-                  <span className="heading-text-table text-white font-bold">
+                  <span className="w-32 heading-text-table text-white font-bold">
                     {timeLeft}
                   </span>
                 </div>

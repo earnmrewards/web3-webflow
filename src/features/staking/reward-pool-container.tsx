@@ -85,6 +85,21 @@ export function RewardPoolContainer() {
   }
   useEffect(addCardsByMonth, []);
 
+  useEffect(() => {
+    const container = getContainer();
+    if (!container || !data || data.count > 0) return;
+
+    new Array(container.children.length).fill(null).forEach((_, index) => {
+      const element = container.children.item(index) as HTMLElement;
+      if (!element) return;
+
+      const infoText = element.querySelector("a") as HTMLAnchorElement;
+      if (!infoText) return;
+
+      infoText.textContent = "0";
+    });
+  }, [data]);
+
   function updateCardsValue() {
     const container = getContainer();
     if (!container || !data || loading) return;
