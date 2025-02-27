@@ -118,14 +118,14 @@ export function StakingTableList({
       )}
 
       {stakeOption === "staked" && (
-        <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar">
+        <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 md:max-h-[490px] overflow-y-auto custom-scrollbar">
           {stakedNodes &&
             stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
               <div
                 key={tokenId}
                 data-selected={isSelected(tokenId)}
                 data-mode={selectionMode}
-                className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer"
+                className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer overflow-x-auto custom-thin-scrollbar"
                 onClick={() => handleSelect(tokenId)}
               >
                 {selectionMode && (
@@ -173,7 +173,7 @@ export function StakingTableList({
                   <span className="text-block-24 font-galano">
                     More Rewards In
                   </span>
-                  <span className="w-32 heading-text-table text-white font-bold">
+                  <span className="w-[10.5rem] heading-text-table text-white font-bold">
                     {timeLeft}
                   </span>
                 </div>

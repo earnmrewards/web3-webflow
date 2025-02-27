@@ -102,11 +102,13 @@ export function StakingNodesSelector({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={handleSelectAll}
+      >
         <div
-          className="flex items-center justify-center w-5 h-5 border-black border-2 rounded-md cursor-pointer"
+          className="flex items-center justify-center w-5 h-5 border-black border-2 rounded-md"
           style={{ backgroundColor: isSelectedAll() ? "black" : "transparent" }}
-          onClick={handleSelectAll}
         >
           {isSelectedAll() && <CheckIcon className="w-3.5 h-3.5 " />}
         </div>
