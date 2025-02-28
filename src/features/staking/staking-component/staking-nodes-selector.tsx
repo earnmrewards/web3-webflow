@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { STAKING_VIEW_SELECTOR_ID } from "../config";
+import { MAX_INTERACTIVE_ITEMS, STAKING_VIEW_SELECTOR_ID } from "../config";
 import { createPortal } from "react-dom";
 import { CloseIcon } from "@/assets/icons/close";
 import { CheckIcon } from "@/assets/icons/check";
@@ -32,12 +32,12 @@ export function StakingNodesSelector({
 
   const { data: heldNodes } = useHeldNodes({
     page: 1,
-    take: 100,
+    take: MAX_INTERACTIVE_ITEMS,
   });
 
   const { data: stakedNodes } = useStakedNodes({
     page: 1,
-    take: 100,
+    take: MAX_INTERACTIVE_ITEMS,
   });
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export function StakingNodesSelector({
     if (!nodes) return 0;
 
     const { count } = nodes;
-    if (count >= 100) return 100;
+    if (count >= MAX_INTERACTIVE_ITEMS) return MAX_INTERACTIVE_ITEMS;
 
     return count;
   }, [heldNodes, stakeOption, stakedNodes]);

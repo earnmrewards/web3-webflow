@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { REWARD_POOL_CONTAINER_ID, STAKING_CONTAINER_ID } from "./config";
 import { useIterations } from "@/hooks/staking/use-iterations";
+import { createPortal } from "react-dom";
 import { useUser } from "@account-kit/react";
 
 const months = [
@@ -16,19 +17,20 @@ const months = [
   "October",
   "November",
   "December",
-];
+] as const;
 const FIXED_YEAR = 2025;
 const MAX_CARDS = 5;
 
 export function RewardPoolContainer() {
   const user = useUser();
+  const [component, setComponent] = useState<HTMLElement | null>(null);
 
   const { data, loading } = useIterations({
     page: 1,
     take: 20,
   });
 
-  function getContainer() {
+  useEffect(() => {
     const container = document.getElementById(STAKING_CONTAINER_ID);
     if (!container) return;
 
@@ -37,8 +39,8 @@ export function RewardPoolContainer() {
     );
     if (!poolContainer) return;
 
-    return poolContainer;
-  }
+    setComponent(poolContainer as HTMLElement);
+  }, []);
 
   function getDisplayMonths() {
     const currentDate = new Date();
@@ -56,84 +58,56 @@ export function RewardPoolContainer() {
     );
   }
 
-  function addCardsByMonth() {
-    const container = getContainer();
-    if (!container) return;
+  function getCardItems() {
+    if (!data || loading || !user) {
+      return getDisplayMonths().map(({ month }) => ({
+        month,
+        csv: "",
+        reward: 0,
+      }));
+    }
 
-    getDisplayMonths().forEach(({ month }, index) => {
-      const currentChildren = container.children.length;
-      if (currentChildren > index) return;
+    const result = getDisplayMonths().map(({ month, index: displayIndex }) => {
+      const iteration = data.iterations.find(
+        ({ iterationFrom }) =>
+          new Date(iterationFrom).getMonth() + 1 === displayIndex
+      );
+      if (!iteration) return { month, csv: "", reward: 0 };
 
-      const card = document.createElement("div");
-      card.id = "w-node-_7268edfa-b76d-877e-7adb-9b6dd10ae2ca-71367837";
-      card.className = "div-block-266";
-
-      const monthText = document.createElement("div");
-      monthText.className = "text-block-24";
-      monthText.textContent = `${month} ${FIXED_YEAR}`;
-
-      const infoText = document.createElement("a");
-      infoText.className = "text-block-25";
-      infoText.textContent = "---";
-      infoText.href = "#";
-
-      card.append(monthText);
-      card.append(infoText);
-
-      container.appendChild(card);
+      return {
+        month,
+        csv: iteration.rewardsCalculationCsv,
+        reward: iteration.iterationRewardEther,
+      };
     });
+
+    return result;
   }
-  useEffect(addCardsByMonth, []);
 
-  useEffect(() => {
-    const container = getContainer();
-    if (!container || !data || data.count > 0) return;
+  if (!component) return null;
 
-    new Array(container.children.length).fill(null).forEach((_, index) => {
-      const element = container.children.item(index) as HTMLElement;
-      if (!element) return;
-
-      const infoText = element.querySelector("a") as HTMLAnchorElement;
-      if (!infoText) return;
-
-      infoText.textContent = "0";
-    });
-  }, [data]);
-
-  function updateCardsValue() {
-    const container = getContainer();
-    if (!container || !data || loading) return;
-
-    const { iterations } = data;
-    let counter = 0;
-    iterations.forEach(
-      ({ iterationEnd, iterationRewardEther, rewardsCalulationCsv }) => {
-        const displayMonth = getDisplayMonths().find(({ index }) => {
-          const date = new Date(iterationEnd);
-
-          return date.getMonth() + 1 === index;
-        });
-        if (!displayMonth) return;
-
-        const element = container.children.item(counter);
-        if (!element) return;
-
-        const label = element.querySelector("a") as HTMLAnchorElement;
-        if (!label) return;
-
-        label.href = rewardsCalulationCsv;
-        label.target = "_blank";
-        label.innerText = String(
-          iterationRewardEther.toLocaleString(undefined, {
-            maximumFractionDigits: 4,
-          })
-        );
-        label.style.textDecoration = "underline";
-        counter++;
-      }
-    );
-  }
-  useEffect(updateCardsValue, [user, loading, data]);
-
-  return null;
+  return createPortal(
+    getCardItems().map(({ month, csv, reward }, index) => (
+      <div
+        key={index}
+        id="w-node-_7268edfa-b76d-877e-7adb-9b6dd10ae2ca-71367837"
+        className="div-block-266"
+      >
+        <div className="text-block-24">
+          {month} {FIXED_YEAR}
+        </div>
+        <a
+          data-active={reward > 0}
+          className="text-block-25 data-[active=true]:underline"
+          href={reward > 0 ? csv : undefined}
+          target={reward > 0 ? "_blank" : undefined}
+        >
+          {reward > 0
+            ? reward.toLocaleString(undefined, { maximumFractionDigits: 4 })
+            : "---"}
+        </a>
+      </div>
+    )),
+    component
+  );
 }

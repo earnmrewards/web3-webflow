@@ -44,7 +44,7 @@ export const iterationResponseSchema = z.object({
           iterationFrom: z.string(),
           totalSnStaked: z.number(),
           iterationRewardErc20: z.string(),
-          rewardsCalulationCsv: z.string().url(),
+          rewardsCalculationCsv: z.string().url(),
         })
       ),
       ...paginationSchema.shape,
