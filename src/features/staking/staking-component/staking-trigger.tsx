@@ -5,7 +5,7 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import { STAKING_COMPONENT_ACTIONS_ID } from "../config";
+import { MAX_INTERACTIVE_ITEMS, STAKING_COMPONENT_ACTIONS_ID } from "../config";
 import { StakeOption } from "./types";
 import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
@@ -29,11 +29,11 @@ export function StakingTrigger({
 }: StakingTriggerProps) {
   const { data: heldNodes, loading: loadingHeldNodes } = useHeldNodes({
     page: 1,
-    take: 100,
+    take: MAX_INTERACTIVE_ITEMS,
   });
   const { data: stakedNodes, loading: loadingStakedNodes } = useStakedNodes({
     page: 1,
-    take: 100,
+    take: MAX_INTERACTIVE_ITEMS,
   });
   const { stake, unstake, claim, error } = useStake();
 

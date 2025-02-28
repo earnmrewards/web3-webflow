@@ -6,7 +6,10 @@ import { useStakedNodes } from "./use-staked-nodes";
 
 export function useClaimableNodes() {
   const user = useUser();
-  const { data: stakedNodes } = useStakedNodes({ page: 1, take: 1 });
+  const { data: stakedNodes } = useStakedNodes({
+    page: 1,
+    take: 1,
+  });
   const { readContract } = useCustomBundler({ chain: "arbitrum" });
 
   async function getClaimableNodes() {
