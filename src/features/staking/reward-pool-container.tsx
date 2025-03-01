@@ -44,8 +44,14 @@ export function RewardPoolContainer() {
 
   function getDisplayMonths() {
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
+    let currentMonth = currentDate.getMonth();
     const firstMonth = currentMonth - MAX_CARDS + 1;
+
+    // TODO: Remove me and upgrade to use endpoint
+    const iterationTime = 1740999600000;
+    if (currentDate.getTime() < iterationTime) {
+      currentMonth--;
+    }
 
     const shouldShowFirstMonth = currentDate.getFullYear() === FIXED_YEAR;
     const firstMonthIndex = shouldShowFirstMonth ? 1 : 0;
