@@ -17,9 +17,7 @@ export function useCountdown({ stopTimer }: CountdownProps) {
     // const nextMonth = new Date(
     //   Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0)
     // );
-    const nextMonth = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 3, 11, 0)
-    );
+    const nextMonth = new Date(Date.UTC(now.getUTCFullYear(), 2, 3, 11, 0));
 
     const diffInSeconds = Math.floor(
       (nextMonth.getTime() - now.getTime()) / 1000
