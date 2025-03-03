@@ -40,8 +40,9 @@ export const iterationResponseSchema = z.object({
       data: z.array(
         z.object({
           iterationRewardEther: z.number(),
-          iterationEnd: z.string(),
+          toBeFilledAt: z.string(),
           iterationFrom: z.string(),
+          iterationEnd: z.string(),
           totalSnStaked: z.number(),
           iterationRewardErc20: z.string(),
           rewardsCalculationCsv: z.string().url(),

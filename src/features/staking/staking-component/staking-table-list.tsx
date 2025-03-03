@@ -6,7 +6,6 @@ import { StakingTableListSkeleton } from "./staking-table-list.skeleton";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckIcon } from "@/assets/icons/check";
-import { useCountdown } from "@/components/use-countdown";
 import { EarnM } from "@/assets/icons/earnm";
 
 interface StakingTableListProps {
@@ -30,7 +29,6 @@ export function StakingTableList({
     null
   );
 
-  const { timeLeft } = useCountdown({ stopTimer: false });
   const { data: heldNodes, loading: loadingHeldNodes } = useHeldNodes({
     page,
     take: MAX_ITEMS_PER_PAGE,
@@ -167,15 +165,6 @@ export function StakingTableList({
                       })}
                     </span>
                   </div>
-                </div>
-
-                <div className="flex flex-col whitespace-nowrap">
-                  <span className="text-block-24 font-galano">
-                    More Rewards In
-                  </span>
-                  <span className="w-[10.5rem] heading-text-table text-white font-bold">
-                    {timeLeft}
-                  </span>
                 </div>
               </div>
             ))}
