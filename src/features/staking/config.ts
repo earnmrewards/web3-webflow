@@ -36,6 +36,23 @@ export const STAKING_TABLE_COMPONENT_ID = "web3-staking-component-table";
 export const STAKING_PAGINATION_COMPONENT_ID =
   "web3-staking-component-pagination";
 export const STAKING_COMPONENT_ACTIONS_ID = "web3-staking-component-actions";
+
 export const MAX_ITEMS_PER_PAGE = 24;
 export const MAX_VISIBLE_PAGES = 3;
 export const MAX_INTERACTIVE_ITEMS = 100;
+export const MAX_REWARDS_CARDS = 5;
+
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;

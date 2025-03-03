@@ -6,8 +6,8 @@ import { LogInContainer } from "./log-in-container";
 import { StatsContainer } from "./stats-container";
 import { LoaderContainer } from "./loader-container";
 import { SuccessModal } from "./success-modal";
-import { RewardPoolContainer } from "./reward-pool-container";
 import { StakingComponent } from "./staking-component";
+import { RewardPoolContainer } from "./reward-pool";
 
 export function Staking() {
   return (
