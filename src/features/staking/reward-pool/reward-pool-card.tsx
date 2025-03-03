@@ -31,7 +31,12 @@ export function RewardPoolCard({
         href={shouldShowReward ? csv : undefined}
         target={shouldShowReward ? "_blank" : undefined}
       >
-        {shouldShowReward ? reward : timeLeft}
+        {shouldShowReward
+          ? reward.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          : timeLeft}
       </a>
     </div>
   );
