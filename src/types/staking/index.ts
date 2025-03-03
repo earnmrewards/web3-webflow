@@ -39,6 +39,7 @@ export const iterationResponseSchema = z.object({
     iterations: z.object({
       data: z.array(
         z.object({
+          cardTitle: z.string(),
           iterationRewardEther: z.number(),
           toBeFilledAt: z.string(),
           iterationFrom: z.string(),
