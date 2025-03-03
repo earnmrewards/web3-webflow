@@ -1,16 +1,14 @@
 import { useCountdown } from "@/components/use-countdown";
 
 interface RewardPoolCardProps {
-  month: string;
-  year: number;
+  title: string;
   toBeFilledAt?: string;
   reward?: number;
   csv?: string;
 }
 
 export function RewardPoolCard({
-  month,
-  year,
+  title,
   toBeFilledAt,
   reward,
   csv,
@@ -25,7 +23,7 @@ export function RewardPoolCard({
       className="div-block-266"
     >
       <div className="text-block-24">
-        {month} {year}
+        {shouldShowReward ? title : `${title} Rewards In`}
       </div>
       <a
         data-active={shouldShowReward}
@@ -33,7 +31,12 @@ export function RewardPoolCard({
         href={shouldShowReward ? csv : undefined}
         target={shouldShowReward ? "_blank" : undefined}
       >
-        {shouldShowReward ? reward : timeLeft}
+        {shouldShowReward
+          ? reward.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          : timeLeft}
       </a>
     </div>
   );

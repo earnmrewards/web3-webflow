@@ -15,6 +15,8 @@ export function useCountdown(finalTime: string) {
       (finalDate.getTime() - now.getTime()) / 1000
     );
 
+    if (diffInSeconds <= 0) return "0d 0h 0m 0s";
+
     const days = Math.floor(diffInSeconds / (60 * 60 * 24))
       .toString()
       .padStart(2, "0");

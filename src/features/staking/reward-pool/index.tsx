@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   MAX_REWARDS_CARDS,
-  months,
   REWARD_POOL_CONTAINER_ID,
   STAKING_CONTAINER_ID,
 } from "../config";
@@ -32,26 +31,27 @@ export function RewardPoolContainer() {
   function getCards() {
     if (!data || loading) return [];
 
-    return data.iterations.map((iteration) => {
-      const iterationEnd = new Date(iteration.iterationEnd);
-      const month = months[iterationEnd.getMonth()];
+    return data.iterations.map(
+      ({
+        cardTitle,
+        iterationRewardEther,
+        toBeFilledAt,
+        rewardsCalculationCsv,
+      }) => {
+        if (iterationRewardEther === 0) {
+          return {
+            title: cardTitle,
+            toBeFilledAt,
+          };
+        }
 
-      const toBeFilledAt = new Date(iteration.toBeFilledAt);
-      if (toBeFilledAt.getTime() >= new Date().getTime()) {
         return {
-          month,
-          toBeFilledAt: iteration.toBeFilledAt,
-          year: toBeFilledAt.getFullYear(),
+          title: cardTitle,
+          reward: iterationRewardEther,
+          csv: rewardsCalculationCsv,
         };
       }
-
-      return {
-        month,
-        reward: iteration.iterationRewardEther,
-        csv: iteration.rewardsCalculationCsv,
-        year: iterationEnd.getFullYear(),
-      };
-    });
+    );
   }
 
   if (!component) return null;
