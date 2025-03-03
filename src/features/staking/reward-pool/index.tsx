@@ -38,10 +38,10 @@ export function RewardPoolContainer() {
         toBeFilledAt,
         rewardsCalculationCsv,
       }) => {
-        if (iterationRewardEther > 0) {
+        if (iterationRewardEther === 0) {
           return {
             title: cardTitle,
-            toBeFilledAt: toBeFilledAt,
+            toBeFilledAt,
           };
         }
 
