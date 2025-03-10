@@ -9,12 +9,6 @@ export function NodeListModal() {
   const { isOpen, setIsOpen } = useModal();
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    window.scrollTo(0, 0);
-  }, [isOpen]);
-
-  useEffect(() => {
     const body = document.querySelector("body");
     if (!body) return;
 
@@ -40,7 +34,7 @@ export function NodeListModal() {
   return (
     <div
       data-open={isOpen}
-      className="flex items-center justify-center absolute top-0 left-0 w-screen h-screen overflow-hidden bg-black/40 opacity-0 data-[open=true]:opacity-100 invisible data-[open=true]:visible duration-150"
+      className="flex items-center justify-center fixed inset-0 w-screen h-screen overflow-hidden bg-black/40 opacity-0 data-[open=true]:opacity-100 invisible data-[open=true]:visible duration-150"
       onClick={handleBackgroundClick}
     >
       <div className="flex flex-col bg-white rounded-3xl p-6 min-w-48 space-y-4">
