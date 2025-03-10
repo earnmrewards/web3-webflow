@@ -84,7 +84,7 @@ export function HistoryList({ page }: HistoryListProps) {
                     Node IDs
                   </span>
                   <a
-                    className="heading-text-table text-white font-bold underline cursor-pointer"
+                    className="heading-text-table text-white font-bold underline cursor-pointer whitespace-nowrap"
                     {...getNodeProperties(nodes)}
                     onClick={() => handleSingleNodeClick(nodes)}
                   >

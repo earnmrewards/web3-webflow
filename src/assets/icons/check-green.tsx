@@ -13,8 +13,8 @@ export function CheckGreen(props: ComponentProps<"svg">) {
       <path
         d="M1.98242 7.42062L7.19667 12.6349L17.9824 1.84912"
         stroke="#00D632"
-        stroke-width="2"
-        stroke-linecap="round"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
     </svg>
   );

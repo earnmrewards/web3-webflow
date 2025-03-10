@@ -50,7 +50,7 @@ export function NodeListModal() {
           </h3>
           <CloseIcon onClick={handleCloseModal} />
         </div>
-        <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[486px]">
+        <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[246px] md:w-[486px]">
           {nodes.map(({ id }) => (
             <a
               key={id}
