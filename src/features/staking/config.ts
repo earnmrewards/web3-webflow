@@ -56,3 +56,13 @@ export const months = [
   "November",
   "December",
 ] as const;
+
+export const nftCollectionUrl =
+  import.meta.env.VITE_ENVIRONMENT === "production"
+    ? "https://opensea.io/assets/arbitrum_sepolia/0x17fae73f734d77cc1015b21d0e437a23932c05fa"
+    : "https://testnets.opensea.io/assets/arbitrum_sepolia/0x17fae73f734d77cc1015b21d0e437a23932c05fa";
+
+export const explorerUrl =
+  import.meta.env.VITE_ENVIRONMENT === "production"
+    ? "https://arbiscan.io/tx"
+    : "https://sepolia.arbiscan.io/tx";
