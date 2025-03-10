@@ -12,6 +12,7 @@ import { useUser } from "@account-kit/react";
 import { StakingEmptyTable } from "./staking-empty-table";
 import { StakingNodesSelector } from "./staking-nodes-selector";
 import { ModalProvider } from "@/contexts/use-modal";
+import { NodeListModal } from "./lists/node-list-modal";
 
 export function StakingComponent() {
   const user = useUser();
@@ -99,6 +100,8 @@ export function StakingComponent() {
       />
 
       <StakingEmptyTable stakeOption={stakeOption} />
+
+      <NodeListModal />
     </ModalProvider>,
     component
   );

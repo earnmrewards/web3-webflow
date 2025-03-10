@@ -1,16 +1,20 @@
 import { CloseIcon } from "@/assets/icons/close";
 import { useModal } from "@/contexts/use-modal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { nftCollectionUrl } from "../../config";
+import { createPortal } from "react-dom";
 
 const nodes = [...new Array(35)].map((_, index) => ({ id: index }));
 
 export function NodeListModal() {
   const { isOpen, setIsOpen } = useModal();
+  const [component, setComponent] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const body = document.querySelector("body");
     if (!body) return;
+
+    setComponent(body);
 
     if (isOpen && !body.classList.contains("stop-scrolling")) {
       body.classList.add("stop-scrolling");
@@ -31,10 +35,12 @@ export function NodeListModal() {
     handleCloseModal();
   }
 
-  return (
+  if (!component) return null;
+
+  return createPortal(
     <div
       data-open={isOpen}
-      className="flex items-center justify-center fixed inset-0 w-screen h-screen overflow-hidden bg-black/40 opacity-0 data-[open=true]:opacity-100 invisible data-[open=true]:visible duration-150"
+      className="z-50 flex items-center justify-center fixed inset-0 w-screen h-screen overflow-hidden bg-black/40 opacity-0 data-[open=true]:opacity-100 invisible data-[open=true]:visible duration-150"
       onClick={handleBackgroundClick}
     >
       <div className="flex flex-col bg-white rounded-3xl p-6 min-w-48 space-y-4">
@@ -66,6 +72,7 @@ export function NodeListModal() {
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    component
   );
 }

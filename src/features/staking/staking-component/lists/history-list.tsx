@@ -7,7 +7,6 @@ import {
 import { shortenAddress } from "@/utils/shorten-address";
 import { CheckGreen } from "@/assets/icons/check-green";
 import { useModal } from "@/contexts/use-modal";
-import { NodeListModal } from "./node-list-modal";
 import { z } from "zod";
 import { historyResponse } from "@/types/staking";
 import { EarnM } from "@/assets/icons/earnm";
@@ -133,7 +132,6 @@ export function HistoryList({ page }: HistoryListProps) {
             )
           )}
       </div>
-      <NodeListModal />
     </>
   );
 }
