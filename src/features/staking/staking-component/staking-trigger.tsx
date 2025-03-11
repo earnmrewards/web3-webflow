@@ -65,6 +65,8 @@ export function StakingTrigger({
   const hasReward = selectedRewards > 0;
 
   const handleSelectionMode = useCallback(() => {
+    if (stakeOption === "history") return;
+
     const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
     if (loadingHeldNodes || loadingStakedNodes || !nodes) return;
 
@@ -111,7 +113,8 @@ export function StakingTrigger({
 
     anchor.innerText = "Select SmartNodes";
 
-    const shouldBlock = loadingHeldNodes || loadingStakedNodes;
+    const shouldBlock =
+      loadingHeldNodes || loadingStakedNodes || stakeOption === "history";
     anchor.style.opacity = shouldBlock ? "0.5" : "1";
     anchor.style.cursor = shouldBlock ? "not-allowed" : "pointer";
   }
@@ -119,6 +122,7 @@ export function StakingTrigger({
     loadingHeldNodes,
     loadingStakedNodes,
     selectionMode,
+    stakeOption,
   ]);
 
   function handlePosSelection() {

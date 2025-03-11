@@ -48,7 +48,7 @@ export function NodeListModal() {
           <h3 className="font-galano text-2xl text-black font-medium">
             Smart Nodes List
           </h3>
-          <CloseIcon onClick={handleCloseModal} />
+          <CloseIcon onClick={handleCloseModal} className="cursor-pointer" />
         </div>
         <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[246px] md:w-[486px]">
           {nodes.map(({ id }) => (
