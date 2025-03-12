@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Address, paginationSchema } from "..";
+import { paginationSchema } from "..";
 
 export const heldResponseSchema = z.object({
   success: z.boolean(),
@@ -54,26 +54,19 @@ export const iterationResponseSchema = z.object({
   }),
 });
 
-const addressSchema = z.custom<Address>(
-  (address) =>
-    typeof address === "string" && /^0x[a-fA-F0-9]{40}$/.test(address),
-  { message: "Invalid Ethereum address" }
-);
-
 export const historyResponse = z.object({
-  data: z.array(
-    z.object({
-      actionDate: z.number(),
-      hash: addressSchema,
-      nodes: z.array(
+  data: z.object({
+    history: z.object({
+      data: z.array(
         z.object({
-          id: z.number(),
+          actionTimestamp: z.number(),
+          hash: z.string().min(1),
+          smartNodeIds: z.array(z.number()),
+          claimedAmountEther: z.number(),
+          actionType: z.enum(["stake", "unstake", "claim"]),
         })
       ),
-      amount: z.number().positive(),
-      reward: z.number().optional(),
-      actionType: z.enum(["stake", "unstake", "claim"]),
-    })
-  ),
-  ...paginationSchema.shape,
+      ...paginationSchema.shape,
+    }),
+  }),
 });

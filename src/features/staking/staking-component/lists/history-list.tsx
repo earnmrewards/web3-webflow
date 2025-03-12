@@ -5,17 +5,14 @@ import {
   nftCollectionUrl,
 } from "../../config";
 import { shortenAddress } from "@/utils/shorten-address";
-import { CheckGreen } from "@/assets/icons/check-green";
 import { useModal } from "@/contexts/use-modal";
-import { z } from "zod";
-import { historyResponse } from "@/types/staking";
-import { EarnM } from "@/assets/icons/earnm";
+import { InvertedCoin } from "@/assets/icons/inverted-coin";
 
 interface HistoryListProps {
   page: number;
 }
 
-type HistoryNodes = z.infer<typeof historyResponse>["data"][number]["nodes"];
+type HistoryNodes = number[];
 
 const typeName = {
   claim: "Claimed",
@@ -25,12 +22,12 @@ const typeName = {
 
 export function HistoryList({ page }: HistoryListProps) {
   const { data } = useHistory({ page, take: MAX_ITEMS_PER_PAGE });
-  const { setIsOpen } = useModal();
+  const { setIsOpen, setSelectedHash } = useModal();
 
   function getNodeProperties(nodes: HistoryNodes) {
     if (nodes.length === 1) {
       return {
-        href: `${nftCollectionUrl}/${nodes[0].id}`,
+        href: `${nftCollectionUrl}/${nodes[0]}`,
         target: "_blank",
       };
     }
@@ -41,9 +38,10 @@ export function HistoryList({ page }: HistoryListProps) {
     };
   }
 
-  function handleSingleNodeClick(nodes: HistoryNodes) {
+  function handleSingleNodeClick(nodes: HistoryNodes, hash: string) {
     if (nodes.length === 1) return;
 
+    setSelectedHash(hash);
     setIsOpen(true);
   }
 
@@ -53,7 +51,13 @@ export function HistoryList({ page }: HistoryListProps) {
         {data &&
           data.history.map(
             (
-              { actionDate, hash, actionType, amount, nodes, reward },
+              {
+                actionTimestamp,
+                hash,
+                actionType,
+                smartNodeIds,
+                claimedAmountEther,
+              },
               index
             ) => (
               <div
@@ -65,7 +69,7 @@ export function HistoryList({ page }: HistoryListProps) {
                     Date
                   </span>
                   <span className="heading-text-table text-white font-bold">
-                    {new Date(actionDate).toLocaleDateString()}
+                    {new Date(actionTimestamp).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex flex-col whitespace-nowrap">
@@ -85,10 +89,10 @@ export function HistoryList({ page }: HistoryListProps) {
                   </span>
                   <a
                     className="heading-text-table text-white font-bold underline cursor-pointer whitespace-nowrap"
-                    {...getNodeProperties(nodes)}
-                    onClick={() => handleSingleNodeClick(nodes)}
+                    {...getNodeProperties(smartNodeIds)}
+                    onClick={() => handleSingleNodeClick(smartNodeIds, hash)}
                   >
-                    {nodes.length === 1 ? nodes[0].id : "View List"}
+                    {smartNodeIds.length === 1 ? smartNodeIds[0] : "View List"}
                   </a>
                 </div>
 
@@ -97,35 +101,29 @@ export function HistoryList({ page }: HistoryListProps) {
                     Amount of Nodes
                   </span>
                   <span className="heading-text-table text-white font-bold">
-                    {amount.toLocaleString()}
+                    {smartNodeIds.length.toLocaleString()}
                   </span>
                 </div>
-
-                {actionType === "claim" && reward && (
-                  <div className="flex flex-col">
-                    <span className="text-block-24 font-galano whitespace-nowrap">
-                      Rewards
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <EarnM />
-                      <span className="heading-text-table text-white font-bold">
-                        {reward.toLocaleString(undefined, {
-                          maximumFractionDigits: 4,
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                )}
 
                 <div className="flex flex-col">
                   <span className="text-block-24 font-galano whitespace-nowrap">
                     Action
                   </span>
                   <div className="flex items-center gap-2 px-3 py-0.5 bg-[#00420F] rounded-full">
-                    <CheckGreen className="w-3.5 h-3.5" />
-                    <span className="heading-text-table font-bold text-[#00D632] capitalize text-sm">
-                      {typeName[actionType]}
-                    </span>
+                    <div className="flex items-center gap-1 text-[#00D632] font-bold">
+                      <span className="heading-text-table capitalize text-sm">
+                        {typeName[actionType]}
+                      </span>
+                      {actionType === "claim" && (
+                        <>
+                          <span className="text-xs">+</span>
+                          <InvertedCoin className="w-4 h-4" />
+                          {claimedAmountEther.toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          })}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

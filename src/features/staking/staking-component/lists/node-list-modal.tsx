@@ -1,14 +1,28 @@
 import { CloseIcon } from "@/assets/icons/close";
 import { useModal } from "@/contexts/use-modal";
-import { useEffect, useState } from "react";
-import { nftCollectionUrl } from "../../config";
+import { useEffect, useMemo, useState } from "react";
+import { MAX_ITEMS_PER_PAGE, nftCollectionUrl } from "../../config";
 import { createPortal } from "react-dom";
+import { useHistory } from "@/hooks/staking/use-history";
 
-const nodes = [...new Array(35)].map((_, index) => ({ id: index }));
+interface NodeListModalProps {
+  page: number;
+}
 
-export function NodeListModal() {
-  const { isOpen, setIsOpen } = useModal();
+export function NodeListModal({ page }: NodeListModalProps) {
+  const { isOpen, setIsOpen, selectedHash } = useModal();
   const [component, setComponent] = useState<HTMLElement | null>(null);
+
+  const { data } = useHistory({ page, take: MAX_ITEMS_PER_PAGE });
+
+  const getHistoryItem = useMemo(() => {
+    if (!data || !selectedHash) return [];
+
+    const selectedItem = data.history.find(({ hash }) => hash === selectedHash);
+    if (!selectedItem) return [];
+
+    return selectedItem.smartNodeIds;
+  }, [data, selectedHash]);
 
   useEffect(() => {
     const body = document.querySelector("body");
@@ -51,7 +65,7 @@ export function NodeListModal() {
           <CloseIcon onClick={handleCloseModal} className="cursor-pointer" />
         </div>
         <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[246px] md:w-[486px]">
-          {nodes.map(({ id }) => (
+          {getHistoryItem.map((id) => (
             <a
               key={id}
               className="border border-black rounded-2xl p-3 flex flex-col min-w-16 cursor-pointer"

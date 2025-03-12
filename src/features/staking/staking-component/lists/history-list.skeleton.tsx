@@ -1,4 +1,3 @@
-import { EarnM } from "@/assets/icons/earnm";
 import { MAX_ITEMS_PER_PAGE } from "../../config";
 
 export function HistoryListSkeleton() {
@@ -7,7 +6,7 @@ export function HistoryListSkeleton() {
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={`skeleton-${index}`}
-          className="grid grid-cols-2 md:grid-cols-4 border border-[#C5C5C5] rounded-2xl p-5"
+          className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] rounded-2xl p-5 overflow-x-auto custom-thin-scrollbar"
         >
           <div className="flex flex-col">
             <span className="text-block-24">Date</span>
@@ -20,7 +19,6 @@ export function HistoryListSkeleton() {
           <div className="flex flex-col">
             <span className="text-block-24">Node IDs</span>
             <div className="flex items-center gap-1">
-              <EarnM />
               <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
             </div>
           </div>

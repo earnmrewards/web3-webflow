@@ -101,7 +101,7 @@ export function StakingComponent() {
 
       <StakingEmptyTable stakeOption={stakeOption} />
 
-      <NodeListModal />
+      <NodeListModal page={page} />
     </ModalProvider>,
     component
   );
