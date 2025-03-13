@@ -116,7 +116,7 @@ export function HistoryList({ page }: HistoryListProps) {
                   </div>
                 </div>
 
-                <div className="flex flex-1 justify-center">
+                <div className="flex flex-1 justify-start">
                   <div className="flex flex-col w-fit">
                     <span className="text-block-24 font-galano whitespace-nowrap">
                       Action
