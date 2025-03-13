@@ -2,7 +2,10 @@ import { MAX_ITEMS_PER_PAGE } from "../../config";
 
 export function AvailableListSkeleton() {
   return (
-    <div className="mt-3 grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div
+      data-testid="available-list-skeleton"
+      className="mt-3 grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"
+    >
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={`skeleton-${index}`}

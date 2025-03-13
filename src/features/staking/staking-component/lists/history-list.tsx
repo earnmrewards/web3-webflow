@@ -47,7 +47,10 @@ export function HistoryList({ page }: HistoryListProps) {
 
   return (
     <>
-      <ul className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 md:max-h-[490px] overflow-y-auto custom-scrollbar">
+      <ul
+        data-testid="history-list"
+        className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 md:max-h-[490px] overflow-y-auto custom-scrollbar"
+      >
         {data &&
           data.history.map(
             (

@@ -36,7 +36,10 @@ export function AvailableList({
   }
 
   return (
-    <div className="mt-3 grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div
+      data-testid="available-list"
+      className="mt-3 grid py-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"
+    >
       {heldNodes &&
         heldNodes.nodes.map(({ tokenId, receivedAt }) => (
           <div

@@ -54,6 +54,7 @@ export function NodeListModal({ page }: NodeListModalProps) {
   return createPortal(
     <div
       data-open={isOpen}
+      data-testid="modal-background"
       className="z-50 flex items-center justify-center fixed inset-0 w-screen h-screen overflow-hidden bg-black/40 opacity-0 data-[open=true]:opacity-100 invisible data-[open=true]:visible duration-150"
       onClick={handleBackgroundClick}
     >
@@ -62,7 +63,11 @@ export function NodeListModal({ page }: NodeListModalProps) {
           <h3 className="font-galano text-2xl text-black font-medium">
             Smart Nodes List
           </h3>
-          <CloseIcon onClick={handleCloseModal} className="cursor-pointer" />
+          <CloseIcon
+            data-testid="close-icon"
+            onClick={handleCloseModal}
+            className="cursor-pointer"
+          />
         </div>
         <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[246px] md:w-[486px]">
           {getHistoryItem.map((id) => (

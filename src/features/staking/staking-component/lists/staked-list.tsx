@@ -37,7 +37,10 @@ export function StakedList({
   }
 
   return (
-    <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 md:max-h-[490px] overflow-y-auto custom-scrollbar">
+    <div
+      data-testid="staked-list"
+      className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 md:max-h-[490px] overflow-y-auto custom-scrollbar"
+    >
       {stakedNodes &&
         stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
           <div

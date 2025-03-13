@@ -2,9 +2,12 @@ import { MAX_ITEMS_PER_PAGE } from "../../config";
 
 export function HistoryListSkeleton() {
   return (
-    <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar">
+    <ul
+      data-testid="history-list-skeleton"
+      className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar"
+    >
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
-        <div
+        <li
           key={`skeleton-${index}`}
           className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] rounded-2xl p-5 overflow-x-auto custom-thin-scrollbar"
         >
@@ -30,8 +33,8 @@ export function HistoryListSkeleton() {
             <span className="text-block-24">Action</span>
             <div className="mt-1 h-6 w-24 bg-[#C5C5C5]/20 animate-pulse rounded-full"></div>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

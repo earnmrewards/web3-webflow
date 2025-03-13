@@ -3,7 +3,10 @@ import { MAX_ITEMS_PER_PAGE } from "../../config";
 
 export function StakedListSkeleton() {
   return (
-    <div className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar">
+    <div
+      data-testid="staked-list-skeleton"
+      className="mt-3 pr-2 grid py-0 grid-cols-1 gap-4 max-h-[490px] overflow-y-auto custom-scrollbar"
+    >
       {new Array(MAX_ITEMS_PER_PAGE).fill(0).map((_, index) => (
         <div
           key={`skeleton-${index}`}
