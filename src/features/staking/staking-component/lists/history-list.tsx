@@ -69,7 +69,7 @@ export function HistoryList({ page }: HistoryListProps) {
                     Date
                   </span>
                   <span className="heading-text-table text-white font-bold">
-                    {new Date(actionTimestamp).toLocaleDateString()}
+                    {new Date(actionTimestamp * 1000).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex flex-col whitespace-nowrap">
