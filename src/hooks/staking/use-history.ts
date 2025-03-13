@@ -6,14 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 interface HistoryProps {
   page: number;
   take: number;
+  filter?: "asc" | "desc";
 }
 
-export function useHistory({ page, take }: HistoryProps) {
+export function useHistory({ page, take, filter = "desc" }: HistoryProps) {
   const user = useUser();
 
   async function getHistory() {
     const { data, status } = await api.get(
-      `/smartnodes/history/${user?.address}?page=${page}&take=${take}`
+      `/smartnodes/history/${user?.address}?page=${page}&take=${take}&sortByTime=${filter}`
     );
     if (status !== 200) return;
 
