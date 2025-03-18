@@ -68,7 +68,7 @@ export function HistoryList({ page }: HistoryListProps) {
                 className="min-w-fit w-full flex flex-row items-center justify-center border border-[#C5C5C5] rounded-2xl p-5"
               >
                 <div className="flex flex-1 justify-center">
-                  <div className="flex flex-col w-24">
+                  <div className="flex flex-col w-32 sm:w-24">
                     <span className="text-block-24 font-galano whitespace-nowrap">
                       Date
                     </span>
@@ -79,7 +79,7 @@ export function HistoryList({ page }: HistoryListProps) {
                 </div>
 
                 <div className="flex flex-1 justify-center">
-                  <div className="flex flex-col w-32">
+                  <div className="flex flex-col w-36 sm:w-32">
                     <span className="text-block-24 font-galano">Hash</span>
                     <a
                       href={`${explorerUrl}/${hash}`}
