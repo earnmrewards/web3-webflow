@@ -1,9 +1,5 @@
 import { useHistory } from "@/hooks/staking/use-history";
-import {
-  explorerUrl,
-  MAX_ITEMS_PER_PAGE,
-  nftCollectionUrl,
-} from "../../config";
+import { explorerUrl, MAX_ITEMS_PER_PAGE } from "../../config";
 import { shortenAddress } from "@/utils/shorten-address";
 import { useModal } from "@/contexts/use-modal";
 import { InvertedCoin } from "@/assets/icons/inverted-coin";
@@ -23,20 +19,6 @@ const typeName = {
 export function HistoryList({ page }: HistoryListProps) {
   const { data } = useHistory({ page, take: MAX_ITEMS_PER_PAGE });
   const { setIsOpen, setSelectedHash } = useModal();
-
-  function getNodeProperties(nodes: HistoryNodes) {
-    if (nodes.length === 1) {
-      return {
-        href: `${nftCollectionUrl}/${nodes[0]}`,
-        target: "_blank",
-      };
-    }
-
-    return {
-      href: undefined,
-      target: "_self",
-    };
-  }
 
   function handleSingleNodeClick(nodes: HistoryNodes, hash: string) {
     if (nodes.length === 1) return;
@@ -97,8 +79,8 @@ export function HistoryList({ page }: HistoryListProps) {
                       Node IDs
                     </span>
                     <a
-                      className="heading-text-table text-white font-bold underline cursor-pointer whitespace-nowrap"
-                      {...getNodeProperties(smartNodeIds)}
+                      data-list={smartNodeIds.length > 1}
+                      className="heading-text-table text-white font-bold whitespace-nowrap data-[list=true]:underline data-[list=true]:cursor-pointer"
                       onClick={() => handleSingleNodeClick(smartNodeIds, hash)}
                     >
                       {smartNodeIds.length === 1
