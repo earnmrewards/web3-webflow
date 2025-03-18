@@ -4,13 +4,15 @@ import { createPortal } from "react-dom";
 
 import { StakingSelector } from "./staking-selector";
 import { StakeOption, ViewType } from "./types";
-import { StakingTableList } from "./staking-table-list";
+import { StakingTableList } from "./lists/staking-table-list";
 import { StakingPagination } from "./staking-pagination";
 import { StakingTableGrid } from "./staking-table-grid";
 import { StakingTrigger } from "./staking-trigger";
 import { useUser } from "@account-kit/react";
 import { StakingEmptyTable } from "./staking-empty-table";
 import { StakingNodesSelector } from "./staking-nodes-selector";
+import { ModalProvider } from "@/contexts/use-modal";
+import { NodeListModal } from "./lists/node-list-modal";
 
 export function StakingComponent() {
   const user = useUser();
@@ -41,7 +43,7 @@ export function StakingComponent() {
   if (!component) return null;
 
   return createPortal(
-    <>
+    <ModalProvider>
       <StakingSelector
         stakeOption={stakeOption}
         setStakeOption={setStakeOption}
@@ -98,7 +100,9 @@ export function StakingComponent() {
       />
 
       <StakingEmptyTable stakeOption={stakeOption} />
-    </>,
+
+      <NodeListModal page={page} />
+    </ModalProvider>,
     component
   );
 }

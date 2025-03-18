@@ -66,22 +66,6 @@
         ></div>
 
         <div id="web3-staking-component">
-          <h1>My SmartNodes</h1>
-
-          <div id="web3-staking-selector" class="flex gap-4">
-            <a href="#" class="cursor-pointer">Available</a>
-            <a href="#" class="cursor-pointer">Staked</a>
-          </div>
-
-          <div
-            id="web3-staking-content"
-            class="mt-8 border border-[#C5C5C5] rounded-2xl p-2 text-white"
-          >
-            <div id="web3-staking-component-view-selector"></div>
-            <div id="web3-staking-component-table"></div>
-            <div id="web3-staking-component-pagination" class="mt-2"></div>
-          </div>
-
           <div
             id="web3-staking-component-actions"
             class="flex items-center justify-center gap-2"
@@ -93,8 +77,22 @@
               >Claim Rewards</a
             >
           </div>
-
           <span id="web3-error-text" class="text-red-500"></span>
+
+          <div id="web3-staking-selector" class="flex gap-4">
+            <a href="#" class="cursor-pointer">Available</a>
+            <a href="#" class="cursor-pointer">Staked</a>
+            <a href="#" class="cursor-pointer">History</a>
+          </div>
+
+          <div
+            id="web3-staking-content"
+            class="mt-8 border border-[#C5C5C5] rounded-2xl p-2 text-white"
+          >
+            <div id="web3-staking-component-view-selector"></div>
+            <div id="web3-staking-component-table"></div>
+            <div id="web3-staking-component-pagination" class="mt-2"></div>
+          </div>
         </div>
       </div>
     </div>

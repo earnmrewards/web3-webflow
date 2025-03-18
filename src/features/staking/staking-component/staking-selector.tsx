@@ -1,7 +1,7 @@
 import { useUser } from "@account-kit/react";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { STAKING_COMPONENT_ID, STAKING_SELECTOR_ID } from "../config";
-import { StakeOption } from "./types";
+import { selectionOptions, StakeOption } from "./types";
 
 interface StakingSelectorProps {
   stakeOption: StakeOption;
@@ -51,16 +51,16 @@ export function StakingSelector({
     const anchors: NodeListOf<HTMLAnchorElement> =
       selector.querySelectorAll("a");
     for (const [index, anchor] of anchors.entries()) {
-      const option: StakeOption = index === 0 ? "available" : "staked";
       anchor.style.cursor = user ? "pointer" : "not-allowed";
-      anchor.addEventListener("click", () => handleStakeOptionClick(option));
+      anchor.addEventListener("click", () =>
+        handleStakeOptionClick(selectionOptions[index])
+      );
     }
 
     return () => {
       for (const [index, anchor] of anchors.entries()) {
-        const option: StakeOption = index === 0 ? "available" : "staked";
         anchor.removeEventListener("click", () =>
-          handleStakeOptionClick(option)
+          handleStakeOptionClick(selectionOptions[index])
         );
       }
     };
@@ -76,15 +76,12 @@ export function StakingSelector({
     const anchors: NodeListOf<HTMLAnchorElement> =
       selector.querySelectorAll("a");
     for (const [index, anchor] of anchors.entries()) {
-      const stakeTypeIndex = stakeOption === "available" ? 0 : 1;
+      const isSelected =
+        index ===
+        selectionOptions.findIndex((option) => option === stakeOption);
 
-      if (stakeTypeIndex === index) {
-        anchor.style.borderBottom = "2px solid #02D632";
-        anchor.style.color = "#02D632";
-      } else {
-        anchor.style.borderBottom = "";
-        anchor.style.color = "#A8A8A8";
-      }
+      anchor.style.borderBottom = isSelected ? "2px solid #02D632" : "";
+      anchor.style.color = isSelected ? "#02D632" : "#A8A8A8";
     }
   }
   useEffect(changeStakeButtonColor, [stakeOption]);

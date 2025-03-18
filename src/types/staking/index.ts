@@ -53,3 +53,20 @@ export const iterationResponseSchema = z.object({
     }),
   }),
 });
+
+export const historyResponse = z.object({
+  data: z.object({
+    history: z.object({
+      data: z.array(
+        z.object({
+          actionTimestamp: z.number(),
+          hash: z.string().min(1),
+          smartNodeIds: z.array(z.number()),
+          claimedAmountEther: z.number(),
+          actionType: z.enum(["stake", "unstake", "claim"]),
+        })
+      ),
+      ...paginationSchema.shape,
+    }),
+  }),
+});

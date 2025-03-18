@@ -8,6 +8,7 @@ import {
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { StakeOption } from "./types";
 import { createPortal } from "react-dom";
+import { useHistory } from "@/hooks/staking/use-history";
 
 interface StakingPaginationProps {
   stakeOption: StakeOption;
@@ -32,8 +33,14 @@ export function StakingPagination({
     page,
     take: MAX_ITEMS_PER_PAGE,
   });
+  const { data: history } = useHistory({
+    page,
+    take: MAX_ITEMS_PER_PAGE,
+  });
 
-  const selectedNodes = stakeOption === "available" ? heldNodes : stakedNodes;
+  const selectedNodes = { available: heldNodes, staked: stakedNodes, history }[
+    stakeOption
+  ];
 
   useEffect(() => {
     const component = document.getElementById(STAKING_PAGINATION_COMPONENT_ID);
