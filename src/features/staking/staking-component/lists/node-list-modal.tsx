@@ -1,7 +1,7 @@
 import { CloseIcon } from "@/assets/icons/close";
 import { useModal } from "@/contexts/use-modal";
 import { useEffect, useMemo, useState } from "react";
-import { MAX_ITEMS_PER_PAGE, nftCollectionUrl } from "../../config";
+import { MAX_ITEMS_PER_PAGE } from "../../config";
 import { createPortal } from "react-dom";
 import { useHistory } from "@/hooks/staking/use-history";
 
@@ -71,12 +71,9 @@ export function NodeListModal({ page }: NodeListModalProps) {
         </div>
         <div className="flex flex-wrap gap-4 border border-[#C5C5C5] p-2 rounded-2xl overflow-y-auto custom-scrollbar max-h-64 w-[246px] md:w-[486px]">
           {getHistoryItem.map((id) => (
-            <a
+            <div
               key={id}
-              className="border border-black rounded-2xl p-3 flex flex-col min-w-16 cursor-pointer"
-              href={`${nftCollectionUrl}/${id}`}
-              target="_blank"
-              onClick={handleCloseModal}
+              className="border border-black rounded-2xl p-3 flex flex-col min-w-16"
             >
               <span
                 className="text-block-24 font-galano"
@@ -87,7 +84,7 @@ export function NodeListModal({ page }: NodeListModalProps) {
               <span className="heading-text-table text-black font-bold">
                 {id}
               </span>
-            </a>
+            </div>
           ))}
         </div>
       </div>
