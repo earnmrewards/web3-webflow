@@ -61,6 +61,8 @@ export function StakingNodesSelector({
     const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
     if (!nodes) return false;
 
+    if (selectedNodes.length >= MAX_INTERACTIVE_ITEMS) return true;
+
     return nodes.count === selectedNodes.length;
   }, [heldNodes, selectedNodes, stakeOption, stakedNodes]);
 
