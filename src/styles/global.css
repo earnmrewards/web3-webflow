@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-block-24 {
+  color: #c5c5c5;
+  font-family: Galano Grotesque, Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #C5C5C5;
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a9a8a8;
+  }
+}

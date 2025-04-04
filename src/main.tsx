@@ -5,7 +5,7 @@ import "./styles/global.css";
 import { AuthModalButton } from "./components/buttons/auth-modal-button.tsx";
 import { LogoutButton } from "./components/buttons/logout-button.tsx";
 import { UserAddress } from "./components/texts/user-address.tsx";
-import { SmartNodesComponents } from "./components/smart-nodes/index.tsx";
+import { FeatureComponents } from "./features/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <AuthModalButton />
       <LogoutButton />
       <UserAddress />
-      <SmartNodesComponents />
+      <FeatureComponents />
     </Providers>
   </React.StrictMode>
 );

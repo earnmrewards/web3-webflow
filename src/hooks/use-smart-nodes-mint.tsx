@@ -18,7 +18,7 @@ import { useStore } from "../contexts/use-store";
 import {
   SMART_NODES_TIERS_VALUE,
   STORAGE_KEY,
-} from "../components/smart-nodes/config";
+} from "../features/smart-nodes/config";
 import { validateNetwork } from "@/utils/validate-network";
 
 const mintSchema = z.object({

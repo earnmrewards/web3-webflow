@@ -1,0 +1,122 @@
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { MAX_INTERACTIVE_ITEMS, STAKING_VIEW_SELECTOR_ID } from "../config";
+import { createPortal } from "react-dom";
+import { CloseIcon } from "@/assets/icons/close";
+import { CheckIcon } from "@/assets/icons/check";
+import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
+import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
+import { StakeOption } from "./types";
+interface StakingNodesSelectorProps {
+  selectionMode: boolean;
+  setSelectionMode: Dispatch<SetStateAction<boolean>>;
+  selectedNodes: number[];
+  setSelectedNodes: Dispatch<SetStateAction<number[]>>;
+  stakeOption: StakeOption;
+}
+
+export function StakingNodesSelector({
+  selectionMode,
+  setSelectionMode,
+  selectedNodes,
+  setSelectedNodes,
+  stakeOption,
+}: StakingNodesSelectorProps) {
+  const [viewSelectorComponent, setViewSelectorComponent] =
+    useState<HTMLElement | null>(null);
+
+  const { data: heldNodes } = useHeldNodes({
+    page: 1,
+    take: MAX_INTERACTIVE_ITEMS,
+  });
+
+  const { data: stakedNodes } = useStakedNodes({
+    page: 1,
+    take: MAX_INTERACTIVE_ITEMS,
+  });
+
+  useEffect(() => {
+    const component = document.getElementById(STAKING_VIEW_SELECTOR_ID);
+    if (!component) return;
+
+    setViewSelectorComponent(component as HTMLElement);
+  }, []);
+
+  const allNodesCount = useCallback(() => {
+    const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
+    if (!nodes) return 0;
+
+    const { count } = nodes;
+    if (count >= MAX_INTERACTIVE_ITEMS) return MAX_INTERACTIVE_ITEMS;
+
+    return count;
+  }, [heldNodes, stakeOption, stakedNodes]);
+
+  const isSelectedAll = useCallback(() => {
+    const nodes = stakeOption === "available" ? heldNodes : stakedNodes;
+    if (!nodes) return false;
+
+    if (selectedNodes.length >= MAX_INTERACTIVE_ITEMS) return true;
+
+    return nodes.count === selectedNodes.length;
+  }, [heldNodes, selectedNodes, stakeOption, stakedNodes]);
+
+  if (!viewSelectorComponent) return null;
+
+  function handleSelectionMode() {
+    setSelectionMode(false);
+    setSelectedNodes([]);
+  }
+
+  function handleSelectAll() {
+    if (isSelectedAll()) {
+      setSelectedNodes([]);
+      return;
+    }
+
+    if (stakeOption === "available") {
+      setSelectedNodes(heldNodes?.nodes.map((node) => node.tokenId) ?? []);
+    } else {
+      setSelectedNodes(stakedNodes?.nodes.map((node) => node.tokenId) ?? []);
+    }
+  }
+
+  return createPortal(
+    <div
+      data-mode={selectionMode}
+      className="my-4 px-4 py-2 data-[mode=false]:hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0 bg-[#00D632] w-full rounded-lg text-black font-galano"
+    >
+      <div className="flex items-center gap-2 md:gap-6">
+        <CloseIcon
+          className="w-4 h-4 cursor-pointer"
+          onClick={handleSelectionMode}
+        />
+        <div className="flex items-center gap-2">
+          <span>
+            {selectedNodes.length}/{allNodesCount()}
+          </span>
+          <span>Selected</span>
+        </div>
+      </div>
+
+      <div
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={handleSelectAll}
+      >
+        <div
+          className="flex items-center justify-center w-5 h-5 border-black border-2 rounded-md"
+          style={{ backgroundColor: isSelectedAll() ? "black" : "transparent" }}
+        >
+          {isSelectedAll() && <CheckIcon className="w-3.5 h-3.5 " />}
+        </div>
+        <span>Select All</span>
+      </div>
+    </div>,
+    viewSelectorComponent
+  );
+}
