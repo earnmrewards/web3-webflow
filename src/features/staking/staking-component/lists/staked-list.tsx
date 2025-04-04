@@ -50,12 +50,14 @@ export function StakedList({
             key={tokenId}
             data-mode={selectionMode}
             data-selected={isSelected(tokenId)}
-            data-blocked={
-              selectedNodes.length >= MAX_INTERACTIVE_ITEMS &&
-              !isSelected(tokenId)
-            }
-            className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer overflow-x-auto custom-thin-scrollbar data-[blocked=true]:cursor-not-allowed"
+            className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer overflow-x-auto custom-thin-scrollbar"
             onClick={() => handleSelect(tokenId)}
+            {...(selectedNodes.length >= MAX_INTERACTIVE_ITEMS &&
+              !isSelected(tokenId) && {
+                style: {
+                  cursor: "not-allowed",
+                },
+              })}
           >
             {selectionMode && (
               <div className="flex items-center justify-center max-w-20">

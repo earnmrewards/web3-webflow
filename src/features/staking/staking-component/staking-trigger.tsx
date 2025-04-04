@@ -5,7 +5,11 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import { MAX_INTERACTIVE_ITEMS, STAKING_COMPONENT_ACTIONS_ID } from "../config";
+import {
+  MAX_INTERACTIVE_ITEMS,
+  MAX_ITEMS_PER_PAGE,
+  STAKING_COMPONENT_ACTIONS_ID,
+} from "../config";
 import { StakeOption } from "./types";
 import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
@@ -18,6 +22,7 @@ interface StakingTriggerProps {
   stakeOption: StakeOption;
   setSelectedNodes: Dispatch<SetStateAction<number[]>>;
   selectedNodes: number[];
+  page: number;
 }
 
 export function StakingTrigger({
@@ -26,14 +31,15 @@ export function StakingTrigger({
   stakeOption,
   setSelectedNodes,
   selectedNodes,
+  page,
 }: StakingTriggerProps) {
   const { data: heldNodes, loading: loadingHeldNodes } = useHeldNodes({
     page: 1,
     take: MAX_INTERACTIVE_ITEMS,
   });
   const { data: stakedNodes, loading: loadingStakedNodes } = useStakedNodes({
-    page: 1,
-    take: MAX_INTERACTIVE_ITEMS,
+    page: page,
+    take: MAX_ITEMS_PER_PAGE,
   });
   const { stake, unstake, claim, error } = useStake();
 
