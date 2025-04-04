@@ -1,5 +1,5 @@
 import { useHeldNodes } from "@/hooks/staking/use-held-nodes";
-import { MAX_ITEMS_PER_PAGE } from "../../config";
+import { MAX_INTERACTIVE_ITEMS, MAX_ITEMS_PER_PAGE } from "../../config";
 import { Dispatch, SetStateAction } from "react";
 import { CheckIcon } from "@/assets/icons/check";
 
@@ -28,6 +28,9 @@ export function AvailableList({
   function handleSelect(id: number) {
     if (!selectionMode) return;
 
+    if (selectedNodes.length >= MAX_INTERACTIVE_ITEMS && !isSelected(id))
+      return;
+
     if (isSelected(id)) {
       setSelectedNodes(selectedNodes.filter((node) => node !== id));
     } else {
@@ -46,7 +49,11 @@ export function AvailableList({
             key={tokenId}
             data-mode={selectionMode}
             data-selected={isSelected(tokenId)}
-            className="flex flex-col border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-3 space-y-2 data-[mode=true]:cursor-pointer"
+            data-blocked={
+              selectedNodes.length >= MAX_INTERACTIVE_ITEMS &&
+              !isSelected(tokenId)
+            }
+            className="flex flex-col border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-3 space-y-2 data-[mode=true]:cursor-pointer data-[blocked=true]:cursor-not-allowed"
             onClick={() => handleSelect(tokenId)}
           >
             <div className="flex justify-between">
