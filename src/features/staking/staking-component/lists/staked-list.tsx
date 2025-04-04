@@ -1,7 +1,7 @@
 import { EarnM } from "@/assets/icons/earnm";
 import { useStakedNodes } from "@/hooks/staking/use-staked-nodes";
 import { Dispatch, SetStateAction } from "react";
-import { MAX_ITEMS_PER_PAGE } from "../../config";
+import { MAX_INTERACTIVE_ITEMS, MAX_ITEMS_PER_PAGE } from "../../config";
 import { CheckIcon } from "@/assets/icons/check";
 
 interface StakedListProps {
@@ -29,6 +29,9 @@ export function StakedList({
   function handleSelect(id: number) {
     if (!selectionMode) return;
 
+    if (selectedNodes.length >= MAX_INTERACTIVE_ITEMS && !isSelected(id))
+      return;
+
     if (isSelected(id)) {
       setSelectedNodes(selectedNodes.filter((node) => node !== id));
     } else {
@@ -45,9 +48,13 @@ export function StakedList({
         stakedNodes.nodes.map(({ tokenId, stakedAt, reward }) => (
           <div
             key={tokenId}
-            data-selected={isSelected(tokenId)}
             data-mode={selectionMode}
-            className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer overflow-x-auto custom-thin-scrollbar"
+            data-selected={isSelected(tokenId)}
+            data-blocked={
+              selectedNodes.length >= MAX_INTERACTIVE_ITEMS &&
+              !isSelected(tokenId)
+            }
+            className="min-w-fit w-full flex flex-row justify-between gap-4 border border-[#C5C5C5] data-[selected=true]:border-[#00D632] rounded-2xl p-5 data-[mode=true]:cursor-pointer overflow-x-auto custom-thin-scrollbar data-[blocked=true]:cursor-not-allowed"
             onClick={() => handleSelect(tokenId)}
           >
             {selectionMode && (
