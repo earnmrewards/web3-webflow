@@ -28,40 +28,18 @@ export function useHeldNodes({ page, take }: HeldNodesProps) {
     if (status !== 200) return;
 
     const parsedResponse = heldResponseSchema.safeParse(data);
-    if (parsedResponse.success) {
-      const { items, total, page: currentPage, take: pageSize } = parsedResponse.data;
-      const lastPage = Math.max(1, Math.ceil(total / pageSize));
+    if (!parsedResponse.success) return;
 
-      return {
-        nodes: items,
-        count: total,
-        currentPage,
-        nextPage: currentPage < lastPage ? currentPage + 1 : null,
-        prevPage: currentPage > 1 ? currentPage - 1 : null,
-        lastPage,
-      };
-    }
-
-    // TODO: Remove this fallback once the held endpoint is deployed with pagination
-    const legacy = z.object({ heldCount: z.number() }).safeParse(data);
-    if (legacy.success) {
-      return {
-        nodes: [],
-        count: legacy.data.heldCount,
-        currentPage: 1,
-        nextPage: null,
-        prevPage: null,
-        lastPage: 1,
-      };
-    }
+    const { items, total, page: currentPage, take: pageSize } = parsedResponse.data;
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
     return {
-      nodes: [],
-      count: 0,
-      currentPage: 1,
-      nextPage: null,
-      prevPage: null,
-      lastPage: 1,
+      nodes: items,
+      count: total,
+      currentPage,
+      nextPage: currentPage < lastPage ? currentPage + 1 : null,
+      prevPage: currentPage > 1 ? currentPage - 1 : null,
+      lastPage,
     };
   }
 
