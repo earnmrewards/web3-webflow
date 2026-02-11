@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alchemy Web3 Embed System for Webflow</title>
+  </head>
+  <body>
+    <div id="root" feature="staking"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div
+      id="web3-staking-container"
+      class="p-12 w-screen flex justify-center bg-[#181818]"
+    >
+      <div class="flex flex-col w-full max-w-4xl space-y-12">
+        <a
+          id="web3-address-button"
+          class="self-end px-4 py-2 bg-[#02D632] rounded-full w-fit font-bold cursor-pointer"
+        >
+        </a>
+
+        <div
+          id="web3-banner-container"
+          class="hidden bg-[#F9FD30] h-fit py-4 rounded-lg text-sm text-center"
+        ></div>
+
+        <h1 class="text-4xl font-bold text-white text-center">Dashboard</h1>
+
+        <div class="grid grid-cols-4 gap-4">
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
+            Your SmartNodes
+            <span id="web3-sn-amount" class="font-bold text-lg">---</span>
+          </div>
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
+            Total Staked SmartNodes
+            <span id="web3-total-staked-amount" class="font-bold text-lg"
+              >---</span
+            >
+          </div>
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
+            Your Staked SmartNodes
+            <span id="web3-user-total-staked-amount" class="font-bold text-lg"
+              >---</span
+            >
+          </div>
+          <div
+            class="p-2 w-full flex flex-col border border-white rounded text-white"
+          >
+            Your Claimable Rewards
+            <span id="web3-claimable-rewards" class="font-bold text-lg"
+              >---</span
+            >
+          </div>
+        </div>
+
+        <div
+          id="web3-reward-container"
+          class="grid grid-cols-5 gap-4 text-white"
+        ></div>
+
+        <div id="web3-staking-component">
+          <div
+            id="web3-staking-component-actions"
+            class="flex items-center justify-center gap-2"
+          >
+            <a class="mt-4 bg-white rounded-full px-4 py-2"
+              >Select SmartNodes</a
+            >
+            <a class="mt-4 hidden bg-[#02D632] rounded-full px-4 py-2"
+              >Claim Rewards</a
+            >
+          </div>
+          <span id="web3-error-text" class="text-red-500"></span>
+
+          <div id="web3-staking-selector" class="flex gap-4">
+            <a href="#" class="cursor-pointer">Available</a>
+            <a href="#" class="cursor-pointer">Staked</a>
+            <a href="#" class="cursor-pointer">History</a>
+          </div>
+
+          <div
+            id="web3-staking-content"
+            class="mt-8 border border-[#C5C5C5] rounded-2xl p-2 text-white"
+          >
+            <div id="web3-staking-component-view-selector"></div>
+            <div id="web3-staking-component-table"></div>
+            <div id="web3-staking-component-pagination" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

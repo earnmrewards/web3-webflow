@@ -1,17 +1,9 @@
-const networkId = {
-  arbitrum: {
-    mainnet: 42161,
-    testnet: 421614,
-  },
-};
+import { networkDef, NetworkType } from "@/types/network";
 
-export async function validateNetwork(
-  network: keyof typeof networkId,
-  chainId: number
-) {
-  const { mainnet, testnet } = networkId[network];
-  const validChainId =
+export async function validateNetwork(network: NetworkType, chainId: number) {
+  const { mainnet, testnet } = networkDef[network];
+  const validChain =
     import.meta.env.VITE_ENVIRONMENT === "production" ? mainnet : testnet;
 
-  return chainId === validChainId;
+  return chainId === validChain.id;
 }

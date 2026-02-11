@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-enum Storage {
+export enum Storage {
   SESSION,
   LOCAL,
 }
@@ -9,8 +9,13 @@ type StorageItemType<T> = Record<string, T>;
 
 interface StoreContextProps {
   // TODO: Improve the generic T return
-  get<T>(key: string): StorageItemType<T> | null;
-  set: (key: string, data: StorageItemType<string | number>) => void;
+  get<T>(key: string, type?: Storage): StorageItemType<T> | null;
+  set: (
+    key: string,
+    data: StorageItemType<string | number>,
+    type?: Storage
+  ) => void;
+  del: (key: string, type?: Storage) => void;
 }
 
 interface StoreProviderProps {
@@ -28,8 +33,8 @@ export function StoreProvider({ children }: StoreProviderProps) {
     StorageItemType<string | number>
   > | null>(null);
 
-  function getStore() {
-    switch (DEFAULT_STORE) {
+  function getStore(type: Storage) {
+    switch (type) {
       case Storage.LOCAL:
         return localStorage;
       default:
@@ -37,13 +42,13 @@ export function StoreProvider({ children }: StoreProviderProps) {
     }
   }
 
-  function get<T>(key: string) {
+  function get<T>(key: string, type: Storage = DEFAULT_STORE) {
     if (storedData !== null) {
       const data = storedData.get(key);
       if (data) return data as StorageItemType<T>;
     }
 
-    const store = getStore();
+    const store = getStore(type);
     const data = store.getItem(`${STORE_KEY}/${key}`);
     if (!data) return null;
 
@@ -60,8 +65,12 @@ export function StoreProvider({ children }: StoreProviderProps) {
     }
   }
 
-  function set(key: string, data: StorageItemType<string | number>) {
-    const store = getStore();
+  function set(
+    key: string,
+    data: StorageItemType<string | number>,
+    type: Storage = DEFAULT_STORE
+  ) {
+    const store = getStore(type);
 
     store.setItem(`${STORE_KEY}/${key}`, JSON.stringify(data));
 
@@ -70,8 +79,18 @@ export function StoreProvider({ children }: StoreProviderProps) {
     setStoredData(dataMap);
   }
 
+  function del(key: string, type: Storage = DEFAULT_STORE) {
+    const store = getStore(type);
+
+    store.removeItem(`${STORE_KEY}/${key}`);
+
+    const dataMap = new Map(storedData);
+    dataMap.delete(key);
+    setStoredData(dataMap);
+  }
+
   return (
-    <StoreContext.Provider value={{ get, set }}>
+    <StoreContext.Provider value={{ get, set, del }}>
       {children}
     </StoreContext.Provider>
   );
