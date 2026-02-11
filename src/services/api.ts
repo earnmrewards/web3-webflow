@@ -23,8 +23,6 @@ function fetcher({ route, method, body, api = "TOOLKIT" }: FetcherData) {
     method,
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": import.meta.env.VITE_API_KEY,
-      "x-api-secret": import.meta.env.VITE_API_SECRET,
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
