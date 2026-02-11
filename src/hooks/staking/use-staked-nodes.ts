@@ -10,7 +10,7 @@ interface StakedNodesProps {
 }
 
 interface StakedNodesResponse {
-  nodes: z.infer<typeof stakedResponseSchema>["data"]["smartNodes"]["data"];
+  nodes: z.infer<typeof stakedResponseSchema>["items"];
   totalRewards: number;
   count: number;
   currentPage: number;
@@ -32,18 +32,17 @@ export function useStakedNodes({ page, take }: StakedNodesProps) {
     const parsedResponse = stakedResponseSchema.safeParse(data);
     if (!parsedResponse.success) return;
 
-    const {
-      data: { smartNodes, totalRewards },
-    } = parsedResponse.data;
+    const { items, totalRewards, total, page: currentPage, take: pageSize } = parsedResponse.data;
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
     return {
-      nodes: smartNodes.data,
+      nodes: items,
       totalRewards,
-      count: smartNodes.count,
-      currentPage: smartNodes.currentPage,
-      nextPage: smartNodes.nextPage,
-      prevPage: smartNodes.prevPage,
-      lastPage: smartNodes.lastPage,
+      count: total,
+      currentPage,
+      nextPage: currentPage < lastPage ? currentPage + 1 : null,
+      prevPage: currentPage > 1 ? currentPage - 1 : null,
+      lastPage,
     };
   }
 

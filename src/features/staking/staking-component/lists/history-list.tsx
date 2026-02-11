@@ -38,7 +38,7 @@ export function HistoryList({ page }: HistoryListProps) {
             (
               {
                 actionTimestamp,
-                hash,
+                actionHash,
                 actionType,
                 smartNodeIds,
                 claimedAmountEther,
@@ -55,7 +55,7 @@ export function HistoryList({ page }: HistoryListProps) {
                       Date
                     </span>
                     <span className="heading-text-table text-white font-bold">
-                      {new Date(actionTimestamp * 1000).toLocaleDateString()}
+                      {new Date(actionTimestamp).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -64,11 +64,11 @@ export function HistoryList({ page }: HistoryListProps) {
                   <div className="flex flex-col w-36 sm:w-32">
                     <span className="text-block-24 font-galano">Hash</span>
                     <a
-                      href={`${explorerUrl}/${hash}`}
+                      href={`${explorerUrl}/${actionHash}`}
                       target="_blank"
                       className="heading-text-table text-white font-bold underline"
                     >
-                      {shortenAddress(hash)}
+                      {shortenAddress(actionHash)}
                     </a>
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export function HistoryList({ page }: HistoryListProps) {
                     <a
                       data-list={smartNodeIds.length > 1}
                       className="heading-text-table text-white font-bold whitespace-nowrap data-[list=true]:underline data-[list=true]:cursor-pointer"
-                      onClick={() => handleSingleNodeClick(smartNodeIds, hash)}
+                      onClick={() => handleSingleNodeClick(smartNodeIds, actionHash)}
                     >
                       {smartNodeIds.length === 1
                         ? smartNodeIds[0]

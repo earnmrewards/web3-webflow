@@ -14,24 +14,23 @@ export function useHistory({ page, take, filter = "desc" }: HistoryProps) {
 
   async function getHistory() {
     const { data, status } = await api.get(
-      `/smartnodes/history/${user?.address}?page=${page}&take=${take}&sortByTime=${filter}`
+      `/smartnodes/history/${user?.address}?page=${page}&take=${take}&sortDirection=${filter}`
     );
     if (status !== 200) return;
 
     const parsedResponse = historyResponse.safeParse(data);
     if (!parsedResponse.success) return;
 
-    const {
-      data: { history },
-    } = parsedResponse.data;
+    const { items, total, page: currentPage, take: pageSize } = parsedResponse.data;
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
     return {
-      history: history.data,
-      count: history.count,
-      currentPage: history.currentPage,
-      nextPage: history.nextPage,
-      prevPage: history.prevPage,
-      lastPage: history.lastPage,
+      history: items,
+      count: total,
+      currentPage,
+      nextPage: currentPage < lastPage ? currentPage + 1 : null,
+      prevPage: currentPage > 1 ? currentPage - 1 : null,
+      lastPage,
     };
   }
 

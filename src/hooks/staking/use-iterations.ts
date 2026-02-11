@@ -10,9 +10,7 @@ interface IterationsProps {
 }
 
 interface IterationsResponse {
-  iterations: z.infer<
-    typeof iterationResponseSchema
-  >["data"]["iterations"]["data"];
+  iterations: z.infer<typeof iterationResponseSchema>["items"];
   count: number;
   currentPage: number;
   nextPage: number | null;
@@ -32,15 +30,16 @@ export function useIterations({ page, take }: IterationsProps) {
     const parsedResponse = iterationResponseSchema.safeParse(data);
     if (!parsedResponse.success) return;
 
-    const { iterations } = parsedResponse.data.data;
+    const { items, total, page: currentPage, take: pageSize } = parsedResponse.data;
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
     return {
-      iterations: iterations.data,
-      count: iterations.count,
-      currentPage: iterations.currentPage,
-      nextPage: iterations.nextPage,
-      prevPage: iterations.prevPage,
-      lastPage: iterations.lastPage,
+      iterations: items,
+      count: total,
+      currentPage,
+      nextPage: currentPage < lastPage ? currentPage + 1 : null,
+      prevPage: currentPage > 1 ? currentPage - 1 : null,
+      lastPage,
     };
   }
 

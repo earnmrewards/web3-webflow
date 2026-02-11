@@ -10,7 +10,7 @@ interface HeldNodesProps {
 }
 
 interface HeldNodesResponse {
-  nodes: z.infer<typeof heldResponseSchema>["data"]["smartNodes"]["data"];
+  nodes: z.infer<typeof heldResponseSchema>["items"];
   count: number;
   currentPage: number;
   nextPage: number | null;
@@ -30,17 +30,16 @@ export function useHeldNodes({ page, take }: HeldNodesProps) {
     const parsedResponse = heldResponseSchema.safeParse(data);
     if (!parsedResponse.success) return;
 
-    const {
-      data: { smartNodes },
-    } = parsedResponse.data;
+    const { items, total, page: currentPage, take: pageSize } = parsedResponse.data;
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
     return {
-      nodes: smartNodes.data,
-      count: smartNodes.count,
-      currentPage: smartNodes.currentPage,
-      nextPage: smartNodes.nextPage,
-      prevPage: smartNodes.prevPage,
-      lastPage: smartNodes.lastPage,
+      nodes: items,
+      count: total,
+      currentPage,
+      nextPage: currentPage < lastPage ? currentPage + 1 : null,
+      prevPage: currentPage > 1 ? currentPage - 1 : null,
+      lastPage,
     };
   }
 

@@ -10,15 +10,15 @@ vi.mock("@/contexts/use-modal");
 const mockHistory = {
   history: [
     {
-      actionTimestamp: 1704067200, // 2024-01-01
-      hash: "0x123...abc",
+      actionTimestamp: "2024-01-01T00:00:00.000Z",
+      actionHash: "0x123...abc",
       actionType: "stake",
       smartNodeIds: [1],
       claimedAmountEther: 0,
     },
     {
-      actionTimestamp: 1704153600, // 2024-01-02
-      hash: "0x456...def",
+      actionTimestamp: "2024-01-02T00:00:00.000Z",
+      actionHash: "0x456...def",
       actionType: "claim",
       smartNodeIds: [2, 3],
       claimedAmountEther: 100,
@@ -90,7 +90,7 @@ describe("HistoryList", () => {
   it("should format dates correctly", () => {
     render(<HistoryList page={1} />);
 
-    const date = new Date(1704067200 * 1000).toLocaleDateString();
+    const date = new Date("2024-01-01T00:00:00.000Z").toLocaleDateString();
     expect(screen.getByText(date)).toBeDefined();
   });
 });

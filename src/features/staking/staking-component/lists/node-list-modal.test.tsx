@@ -10,11 +10,11 @@ vi.mock("@/contexts/use-modal");
 const mockHistory = {
   history: [
     {
-      hash: "0x123",
+      actionHash: "0x123",
       smartNodeIds: [1, 2, 3],
     },
     {
-      hash: "0x456",
+      actionHash: "0x456",
       smartNodeIds: [4, 5],
     },
   ],

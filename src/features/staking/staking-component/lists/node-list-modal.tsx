@@ -18,7 +18,7 @@ export function NodeListModal({ page }: NodeListModalProps) {
   const getHistoryItem = useMemo(() => {
     if (!data || !selectedHash) return [];
 
-    const selectedItem = data.history.find(({ hash }) => hash === selectedHash);
+    const selectedItem = data.history.find(({ actionHash }) => actionHash === selectedHash);
     if (!selectedItem) return [];
 
     return selectedItem.smartNodeIds;

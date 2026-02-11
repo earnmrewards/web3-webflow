@@ -48,7 +48,7 @@ export function RewardPoolContainer() {
         return {
           title: cardTitle,
           reward: iterationRewardEther,
-          csv: rewardsCalculationCsv,
+          csv: rewardsCalculationCsv ?? undefined,
         };
       }
     );
